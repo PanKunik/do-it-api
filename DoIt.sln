@@ -5,21 +5,30 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{00C0E77F-5163-4ED6-BC2C-75373A50D31C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoIt.Api", "src\DoIt.Api\DoIt.Api.csproj", "{2896439C-7BCD-47B2-90D3-CD857D843FA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoIt.Api", "src\DoIt.Api\DoIt.Api.csproj", "{2896439C-7BCD-47B2-90D3-CD857D843FA7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{792F18E8-9C8D-4A8E-91BB-05897BCFE5B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoIt.Api.Integration.Tests", "tests\DoIt.Api.Integration.Tests\DoIt.Api.Integration.Tests.csproj", "{54F8A25C-2890-4264-BF7E-0487CD241F21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoIt.Api.Integration.Tests", "tests\DoIt.Api.Integration.Tests\DoIt.Api.Integration.Tests.csproj", "{54F8A25C-2890-4264-BF7E-0487CD241F21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoIt.Api.Unit.Tests", "tests\DoIt.Api.Unit.Tests\DoIt.Api.Unit.Tests.csproj", "{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoIt.Api.Unit.Tests", "tests\DoIt.Api.Unit.Tests\DoIt.Api.Unit.Tests.csproj", "{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{060A65CE-A2DB-45A1-87AE-61000AD7D757}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "requests", "requests", "{284A4436-E344-458C-901B-565A7AD6A281}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{13F0D23E-7474-41D3-B961-D3C4BCD6111D}"
+	ProjectSection(SolutionItems) = preProject
+		requests\app\get.http = requests\app\get.http
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2896439C-7BCD-47B2-90D3-CD857D843FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -35,9 +44,16 @@ Global
 		{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2896439C-7BCD-47B2-90D3-CD857D843FA7} = {00C0E77F-5163-4ED6-BC2C-75373A50D31C}
 		{54F8A25C-2890-4264-BF7E-0487CD241F21} = {792F18E8-9C8D-4A8E-91BB-05897BCFE5B8}
 		{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E} = {792F18E8-9C8D-4A8E-91BB-05897BCFE5B8}
+		{13F0D23E-7474-41D3-B961-D3C4BCD6111D} = {284A4436-E344-458C-901B-565A7AD6A281}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6778ABD-6605-4432-8CF3-9FB3C5600B19}
 	EndGlobalSection
 EndGlobal
