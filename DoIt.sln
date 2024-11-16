@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{13F0D23E-747
 		requests\app\get.http = requests\app\get.http
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoIt.Api.TestUtils", "tests\DoIt.Api.TestUtils\DoIt.Api.TestUtils.csproj", "{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +58,7 @@ Global
 		{54F8A25C-2890-4264-BF7E-0487CD241F21} = {792F18E8-9C8D-4A8E-91BB-05897BCFE5B8}
 		{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E} = {792F18E8-9C8D-4A8E-91BB-05897BCFE5B8}
 		{13F0D23E-7474-41D3-B961-D3C4BCD6111D} = {284A4436-E344-458C-901B-565A7AD6A281}
+		{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44} = {792F18E8-9C8D-4A8E-91BB-05897BCFE5B8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F6778ABD-6605-4432-8CF3-9FB3C5600B19}
