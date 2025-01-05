@@ -7,6 +7,7 @@ WORKDIR src
 COPY ./src/DoIt.Api/DoIt.Api.csproj ./DoIt.Api/
 
 WORKDIR ../tests
+COPY ./tests/DoIt.Api.TestUtils/DoIt.Api.TestUtils.csproj ./DoIt.Api.TestUtils/
 COPY ./tests/DoIt.Api.Unit.Tests/DoIt.Api.Unit.Tests.csproj ./DoIt.Api.Unit.Tests/
 COPY ./tests/DoIt.Api.Integration.Tests/DoIt.Api.Integration.Tests.csproj ./DoIt.Api.Integration.Tests/
 

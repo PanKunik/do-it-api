@@ -15,6 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoIt.Api.Unit.Tests", "test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{060A65CE-A2DB-45A1-87AE-61000AD7D757}"
 	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
@@ -25,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{13F0D23E-747
 		requests\app\get.http = requests\app\get.http
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoIt.Api.TestUtils", "tests\DoIt.Api.TestUtils\DoIt.Api.TestUtils.csproj", "{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoIt.Api.TestUtils", "tests\DoIt.Api.TestUtils\DoIt.Api.TestUtils.csproj", "{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
