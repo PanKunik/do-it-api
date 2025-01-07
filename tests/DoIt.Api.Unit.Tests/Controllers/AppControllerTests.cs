@@ -18,7 +18,7 @@ public class AppControllerTests
         // Assert
         result
             .Should()
-            .BeOfType<OkResult>();
+            .BeOfType<OkObjectResult>();
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class AppControllerTests
         var cut = new AppController();
 
         // Act
-        var result = (OkResult)await cut.HealthCheck();
+        var result = (OkObjectResult)await cut.HealthCheck();
 
         // Assert
         result

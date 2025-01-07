@@ -1,9 +1,8 @@
 ﻿using System.Data;
 
-namespace DoIt.Api.Persistence.Database
+namespace DoIt.Api.Persistence.Database;
+
+public interface IDbConnectionFactory
 {
-    public interface IDbConnectionFactory
-    {
-        Task<IDbConnection> CreateConnectionAsync();
-    }
+    Task<IDbConnection> CreateConnectionAsync();
 }
