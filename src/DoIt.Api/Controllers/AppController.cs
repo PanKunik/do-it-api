@@ -9,6 +9,6 @@ public class AppController : ControllerBase
     public async Task<IActionResult> HealthCheck()
     {
         await Task.CompletedTask;
-        return Ok();
+        return Ok(200);
     }
 }

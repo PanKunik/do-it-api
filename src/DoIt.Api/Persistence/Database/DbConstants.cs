@@ -1,7 +1,6 @@
-﻿namespace DoIt.Api.Persistence.Database
+﻿namespace DoIt.Api.Persistence.Database;
+
+public static class DbConstants
 {
-    public static class DbConstants
-    {
-        public static readonly string DoItDbConnectionStringPath = "Database:ConnectionStrings:DoItDb";
-    }
+    public static readonly string DoItDbConnectionStringPath = "Database:ConnectionStrings:DoItDb";
 }

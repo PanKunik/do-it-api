@@ -2,30 +2,29 @@
 using Npgsql;
 using System.Data;
 
-namespace DoIt.Api.Persistence.Database
+namespace DoIt.Api.Persistence.Database;
+
+public class NpgsqlConnectionFactory
+    : IDbConnectionFactory
 {
-    public class NpgsqlConnectionFactory
-        : IDbConnectionFactory
+    private readonly string _connectionString;
+
+    public NpgsqlConnectionFactory(
+        string connectionString
+    )
     {
-        private readonly string _connectionString;
+        if (string.IsNullOrWhiteSpace(connectionString))
+            throw new ArgumentNullException(nameof(connectionString));
 
-        public NpgsqlConnectionFactory(
-            string connectionString
-        )
-        {
-            if (string.IsNullOrWhiteSpace(connectionString))
-                throw new ArgumentNullException(nameof(connectionString));
+        _connectionString = connectionString;
+    }
 
-            _connectionString = connectionString;
-        }
+    public async Task<IDbConnection> CreateConnectionAsync()
+    {
+        var connection = new NpgsqlConnection(_connectionString);
 
-        public async Task<IDbConnection> CreateConnectionAsync()
-        {
-            var connection = new NpgsqlConnection(_connectionString);
+        await connection.OpenAsync();
 
-            await connection.OpenAsync();
-
-            return connection;
-        }
+        return connection;
     }
 }
