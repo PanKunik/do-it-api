@@ -1,4 +1,6 @@
-﻿namespace DoIt.Api.Integration.Tests.App;
+﻿using System.Net;
+
+namespace DoIt.Api.Integration.Tests.App;
 
 public class AppControllerTests
     : IClassFixture<DoItApiFactory>
@@ -20,5 +22,14 @@ public class AppControllerTests
         result
             .Should()
             .NotBeNull();
+
+        result.StatusCode
+            .Should()
+            .Be(HttpStatusCode.OK);
+
+        (await result.Content
+            .ReadAsStringAsync())
+            .Should()
+            .Be("200");
     }
 }
