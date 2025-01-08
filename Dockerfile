@@ -17,7 +17,9 @@ RUN dotnet restore
 COPY . .
 RUN dotnet build --no-restore -c Release -o /app/build
 
-RUN dotnet test --no-restore
+# Known issue: Running integration tests using Testcontainers when building Dockerfile
+# RUN dotnet test --no-restore
+RUN dotnet test tests/DoIt.Api.Unit.Tests/DoIt.Api.Unit.Tests.csproj --no-restore
 
 FROM build AS publish
 RUN dotnet publish --no-restore DoIt.sln -c Release -o /app/publish
