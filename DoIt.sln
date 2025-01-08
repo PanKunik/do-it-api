@@ -29,6 +29,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{13F0D23E-747
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoIt.Api.TestUtils", "tests\DoIt.Api.TestUtils\DoIt.Api.TestUtils.csproj", "{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tasks", "tasks", "{D7AB204F-1A95-4E96-8003-256C9AFD9D8D}"
+	ProjectSection(SolutionItems) = preProject
+		requests\tasks\get.http = requests\tasks\get.http
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +66,7 @@ Global
 		{15B2BF56-5C7F-4EA6-B140-F9367B9B7F7E} = {792F18E8-9C8D-4A8E-91BB-05897BCFE5B8}
 		{13F0D23E-7474-41D3-B961-D3C4BCD6111D} = {284A4436-E344-458C-901B-565A7AD6A281}
 		{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44} = {792F18E8-9C8D-4A8E-91BB-05897BCFE5B8}
+		{D7AB204F-1A95-4E96-8003-256C9AFD9D8D} = {284A4436-E344-458C-901B-565A7AD6A281}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F6778ABD-6605-4432-8CF3-9FB3C5600B19}
