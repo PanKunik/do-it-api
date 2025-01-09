@@ -1,7 +1,7 @@
 ﻿using DbUp;
 using System.Reflection;
 
-namespace DoIt.Api.Persistance.Database;
+namespace DoIt.Api.Persistence.Database;
 
 public static class DbInitializer
 {

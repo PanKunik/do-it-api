@@ -1,5 +1,5 @@
 ﻿using DoIt.Api.Persistence.Database;
-using DoIt.Api.Persistence.Repositories.Tasks;
+using DoIt.Api.Persistence.Repositories;
 
 namespace DoIt.Api.Persistence;
 

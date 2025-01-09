@@ -1,5 +1,8 @@
 ﻿using Dapper;
+using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Persistence.Database;
+using DoIt.Api.Persistence.Repositories.Tasks;
+using Task = DoIt.Api.Domain.Tasks.Task;
 
 namespace DoIt.Api.Persistence.Repositories;
 
@@ -16,22 +19,63 @@ public class TasksRepository
             ?? throw new ArgumentNullException(nameof(dbConnectionFactory));
     }
 
-    public async Task<List<TaskDTO>> GetAll()
+    public async System.Threading.Tasks.Task<List<Task>> GetAll()
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
 
         var query = @"
             SELECT
-                task_id AS taskId
+                task_id AS Id
                 , title
-                , created_at AS createdAt
-                , is_done AS isDone
-                , is_important AS isImportant
+                , created_at AS CreatedAt
+                , is_done AS IsDone
+                , is_important AS IsImportant
             FROM
                 public.tasks";
 
-        var result = await connection.QueryAsync<TaskDTO>(query);
+        var result = await connection.QueryAsync<TaskRecord>(query);
 
-        return result.ToList();
+        return result.Select(r => new Task(
+            TaskId.CreateFrom(r.Id),
+            new Title(r.Title),
+            r.CreatedAt,
+            r.IsDone,
+            r.IsImportant
+        )).ToList();
+    }
+
+    public async System.Threading.Tasks.Task<Task> Create(Task task)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+
+        var query = @"
+            INSERT INTO public.tasks
+            (
+                task_id
+                , title
+                , created_at
+                , is_done
+                , is_important
+            )
+            VALUES
+            (
+                @Id
+                , @Title
+                , @CreatedAt
+                , @IsDone
+                , @isImportant
+            )";
+
+        var taskRecord = task.FromDomain()
+            ?? throw new ArgumentNullException(nameof(task));
+
+        var result = await connection.ExecuteAsync(query, taskRecord);
+
+        if (result <= 0)
+        {
+            throw new InvalidOperationException("Cannot insert data to database");
+        }
+
+        return task;
     }
 }
