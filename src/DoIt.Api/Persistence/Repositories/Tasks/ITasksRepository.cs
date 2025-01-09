@@ -1,7 +1,10 @@
-﻿namespace DoIt.Api.Persistence.Repositories
+﻿using DoIt.Api.Domain.Tasks;
+using Task = DoIt.Api.Domain.Tasks.Task;
+
+namespace DoIt.Api.Persistence.Repositories;
+
+public interface ITasksRepository
 {
-    public interface ITasksRepository
-    {
-        Task<List<TaskDTO>> GetAll();
-    }
+    System.Threading.Tasks.Task<List<Task>> GetAll();
+    System.Threading.Tasks.Task<Task> Create(Task task);
 }
