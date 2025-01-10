@@ -43,4 +43,10 @@ public class TasksService(ITasksRepository repository)
             result.IsImportant
         );
     }
+
+    public async System.Threading.Tasks.Task Delete(Guid id)
+    {
+        var taskId = TaskId.CreateFrom(id);
+        await _repository.Delete(taskId);
+    }
 }
