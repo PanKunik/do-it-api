@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using System.Net;
+using System.Reflection;
 
 namespace DoIt.Api.Unit.Tests.Controllers.Tasks;
 
@@ -16,6 +17,8 @@ public class TasksControllerTests
     {
         _cut = new TasksController(_tasksService);
     }
+
+    #region GetAll
 
     [Fact]
     public async Task Get_OnSuccess_ShouldReturnOkObjectResult()
@@ -47,7 +50,7 @@ public class TasksControllerTests
             .Returns(new List<GetTaskResponse>());
 
         // Act
-        var result = (OkObjectResult)(await _cut.Get());
+        var result = (OkObjectResult) await _cut.Get();
 
         // Assert
         result.StatusCode
@@ -92,6 +95,10 @@ public class TasksControllerTests
             .Received(1)
             .GetAll();
     }
+
+    #endregion
+
+    #region Create
 
     [Fact]
     public async Task Create_OnSuccess_ShouldReturnCreatedAtActionObjectWithExpectedValues()
@@ -152,7 +159,7 @@ public class TasksControllerTests
             );
 
         // Act
-        var result = (CreatedAtActionResult)(await _cut.Create(request));
+        var result = (CreatedAtActionResult) await _cut.Create(request);
 
         // Assert
         result.StatusCode
@@ -191,4 +198,77 @@ public class TasksControllerTests
                 )
             );
     }
+
+    #endregion
+
+    #region Delete
+
+    [Fact]
+    public async Task Delete_OnSuccess_ShouldReturnNoContentResult()
+    {
+        // Arrange
+
+        // Act
+        var result = await _cut.Delete(Guid.NewGuid());
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<NoContentResult>();
+    }
+
+    [Fact]
+    public async Task Delete_OnSuccess_ShouldReturn201NoContentStatusCode()
+    {
+        // Arrange
+
+        // Act
+        var result = (NoContentResult) await _cut.Delete(Guid.NewGuid());
+
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int)HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task Delete_ShouldContainHttpDeleteAttributeWithExpectedTemplate()
+    {
+        // Act
+        var methodData = typeof(TasksController).GetMethod("Delete");
+
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpDeleteAttribute>();
+
+        attribute
+            .Should()
+            .NotBeNull();
+
+        attribute!.Template
+            .Should()
+            .BeEquivalentTo("{id:guid}");
+
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task Delete_WhenInvoked_ShouldCallTasksServiceDeleteOnceWithExpectedValue()
+    {
+        // Arrange
+        var guid = Guid.NewGuid();
+
+        // Act
+        var result = await _cut.Delete(guid);
+
+        // Assert
+        await _tasksService
+            .Received(1)
+            .Delete(Arg.Is<Guid>(r => r == guid));
+    }
+
+    #endregion
 }

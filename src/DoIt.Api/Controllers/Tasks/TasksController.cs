@@ -30,4 +30,11 @@ public class TasksController(ITasksService tasksService)
             result
         );
     }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _tasksService.Delete(id);
+        return NoContent();
+    }
 }

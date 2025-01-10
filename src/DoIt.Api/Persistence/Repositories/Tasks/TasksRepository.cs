@@ -78,4 +78,15 @@ public class TasksRepository
 
         return task;
     }
+
+    public async System.Threading.Tasks.Task Delete(TaskId taskId)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+
+        var query = @"
+            DELETE FROM public.tasks
+            WHERE task_id = @Id";
+
+        var result = await connection.ExecuteAsync(query, new { Id = taskId.Value });
+    }
 }

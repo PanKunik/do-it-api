@@ -32,6 +32,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tasks", "tasks", "{D7AB204F-1A95-4E96-8003-256C9AFD9D8D}"
 	ProjectSection(SolutionItems) = preProject
 		requests\tasks\create.http = requests\tasks\create.http
+		requests\tasks\delete.http = requests\tasks\delete.http
 		requests\tasks\get.http = requests\tasks\get.http
 	EndProjectSection
 EndProject
