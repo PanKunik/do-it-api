@@ -59,7 +59,7 @@ public class TasksControllerTests
     }
 
     [Fact]
-    public async Task Get_OnSuccess_ShouldReturnListOfTasks()
+    public async Task Get_OnSuccess_ShouldReturnListOfGetTaskResponse()
     {
         // Arrange
         _tasksService
@@ -94,6 +94,172 @@ public class TasksControllerTests
         await _tasksService
             .Received(1)
             .GetAll();
+    }
+
+    #endregion
+
+    #region GetById
+
+    [Fact]
+    public async Task GetById_WhenTaskNotFound_ShouldReturnNotFoundResult()
+    {
+        // Act
+        var result = await _cut.GetById(Guid.NewGuid());
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task GetById_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
+    {
+        // Act
+        var result = (NotFoundResult) await _cut.GetById(Guid.NewGuid());
+
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int)HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetById_OnSuccess_ShouldReturnOkObjectResult()
+    {
+        // Arrange
+        var guid = Guid.NewGuid();
+        _tasksService
+            .GetById(Arg.Is<Guid>(r => r == guid))
+            .Returns(new GetTaskResponse(
+                    guid,
+                    "Test title 1",
+                    DateTime.UtcNow,
+                    false,
+                    false
+                )
+            );
+
+        // Act
+        var result = await _cut.GetById(guid);
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<OkObjectResult>();
+    }
+
+    [Fact]
+    public async Task GetById_OnSuccess_ShouldReturn200OKStatusCode()
+    {
+        // Arrange
+        var guid = Guid.NewGuid();
+        _tasksService
+            .GetById(Arg.Is<Guid>(r => r == guid))
+            .Returns(new GetTaskResponse(
+                    guid,
+                    "Test title 1",
+                    DateTime.UtcNow,
+                    false,
+                    false
+                )
+            );
+
+        // Act
+        var result = (OkObjectResult) await _cut.GetById(guid);
+
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int)HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task GetById_OnSuccess_ShouldReturnGetTaskResponse()
+    {
+        // Arrange
+        var guid = Guid.NewGuid();
+        var creatdAt = DateTime.UtcNow;
+        _tasksService
+            .GetById(Arg.Is<Guid>(a => a == guid))
+            .Returns(new GetTaskResponse(
+                    guid,
+                    "Test title 1",
+                    creatdAt,
+                    false,
+                    false
+                )
+            );
+
+        // Act
+        var result = (OkObjectResult) await _cut.GetById(guid);
+
+        // Assert
+        result.Value
+            .Should()
+            .NotBeNull();
+
+        result.Value
+            .Should()
+            .Match<GetTaskResponse>(
+                r => r.Id == guid
+                  && r.Title == "Test title 1"
+                  && r.CreatedAt == creatdAt
+                  && r.IsDone == false
+                  && r.IsImportant == false
+            );
+    }
+
+    [Fact]
+    public async Task GetById_WhenInvoked_ShouldCallTasksServiceGetByIdOnceWithExpectedArgument()
+    {
+        // Arrange
+        var guid = Guid.NewGuid();
+        _tasksService
+            .GetById(Arg.Is<Guid>(r => r == guid))
+            .Returns(new GetTaskResponse(
+                    guid,
+                    "Test title 1",
+                    DateTime.UtcNow,
+                    false,
+                    false
+                )
+            );
+
+        // Act
+        await _cut.GetById(guid);
+
+        // Assert
+        await _tasksService
+            .Received(1)
+            .GetById(Arg.Is<Guid>(a => a == guid));
+    }
+
+    [Fact]
+    public async Task GetById_ShouldContainHttpGetAttributeWithExpectedTemplate()
+    {
+        // Arrange
+        var methodData = typeof(TasksController).GetMethod("GetById");
+        var attribute = methodData!.GetCustomAttribute<HttpGetAttribute>();
+
+        // Assert
+        attribute
+            .Should()
+            .NotBeNull();
+
+        attribute!.Template
+            .Should()
+            .BeEquivalentTo("{id:guid}");
+
+        await Task.CompletedTask;
     }
 
     #endregion

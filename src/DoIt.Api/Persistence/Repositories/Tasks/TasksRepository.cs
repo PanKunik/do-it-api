@@ -44,6 +44,36 @@ public class TasksRepository
         )).ToList();
     }
 
+    public async System.Threading.Tasks.Task<Task?> GetById(TaskId taskId)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+
+        var query = @"
+            SELECT
+                task_id AS Id
+                , title
+                , created_at AS CreatedAt
+                , is_done AS IsDone
+                , is_important AS IsImportant
+            FROM
+                public.tasks
+            WHERE
+                task_id = @Id";
+
+        var result = await connection.QueryFirstOrDefaultAsync<TaskRecord>(query, new { Id = taskId.Value });
+
+        if (result is null)
+            return null;
+
+        return new Task(
+            TaskId.CreateFrom(result.Id),
+            new Title(result.Title),
+            result.CreatedAt,
+            result.IsDone,
+            result.IsImportant
+        );
+    }
+
     public async System.Threading.Tasks.Task<Task> Create(Task task)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
