@@ -1,9 +1,9 @@
 ﻿namespace DoIt.Api.Controllers.Tasks;
 
 public sealed record GetTaskResponse(
-    Guid taskId,
-    string title,
-    DateTime createdAt,
-    bool isDone,
-    bool isImportant
+    Guid Id,
+    string Title,
+    DateTime CreatedAt,
+    bool IsDone,
+    bool IsImportant
 );

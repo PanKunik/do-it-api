@@ -17,6 +17,15 @@ public class TasksController(ITasksService tasksService)
         return Ok(result);
     }
 
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var result = await _tasksService.GetById(id);
+        return result is not null
+            ? Ok(result)
+            : NotFound();
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create(
         CreateTaskRequest request

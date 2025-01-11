@@ -24,6 +24,23 @@ public class TasksService(ITasksRepository repository)
             .ToList();
     }
 
+    public async System.Threading.Tasks.Task<GetTaskResponse?> GetById(Guid id)
+    {
+        var taskId = TaskId.CreateFrom(id);
+        var result = await _repository.GetById(taskId);
+
+        if (result is null)
+            return null;
+
+        return new GetTaskResponse(
+                result.Id.Value,
+                result.Title.Value,
+                result.CreatedAt,
+                result.IsDone,
+                result.IsImportant
+            );
+    }
+
     public async System.Threading.Tasks.Task<CreateTaskResponse> Create(CreateTaskRequest request)
     {
         var newTask = new Task(
