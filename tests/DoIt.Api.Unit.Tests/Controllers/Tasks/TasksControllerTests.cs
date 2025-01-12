@@ -2,6 +2,7 @@
 using DoIt.Api.Services.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using NSubstitute;
 using System.Net;
 using System.Reflection;
@@ -16,6 +17,38 @@ public class TasksControllerTests
     public TasksControllerTests()
     {
         _cut = new TasksController(_tasksService);
+    }
+
+    [Fact]
+    public async Task TaskController_ShouldContainRouteAttributeWithExpectedTemplate()
+    {
+        // Arrange
+        var attribute = typeof(TasksController).GetCustomAttribute<RouteAttribute>();
+
+        // Assert
+        attribute
+            .Should()
+            .NotBeNull();
+
+        attribute!.Template
+            .Should()
+            .BeEquivalentTo("api/[controller]");
+
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task TaskController_ShouldContainApiControllerAttribute()
+    {
+        // Arrange
+        var attribute = typeof(TasksController).GetCustomAttribute<ApiControllerAttribute>();
+
+        // Assert
+        attribute
+            .Should()
+            .NotBeNull();
+
+        await Task.CompletedTask;
     }
 
     #region GetAll
@@ -67,7 +100,7 @@ public class TasksControllerTests
             .Returns(new List<GetTaskResponse>());
 
         // Act
-        var result = (OkObjectResult)(await _cut.Get());
+        var result = (OkObjectResult) await _cut.Get();
 
         // Assert
         result.Value
@@ -94,6 +127,26 @@ public class TasksControllerTests
         await _tasksService
             .Received(1)
             .GetAll();
+    }
+
+    [Fact]
+    public async Task Get_ShouldContainHttpGetAttributeWithoutTemplate()
+    {
+        // Act
+        var methodData = typeof(TasksController).GetMethod("Get");
+
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpGetAttribute>();
+
+        attribute
+            .Should()
+            .NotBeNull();
+
+        attribute!.Template
+            .Should()
+            .BeNull();
+
+        await Task.CompletedTask;
     }
 
     #endregion
@@ -135,7 +188,8 @@ public class TasksControllerTests
         var guid = Guid.NewGuid();
         _tasksService
             .GetById(Arg.Is<Guid>(r => r == guid))
-            .Returns(new GetTaskResponse(
+            .Returns(
+                new GetTaskResponse(
                     guid,
                     "Test title 1",
                     DateTime.UtcNow,
@@ -164,7 +218,8 @@ public class TasksControllerTests
         var guid = Guid.NewGuid();
         _tasksService
             .GetById(Arg.Is<Guid>(r => r == guid))
-            .Returns(new GetTaskResponse(
+            .Returns(
+                new GetTaskResponse(
                     guid,
                     "Test title 1",
                     DateTime.UtcNow,
@@ -190,7 +245,8 @@ public class TasksControllerTests
         var creatdAt = DateTime.UtcNow;
         _tasksService
             .GetById(Arg.Is<Guid>(a => a == guid))
-            .Returns(new GetTaskResponse(
+            .Returns(
+                new GetTaskResponse(
                     guid,
                     "Test title 1",
                     creatdAt,
@@ -225,7 +281,8 @@ public class TasksControllerTests
         var guid = Guid.NewGuid();
         _tasksService
             .GetById(Arg.Is<Guid>(r => r == guid))
-            .Returns(new GetTaskResponse(
+            .Returns(
+                new GetTaskResponse(
                     guid,
                     "Test title 1",
                     DateTime.UtcNow,
@@ -270,12 +327,13 @@ public class TasksControllerTests
     public async Task Create_OnSuccess_ShouldReturnCreatedAtActionObjectWithExpectedValues()
     {
         // Arrange
+        var guid = Guid.NewGuid();
         var request = new CreateTaskRequest("Task title 1");
         _tasksService
             .Create(Arg.Any<CreateTaskRequest>())
             .Returns(
                 new CreateTaskResponse(
-                    Guid.NewGuid(),
+                    guid,
                     "Task title 1",
                     DateTime.UtcNow,
                     false,
@@ -298,13 +356,20 @@ public class TasksControllerTests
         var actionResult = result as CreatedAtActionResult;
         actionResult!.ActionName
             .Should()
-            .Be(nameof(TasksController.Get));
+            .Be(nameof(TasksController.GetById));
+
+        actionResult!.RouteValues
+            .Should()
+            .ContainEquivalentOf(
+                new KeyValuePair<string, string>(
+                    "id",
+                    guid.ToString("N")
+                )
+            );
 
         actionResult!.Value
             .Should()
-            .Match<CreateTaskResponse>(
-                r => r.Title == "Task title 1"
-            );
+            .Match<CreateTaskResponse>(r => r.Title == "Task title 1"); // TODO: Assert the rest of the object
     }
 
     [Fact]
@@ -339,9 +404,7 @@ public class TasksControllerTests
         // Arrange
         var title = string.Empty;
         _tasksService
-            .Create(
-                Arg.Do<CreateTaskRequest>(p => title = p.Title)
-            )
+            .Create(Arg.Do<CreateTaskRequest>(p => title = p.Title))
             .Returns(
                 new CreateTaskResponse(
                     Guid.NewGuid(),
@@ -358,11 +421,27 @@ public class TasksControllerTests
         // Assert
         await _tasksService
             .Received(1)
-            .Create(
-                Arg.Is<CreateTaskRequest>(
-                    r => r.Title == "Test title 1"
-                )
-            );
+            .Create(Arg.Is<CreateTaskRequest>(r => r.Title == "Test title 1")); // TODO: Assert rest of object
+    }
+    
+    [Fact]
+    public async Task Create_ShouldContainHttpPostAttributeWithoutTemplate()
+    {
+        // Act
+        var methodData = typeof(TasksController).GetMethod("Create");
+
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpPostAttribute>();
+
+        attribute
+            .Should()
+            .NotBeNull();
+
+        attribute!.Template
+            .Should()
+            .BeNull();
+
+        await Task.CompletedTask;
     }
 
     #endregion
@@ -372,8 +451,6 @@ public class TasksControllerTests
     [Fact]
     public async Task Delete_OnSuccess_ShouldReturnNoContentResult()
     {
-        // Arrange
-
         // Act
         var result = await _cut.Delete(Guid.NewGuid());
 
@@ -390,8 +467,6 @@ public class TasksControllerTests
     [Fact]
     public async Task Delete_OnSuccess_ShouldReturn201NoContentStatusCode()
     {
-        // Arrange
-
         // Act
         var result = (NoContentResult) await _cut.Delete(Guid.NewGuid());
 

@@ -14,14 +14,15 @@ public class TasksService(ITasksRepository repository)
     {
         var result = await _repository.GetAll();
         return result
-            .Select(r => new GetTaskResponse(
-                r.Id.Value,
-                r.Title.Value,
-                r.CreatedAt,
-                r.IsDone,
-                r.IsImportant
-            ))
-            .ToList();
+            .Select(
+                r => new GetTaskResponse(
+                    r.Id.Value,
+                    r.Title.Value,
+                    r.CreatedAt,
+                    r.IsDone,
+                    r.IsImportant
+                )
+            ).ToList();
     }
 
     public async System.Threading.Tasks.Task<GetTaskResponse?> GetById(Guid id)

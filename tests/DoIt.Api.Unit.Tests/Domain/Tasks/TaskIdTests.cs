@@ -10,9 +10,7 @@ public class TaskIdTests
     public async System.Threading.Tasks.Task CreateFrom_WhenCalled_ShouldReturnExpectedObject()
     {
         // Arrange
-        var createTaskId = () => TaskId.CreateFrom(
-            Constants.Tasks.TaskId.Value    
-        );
+        var createTaskId = () => TaskId.CreateFrom(Constants.Tasks.TaskId.Value);
 
         // Act
         var result = createTaskId();

@@ -1,10 +1,10 @@
-﻿namespace DoIt.Api.Persistence.Repositories.Tasks;
+﻿using Task = DoIt.Api.Domain.Tasks.Task;
+
+namespace DoIt.Api.Persistence.Repositories.Tasks;
 
 public static class TasksExtensions
 {
-    public static TaskRecord? FromDomain(
-        this Domain.Tasks.Task task
-    )
+    public static TaskRecord? FromDomain(this Task task)
     {
         if (task is null)
             return null;

@@ -11,9 +11,7 @@ public class TasksRepository
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    public TasksRepository(
-        IDbConnectionFactory dbConnectionFactory    
-    )
+    public TasksRepository(IDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory
             ?? throw new ArgumentNullException(nameof(dbConnectionFactory));
@@ -35,13 +33,16 @@ public class TasksRepository
 
         var result = await connection.QueryAsync<TaskRecord>(query);
 
-        return result.Select(r => new Task(
-            TaskId.CreateFrom(r.Id),
-            new Title(r.Title),
-            r.CreatedAt,
-            r.IsDone,
-            r.IsImportant
-        )).ToList();
+        return result
+            .Select(
+                r => new Task(
+                    TaskId.CreateFrom(r.Id),
+                    new Title(r.Title),
+                    r.CreatedAt,
+                    r.IsDone,
+                    r.IsImportant
+                    )
+            ).ToList();
     }
 
     public async System.Threading.Tasks.Task<Task?> GetById(TaskId taskId)

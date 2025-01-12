@@ -27,15 +27,13 @@ public class TasksController(ITasksService tasksService)
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(
-        CreateTaskRequest request
-    )
+    public async Task<IActionResult> Create(CreateTaskRequest request)
     {
         var result = await _tasksService.Create(request);
 
         return CreatedAtAction(
-            nameof(Get),
-            result.Id,
+            nameof(GetById),
+            new { id = result.Id.ToString("N") },
             result
         );
     }
