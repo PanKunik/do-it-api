@@ -101,8 +101,7 @@ public class TaskTests
         cut.ChangeState();
 
         // Assert
-        cut
-            .IsDone
+        cut.IsDone
             .Should()
             .Be(desiredState);
 
@@ -129,8 +128,7 @@ public class TaskTests
         cut.ChangeImportance();
 
         // Assert
-        cut
-            .IsImportant
+        cut.IsImportant
             .Should()
             .Be(desiredState);
 
