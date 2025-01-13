@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
+using Respawn;
+using System.Data.Common;
 using Testcontainers.PostgreSql;
 
 namespace DoIt.Api.Integration.Tests;
@@ -16,9 +19,27 @@ public class DoItApiFactory
         .WithPassword("123456")
         .Build();
 
+    public HttpClient HttpClient { get; private set; } = default!;
+
+    private DbConnection _dbConnection = default!;
+    private Respawner _respawner = default!;
+
+    public async Task ResetDatabaseAsync()
+    {
+        await _respawner.ResetAsync(_dbConnection);
+    }
+
     public async Task InitializeAsync()
     {
         await _postgresContainer.StartAsync();
+        _dbConnection = new NpgsqlConnection(_postgresContainer.GetConnectionString());
+        HttpClient = CreateClient();
+        await _dbConnection.OpenAsync();
+        _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions()
+        {
+            DbAdapter = DbAdapter.Postgres,
+            SchemasToInclude = new[] { "public" }
+        });
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
