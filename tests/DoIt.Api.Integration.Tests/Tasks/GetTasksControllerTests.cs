@@ -17,30 +17,48 @@ public class GetTasksControllerTests
     }
 
     [Fact]
-    public async Task Get_WhenInvoked_ShouldReturnAllTasksFromDatabase()
+    public async Task Get_WithoutTasks_ShouldReturnEmptyListResponse()
     {
-        // Arrange
-        await _client.PostAsJsonAsync(
-            "api/tasks",
-            new CreateTaskRequest("Task with title")
-        );
-
         // Act
         var result = await _client.GetFromJsonAsync<List<GetTaskResponse>>("api/tasks");
 
         // Assert
         result
             .Should()
-            .NotBeEmpty();
+            .BeOfType<List<GetTaskResponse>>();
 
         result
             .Should()
-            .HaveCount(1);
+            .HaveCount(0);
+    }
 
-        result!
-            .First().Title
+    [Fact]
+    public async Task Get_WhenTasksExists_ShouldReturnListOfAllTasks()
+    {
+        // Arrange
+        await _client.PostAsJsonAsync(
+            "api/tasks",
+            new CreateTaskRequest("Task with title 1")
+        );
+
+        await _client.PostAsJsonAsync(
+            "api/tasks",
+            new CreateTaskRequest("Task with title 2")
+        );
+
+        // Act
+        var result = await _client.GetAsync("api/tasks");
+
+        // Assert
+        result.IsSuccessStatusCode
             .Should()
-            .BeEquivalentTo("Task with title");
+            .BeTrue();
+
+        var parsedContent = await result.Content.ReadFromJsonAsync<List<GetTaskResponse>>();
+
+        parsedContent
+            .Should()
+            .HaveCount(2);
     }
 
     public async Task InitializeAsync() => await Task.CompletedTask;

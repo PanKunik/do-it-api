@@ -451,6 +451,11 @@ public class TasksControllerTests
     [Fact]
     public async Task Delete_OnSuccess_ShouldReturnNoContentResult()
     {
+        // Arrange
+        _tasksService
+            .Delete(Arg.Any<Guid>())
+            .Returns(true);
+
         // Act
         var result = await _cut.Delete(Guid.NewGuid());
 
@@ -467,6 +472,11 @@ public class TasksControllerTests
     [Fact]
     public async Task Delete_OnSuccess_ShouldReturn201NoContentStatusCode()
     {
+        // Arrange
+        _tasksService
+            .Delete(Arg.Any<Guid>())
+            .Returns(true);
+
         // Act
         var result = (NoContentResult) await _cut.Delete(Guid.NewGuid());
 

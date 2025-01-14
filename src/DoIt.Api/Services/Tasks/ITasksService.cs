@@ -7,5 +7,5 @@ public interface ITasksService
     Task<List<GetTaskResponse>> GetAll();
     Task<GetTaskResponse?> GetById(Guid id);
     Task<CreateTaskResponse> Create(CreateTaskRequest request);
-    Task Delete(Guid id);
+    Task<bool> Delete(Guid id);
 }

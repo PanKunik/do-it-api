@@ -110,7 +110,7 @@ public class TasksRepository
         return task;
     }
 
-    public async System.Threading.Tasks.Task Delete(TaskId taskId)
+    public async System.Threading.Tasks.Task<bool> Delete(TaskId taskId)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
 
@@ -119,5 +119,7 @@ public class TasksRepository
             WHERE task_id = @Id";
 
         var result = await connection.ExecuteAsync(query, new { Id = taskId.Value });
+
+        return result > 0;
     }
 }

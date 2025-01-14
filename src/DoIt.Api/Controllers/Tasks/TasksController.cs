@@ -13,35 +13,37 @@ public class TasksController(ITasksService tasksService)
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var result = await _tasksService.GetAll();
-        return Ok(result);
+        var tasks = await _tasksService.GetAll();
+        return Ok(tasks);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _tasksService.GetById(id);
-        return result is not null
-            ? Ok(result)
+        var task = await _tasksService.GetById(id);
+        return task is not null
+            ? Ok(task)
             : NotFound();
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateTaskRequest request)
     {
-        var result = await _tasksService.Create(request);
+        var createdTask = await _tasksService.Create(request);
 
         return CreatedAtAction(
             nameof(GetById),
-            new { id = result.Id.ToString("N") },
-            result
+            new { id = createdTask.Id.ToString("N") },
+            createdTask
         );
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await _tasksService.Delete(id);
-        return NoContent();
+        var wasDeleted = await _tasksService.Delete(id);
+        return wasDeleted
+            ? NoContent()
+            : NotFound();
     }
 }
