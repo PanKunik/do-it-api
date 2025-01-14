@@ -1,4 +1,5 @@
 ﻿using DoIt.Api.Controllers.Tasks;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
@@ -17,7 +18,23 @@ public class GetByIdTasksControllerTests
     }
 
     [Fact]
-    public async Task GetById_WhenInvoked_ShouldReturnAllExpectedFromDatabase()
+    public async Task GetById_WhenTaskDoesntExists_ShouldReturn404NotFound()
+    {
+        // Act
+        var result = await _client.GetAsync($"api/tasks/{Guid.NewGuid()}");
+
+        // Assert
+        result.IsSuccessStatusCode
+            .Should()
+            .BeFalse();
+
+        result.StatusCode
+            .Should()
+            .Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetById_WhenTasksExists_ShouldReturnOnlyOneTask()
     {
         // Arrange
         var firstTaskResult = await _client.PostAsJsonAsync(
@@ -32,22 +49,22 @@ public class GetByIdTasksControllerTests
             new CreateTaskRequest("Task with title 2")
         );
 
-
         // Act
-        var result = await _client.GetFromJsonAsync<GetTaskResponse>($"api/tasks/{firstTaskId}");
+        var result = await _client.GetAsync($"api/tasks/{firstTaskId}");
 
         // Assert
-        result
+        result.IsSuccessStatusCode
             .Should()
-            .NotBeNull();
+            .BeTrue();
 
-        result!.Id
-            .Should()
-            .Be(Guid.Parse(firstTaskId));
+        var parsedContent = await result.Content.ReadFromJsonAsync<GetTaskResponse>();
 
-        result.Title
+        parsedContent
             .Should()
-            .Be("Task with title 1");
+            .Match<GetTaskResponse>(
+                t => t.Title == "Task with title 1"
+                  && t.Id == Guid.Parse(firstTaskId)
+            );
     }
 
     public async Task InitializeAsync() => await Task.CompletedTask;
