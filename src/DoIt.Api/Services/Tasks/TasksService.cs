@@ -67,4 +67,21 @@ public class TasksService(ITasksRepository repository)
         var taskId = TaskId.CreateFrom(id);
         return await _repository.Delete(taskId);
     }
+
+    public async System.Threading.Tasks.Task<Task?> Update(Guid id, UpdateTaskRequest request)
+    {
+        var taskId = TaskId.CreateFrom(id);
+        var title = new Title(request.Title);
+        var taskToUpdate = await _repository.GetById(taskId);
+
+
+        if (taskToUpdate is null)
+            return null;
+
+        taskToUpdate.UpdateTitle(title);
+
+        var result = await _repository.Update(taskToUpdate);
+
+        return taskToUpdate;
+    }
 }

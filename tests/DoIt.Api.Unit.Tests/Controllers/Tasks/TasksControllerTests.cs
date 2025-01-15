@@ -470,7 +470,7 @@ public class TasksControllerTests
     }
 
     [Fact]
-    public async Task Delete_OnSuccess_ShouldReturn201NoContentStatusCode()
+    public async Task Delete_OnSuccess_ShouldReturn204NoContentStatusCode()
     {
         // Arrange
         _tasksService
@@ -519,6 +519,186 @@ public class TasksControllerTests
         await _tasksService
             .Received(1)
             .Delete(Arg.Is<Guid>(r => r == guid));
+    }
+
+    [Fact]
+    public async Task Delete_WhenTaskNotFound_ShouldReturnNotFoundResult()
+    {
+        // Arrange
+        _tasksService
+            .Delete(Arg.Any<Guid>())
+            .Returns(false);
+
+        // Act
+        var result = await _cut.Delete(Guid.NewGuid());
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task Delete_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
+    {
+        // Arrange
+        _tasksService
+            .Delete(Arg.Any<Guid>())
+            .Returns(false);
+
+        // Act
+        var result = (NotFoundResult) await _cut.Delete(Guid.NewGuid());
+
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int)HttpStatusCode.NotFound);
+    }
+
+    #endregion
+
+    #region Update
+
+    [Fact]
+    public async Task Update_OnSuccess_ShouldReturnNoContentResult()
+    {
+        // Arrange
+        _tasksService
+            .Update(
+                Arg.Any<Guid>(),
+                Arg.Any<UpdateTaskRequest>())
+            .Returns(
+                new Api.Domain.Tasks.Task(
+                    Api.Domain.Tasks.TaskId.CreateFrom(Guid.NewGuid()),
+                    new Api.Domain.Tasks.Title("Test 1"),
+                    DateTime.UtcNow,
+                    false,
+                    false
+                )
+            );
+
+        // Act
+        var result = await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<NoContentResult>();
+    }
+
+    [Fact]
+    public async Task Update_OnSuccess_ShouldReturn204NoContentStatusCode()
+    {
+        // Arrange
+        _tasksService
+            .Update(
+                Arg.Any<Guid>(),
+                Arg.Any<UpdateTaskRequest>())
+            .Returns(
+                new Api.Domain.Tasks.Task(
+                    Api.Domain.Tasks.TaskId.CreateFrom(Guid.NewGuid()),
+                    new Api.Domain.Tasks.Title("Test 1"),
+                    DateTime.UtcNow,
+                    false,
+                    false
+                )
+            );
+
+        // Act
+        var result = (NoContentResult) await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int)HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task Update_ShouldContainHttpPutAttributeWithExpectedTemplate()
+    {
+        // Act
+        var methodData = typeof(TasksController).GetMethod("Update");
+
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpPutAttribute>();
+
+        attribute
+            .Should()
+            .NotBeNull();
+
+        attribute!.Template
+            .Should()
+            .BeEquivalentTo("{id:guid}");
+
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task Update_WhenInvoked_ShouldCallTasksServiceUpdateOnce()
+    {
+        // Arrange
+        _tasksService
+            .Update(
+                Arg.Any<Guid>(),
+                Arg.Any<UpdateTaskRequest>())
+            .Returns(
+                new Api.Domain.Tasks.Task(
+                    Api.Domain.Tasks.TaskId.CreateFrom(Guid.NewGuid()),
+                    new Api.Domain.Tasks.Title("Test 1"),
+                    DateTime.UtcNow,
+                    false,
+                    false
+                )
+            );
+
+        // Act
+        await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+
+        // Assert
+        await _tasksService
+            .Received(1)
+            .Update(
+                Arg.Any<Guid>(),
+                Arg.Is<UpdateTaskRequest>(
+                    a => a.Title == "Test 1"
+                )
+            );
+    }
+
+    [Fact]
+    public async Task Update_WhenTaskNotFound_ShouldReturnNotFoundResult()
+    {
+        // Act
+        var result = await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task Update_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
+    {
+        // Act
+        var result = (NotFoundResult) await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int)HttpStatusCode.NotFound);
     }
 
     #endregion

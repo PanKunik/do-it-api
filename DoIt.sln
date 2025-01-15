@@ -35,6 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tasks", "tasks", "{D7AB204F
 		requests\tasks\delete.http = requests\tasks\delete.http
 		requests\tasks\get-by-id.http = requests\tasks\get-by-id.http
 		requests\tasks\get.http = requests\tasks\get.http
+		requests\tasks\update.http = requests\tasks\update.http
 	EndProjectSection
 EndProject
 Global
