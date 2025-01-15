@@ -9,4 +9,5 @@ public interface ITasksRepository
     System.Threading.Tasks.Task<Task?> GetById(TaskId taskId);
     System.Threading.Tasks.Task<Task> Create(Task task);
     System.Threading.Tasks.Task<bool> Delete(TaskId taskId);
+    System.Threading.Tasks.Task<bool> Update(Task task);
 }

@@ -46,4 +46,16 @@ public class TasksController(ITasksService tasksService)
             ? NoContent()
             : NotFound();
     }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(
+        [FromRoute] Guid id,
+        [FromBody] UpdateTaskRequest request
+    )
+    {
+        var result = await _tasksService.Update(id, request);
+        return result is null
+            ? NotFound()
+            : NoContent();
+    }
 }

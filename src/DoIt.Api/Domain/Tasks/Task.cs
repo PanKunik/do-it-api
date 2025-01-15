@@ -25,6 +25,11 @@ public class Task
         IsImportant = isImportant;
     }
 
+    public void UpdateTitle(Title title)
+    {
+        Title = title ?? throw new ArgumentNullException(nameof(title));
+    }
+
     public void ChangeState()
         => IsDone = !IsDone;
 

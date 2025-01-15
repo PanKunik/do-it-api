@@ -1,4 +1,5 @@
-﻿using DoIt.Api.TestUtils;
+﻿using DoIt.Api.Domain.Tasks;
+using DoIt.Api.TestUtils;
 using FluentAssertions;
 using Task = DoIt.Api.Domain.Tasks.Task;
 
@@ -193,6 +194,52 @@ public class TaskTests
         result
             .Should()
             .BeFalse();
+
+        await System.Threading.Tasks.Task.CompletedTask;
+    }
+
+    [Fact]
+    public async System.Threading.Tasks.Task UpdateTitle_WhenCalledWithNullTitle_ShouldThrowException()
+    {
+        // Arrange
+        var cut = new Task(
+            taskId: Constants.Tasks.TaskId,
+            title: Constants.Tasks.Title,
+            createdAt: Constants.Tasks.CreatedAt,
+            isDone: Constants.Tasks.NotDone,
+            Constants.Tasks.Important
+        );
+
+        var updateTitle = () => cut.UpdateTitle(null!);
+
+        // Act & Assert
+        updateTitle
+            .Should()
+            .ThrowExactly<ArgumentNullException>()
+            .WithParameterName("title");
+
+        await System.Threading.Tasks.Task.CompletedTask;
+    }
+
+    [Fact]
+    public async System.Threading.Tasks.Task UpdateTile_WhenPassedProperData_ShouldUpdateTitle()
+    {
+        // Arrange
+        var cut = new Task(
+            taskId: Constants.Tasks.TaskId,
+            title: Constants.Tasks.Title,
+            createdAt: Constants.Tasks.CreatedAt,
+            isDone: Constants.Tasks.NotDone,
+            Constants.Tasks.Important
+        );
+
+        // Act
+        cut.UpdateTitle(new Title("Updated task title"));
+
+        // Arrange
+        cut.Title
+            .Should()
+            .BeEquivalentTo(new Title("Updated task title"));
 
         await System.Threading.Tasks.Task.CompletedTask;
     }

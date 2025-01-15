@@ -79,7 +79,7 @@ public class TasksRepository
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
 
-        var query = @"
+        var command = @"
             INSERT INTO public.tasks
             (
                 task_id
@@ -100,7 +100,7 @@ public class TasksRepository
         var taskRecord = task.FromDomain()
             ?? throw new ArgumentNullException(nameof(task));
 
-        var result = await connection.ExecuteAsync(query, taskRecord);
+        var result = await connection.ExecuteAsync(command, taskRecord);
 
         if (result <= 0)
         {
@@ -114,11 +114,25 @@ public class TasksRepository
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
 
-        var query = @"
+        var command = @"
             DELETE FROM public.tasks
             WHERE task_id = @Id";
 
-        var result = await connection.ExecuteAsync(query, new { Id = taskId.Value });
+        var result = await connection.ExecuteAsync(command, new { Id = taskId.Value });
+
+        return result > 0;
+    }
+
+    public async System.Threading.Tasks.Task<bool> Update(Task task)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+
+        var command = @"
+            UPDATE public.tasks
+            SET title = @Title
+            WHERE task_id = @Id";
+
+        var result = await connection.ExecuteAsync(command, new { Id = task.Id.Value, Title = task.Title.Value });
 
         return result > 0;
     }
