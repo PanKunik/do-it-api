@@ -1,4 +1,5 @@
 ﻿using DoIt.Api.Controllers.Tasks;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
@@ -20,22 +21,25 @@ public class CreateTasksControllerTests
     public async Task Create_WhenInvokedWithProperData_ShouldSaveInDatabase()
     {
         // Act
-        await _client.PostAsJsonAsync(
+        var response = await _client.PostAsJsonAsync(
             "api/tasks",
             new CreateTaskRequest("Test title 1")
         );
 
+        var responseContent = await response.Content.ReadFromJsonAsync<CreateTaskResponse>();
+
         // Assert
-        var tasksInDatabase = await _client.GetFromJsonAsync<List<GetTaskResponse>>("api/tasks");
-
-        tasksInDatabase
+        response.StatusCode
             .Should()
-            .HaveCount(1);
+            .Be(HttpStatusCode.Created);
 
-        tasksInDatabase!
-            .First().Title
+        responseContent
             .Should()
-            .BeEquivalentTo("Test title 1");
+            .Match<CreateTaskResponse>(r => r.Title == "Test title 1");
+
+        response.Headers.Location
+            .Should()
+            .Be($"http://localhost/api/Tasks/{responseContent!.Id}");
     }
 
     public async Task InitializeAsync() => await Task.CompletedTask;

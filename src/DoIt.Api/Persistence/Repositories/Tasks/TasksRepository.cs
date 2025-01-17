@@ -34,15 +34,8 @@ public class TasksRepository
         var result = await connection.QueryAsync<TaskRecord>(query);
 
         return result
-            .Select(
-                r => new Task(
-                    TaskId.CreateFrom(r.Id),
-                    new Title(r.Title),
-                    r.CreatedAt,
-                    r.IsDone,
-                    r.IsImportant
-                    )
-            ).ToList();
+            .Select(r => r.ToDomain())
+            .ToList();
     }
 
     public async System.Threading.Tasks.Task<Task?> GetById(TaskId taskId)
@@ -66,13 +59,7 @@ public class TasksRepository
         if (result is null)
             return null;
 
-        return new Task(
-            TaskId.CreateFrom(result.Id),
-            new Title(result.Title),
-            result.CreatedAt,
-            result.IsDone,
-            result.IsImportant
-        );
+        return result.ToDomain();
     }
 
     public async System.Threading.Tasks.Task<Task> Create(Task task)

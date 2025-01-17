@@ -361,9 +361,9 @@ public class TasksControllerTests
         actionResult!.RouteValues
             .Should()
             .ContainEquivalentOf(
-                new KeyValuePair<string, string>(
+                new KeyValuePair<string, Guid>(
                     "id",
-                    guid.ToString("N")
+                    guid
                 )
             );
 
@@ -572,9 +572,9 @@ public class TasksControllerTests
                 Arg.Any<Guid>(),
                 Arg.Any<UpdateTaskRequest>())
             .Returns(
-                new Api.Domain.Tasks.Task(
-                    Api.Domain.Tasks.TaskId.CreateFrom(Guid.NewGuid()),
-                    new Api.Domain.Tasks.Title("Test 1"),
+                new UpdateTaskResponse(
+                    Guid.NewGuid(),
+                    "Test 1",
                     DateTime.UtcNow,
                     false,
                     false
@@ -603,9 +603,9 @@ public class TasksControllerTests
                 Arg.Any<Guid>(),
                 Arg.Any<UpdateTaskRequest>())
             .Returns(
-                new Api.Domain.Tasks.Task(
-                    Api.Domain.Tasks.TaskId.CreateFrom(Guid.NewGuid()),
-                    new Api.Domain.Tasks.Title("Test 1"),
+                new UpdateTaskResponse(
+                    Guid.NewGuid(),
+                    "Test 1",
                     DateTime.UtcNow,
                     false,
                     false
@@ -650,9 +650,9 @@ public class TasksControllerTests
                 Arg.Any<Guid>(),
                 Arg.Any<UpdateTaskRequest>())
             .Returns(
-                new Api.Domain.Tasks.Task(
-                    Api.Domain.Tasks.TaskId.CreateFrom(Guid.NewGuid()),
-                    new Api.Domain.Tasks.Title("Test 1"),
+                new UpdateTaskResponse(
+                    Guid.NewGuid(),
+                    "Test 1",
                     DateTime.UtcNow,
                     false,
                     false

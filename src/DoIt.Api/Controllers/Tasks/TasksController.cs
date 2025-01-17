@@ -29,11 +29,11 @@ public class TasksController(ITasksService tasksService)
     [HttpPost]
     public async Task<IActionResult> Create(CreateTaskRequest request)
     {
-        var createdTask = await _tasksService.Create(request);
+        var createdTask = await _tasksService.Create(request); // TODO: How to return validation errors?
 
         return CreatedAtAction(
             nameof(GetById),
-            new { id = createdTask.Id.ToString("N") },
+            new { id = createdTask.Id },
             createdTask
         );
     }
@@ -41,10 +41,10 @@ public class TasksController(ITasksService tasksService)
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var wasDeleted = await _tasksService.Delete(id);
+        var wasDeleted = await _tasksService.Delete(id); // TODO: Rethink returning 'bool'
         return wasDeleted
             ? NoContent()
-            : NotFound();
+            : NotFound(); // TODO: Rethink returning 'NotFound()' based on 'bool' return value
     }
 
     [HttpPut("{id:guid}")]
@@ -55,7 +55,7 @@ public class TasksController(ITasksService tasksService)
     {
         var result = await _tasksService.Update(id, request);
         return result is null
-            ? NotFound()
+            ? NotFound() // TODO: Rethink returning 'NotFound()' based on result value
             : NoContent();
     }
 }
