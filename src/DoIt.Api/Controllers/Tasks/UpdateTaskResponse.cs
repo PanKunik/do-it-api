@@ -1,6 +1,6 @@
-﻿namespace DoIt.Api.Persistence.Repositories.Tasks;
+﻿namespace DoIt.Api.Controllers.Tasks;
 
-public sealed record TaskRecord(
+public sealed record UpdateTaskResponse(
     Guid Id,
     string Title,
     DateTime CreatedAt,

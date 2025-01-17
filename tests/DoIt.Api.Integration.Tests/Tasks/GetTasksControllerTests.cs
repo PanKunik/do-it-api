@@ -1,4 +1,5 @@
 ﻿using DoIt.Api.Controllers.Tasks;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
@@ -20,16 +21,17 @@ public class GetTasksControllerTests
     public async Task Get_WithoutTasks_ShouldReturnEmptyListResponse()
     {
         // Act
-        var result = await _client.GetFromJsonAsync<List<GetTaskResponse>>("api/tasks");
+        var response = await _client.GetAsync("api/tasks");
+        var responseContent = await response.Content.ReadFromJsonAsync<List<GetTaskResponse>>();
 
         // Assert
-        result
+        response.StatusCode
             .Should()
-            .BeOfType<List<GetTaskResponse>>();
+            .Be(HttpStatusCode.OK);
 
-        result
+        responseContent
             .Should()
-            .HaveCount(0);
+            .BeEquivalentTo(new List<GetTaskResponse>());
     }
 
     [Fact]
@@ -47,16 +49,15 @@ public class GetTasksControllerTests
         );
 
         // Act
-        var result = await _client.GetAsync("api/tasks");
+        var response = await _client.GetAsync("api/tasks");
+        var responseContent = await response.Content.ReadFromJsonAsync<List<GetTaskResponse>>();
 
         // Assert
-        result.IsSuccessStatusCode
+        response.IsSuccessStatusCode
             .Should()
             .BeTrue();
 
-        var parsedContent = await result.Content.ReadFromJsonAsync<List<GetTaskResponse>>();
-
-        parsedContent
+        responseContent
             .Should()
             .HaveCount(2);
     }

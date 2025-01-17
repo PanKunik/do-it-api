@@ -1,4 +1,5 @@
-﻿using Task = DoIt.Api.Domain.Tasks.Task;
+﻿using DoIt.Api.Domain.Tasks;
+using Task = DoIt.Api.Domain.Tasks.Task;
 
 namespace DoIt.Api.Persistence.Repositories.Tasks;
 
@@ -15,6 +16,17 @@ public static class TasksExtensions
             task.CreatedAt,
             task.IsDone,
             task.IsImportant
+        );
+    }
+
+    public static Task ToDomain(this TaskRecord taskRecord)
+    {
+        return new Task(
+            TaskId.CreateFrom(taskRecord.Id),
+            new Title(taskRecord.Title),
+            taskRecord.CreatedAt,
+            taskRecord.IsDone,
+            taskRecord.IsImportant
         );
     }
 }

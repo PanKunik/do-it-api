@@ -8,5 +8,5 @@ public interface ITasksService
     Task<GetTaskResponse?> GetById(Guid id);
     Task<CreateTaskResponse> Create(CreateTaskRequest request);
     Task<bool> Delete(Guid id);
-    Task<Domain.Tasks.Task?> Update(Guid id, UpdateTaskRequest request);
+    Task<UpdateTaskResponse?> Update(Guid id, UpdateTaskRequest request);
 }

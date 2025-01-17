@@ -34,12 +34,12 @@ public class TasksService(ITasksRepository repository)
             return null;
 
         return new GetTaskResponse(
-                result.Id.Value,
-                result.Title.Value,
-                result.CreatedAt,
-                result.IsDone,
-                result.IsImportant
-            );
+            result.Id.Value,
+            result.Title.Value,
+            result.CreatedAt,
+            result.IsDone,
+            result.IsImportant
+        );
     }
 
     public async System.Threading.Tasks.Task<CreateTaskResponse> Create(CreateTaskRequest request)
@@ -68,12 +68,11 @@ public class TasksService(ITasksRepository repository)
         return await _repository.Delete(taskId);
     }
 
-    public async System.Threading.Tasks.Task<Task?> Update(Guid id, UpdateTaskRequest request)
+    public async System.Threading.Tasks.Task<UpdateTaskResponse?> Update(Guid id, UpdateTaskRequest request)
     {
         var taskId = TaskId.CreateFrom(id);
         var title = new Title(request.Title);
         var taskToUpdate = await _repository.GetById(taskId);
-
 
         if (taskToUpdate is null)
             return null;
@@ -82,6 +81,12 @@ public class TasksService(ITasksRepository repository)
 
         var result = await _repository.Update(taskToUpdate);
 
-        return taskToUpdate;
+        return new UpdateTaskResponse(
+            taskToUpdate.Id.Value,
+            taskToUpdate.Title.Value,
+            taskToUpdate.CreatedAt,
+            taskToUpdate.IsDone,
+            taskToUpdate.IsImportant
+        );
     }
 }
