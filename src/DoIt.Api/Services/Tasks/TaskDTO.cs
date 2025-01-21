@@ -1,6 +1,6 @@
-﻿namespace DoIt.Api.Controllers.Tasks;
+﻿namespace DoIt.Api.Services.Tasks;
 
-public sealed record UpdateTaskResponse(
+public sealed record TaskDTO(
     Guid Id,
     string Title,
     DateTime CreatedAt,
