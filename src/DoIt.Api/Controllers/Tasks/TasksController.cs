@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DoIt.Api.Controllers.Tasks;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/tasks")]
 public class TasksController(ITasksService tasksService)
     : ControllerBase
 {
@@ -20,31 +20,39 @@ public class TasksController(ITasksService tasksService)
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var task = await _tasksService.GetById(id);
-        return task is not null
-            ? Ok(task)
-            : NotFound();
+        var result = await _tasksService.GetById(id);
+        
+        return result.Map<IActionResult>(
+            onSuccess: Ok,
+            onFailure: error => NotFound(error)
+        );
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateTaskRequest request)
     {
-        var createdTask = await _tasksService.Create(request); // TODO: How to return validation errors?
+        var result = await _tasksService.Create(request);
 
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = createdTask.Id },
-            createdTask
+        return result.Map<IActionResult>(
+            onSuccess: (createdTask)
+                => CreatedAtAction(
+                    nameof(GetById),
+                    new { id =  createdTask.Id },
+                    createdTask
+                ),
+            onFailure: error => BadRequest(error) // TODO: Return not only BadRequest() responses - ProblemDetails
         );
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var wasDeleted = await _tasksService.Delete(id); // TODO: Rethink returning 'bool'
-        return wasDeleted
-            ? NoContent()
-            : NotFound(); // TODO: Rethink returning 'NotFound()' based on 'bool' return value
+        var result = await _tasksService.Delete(id);
+
+        return result.Map<IActionResult>(
+            onSuccess: _ => NoContent(),
+            onFailure: error => NotFound(error) // TODO: Return not only NotFound() responses - ProblemDetails
+        );
     }
 
     [HttpPut("{id:guid}")]
@@ -54,8 +62,10 @@ public class TasksController(ITasksService tasksService)
     )
     {
         var result = await _tasksService.Update(id, request);
-        return result is null
-            ? NotFound() // TODO: Rethink returning 'NotFound()' based on result value
-            : NoContent();
+
+        return result.Map<IActionResult>(
+            onSuccess: _ => NoContent(),
+            onFailure: error => NotFound(error) // TODO: Return not only NotFound() responses - ProblemDetails
+        );
     }
 }
