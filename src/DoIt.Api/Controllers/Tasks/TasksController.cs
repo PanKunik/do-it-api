@@ -1,12 +1,15 @@
-﻿using DoIt.Api.Services.Tasks;
+﻿using DoIt.Api.Controllers._Common;
+using DoIt.Api.Services.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DoIt.Api.Controllers.Tasks;
 
-[ApiController]
+// TODO: Write unit tests!
+// TODO: Write integration tests!
+
 [Route("api/tasks")]
 public class TasksController(ITasksService tasksService)
-    : ControllerBase
+    : ApiController
 {
     private readonly ITasksService _tasksService = tasksService;
 
@@ -22,9 +25,9 @@ public class TasksController(ITasksService tasksService)
     {
         var result = await _tasksService.GetById(id);
         
-        return result.Map<IActionResult>(
+        return result.Map(
             onSuccess: Ok,
-            onFailure: error => NotFound(error)
+            onFailure: Problem  // TODO: Test with one of these the problemDetails ('Problem(error)')
         );
     }
 
@@ -33,14 +36,14 @@ public class TasksController(ITasksService tasksService)
     {
         var result = await _tasksService.Create(request);
 
-        return result.Map<IActionResult>(
+        return result.Map(
             onSuccess: (createdTask)
                 => CreatedAtAction(
                     nameof(GetById),
                     new { id =  createdTask.Id },
                     createdTask
                 ),
-            onFailure: error => BadRequest(error) // TODO: Return not only BadRequest() responses - ProblemDetails
+            onFailure: Problem
         );
     }
 
@@ -49,9 +52,9 @@ public class TasksController(ITasksService tasksService)
     {
         var result = await _tasksService.Delete(id);
 
-        return result.Map<IActionResult>(
+        return result.Map(
             onSuccess: _ => NoContent(),
-            onFailure: error => NotFound(error) // TODO: Return not only NotFound() responses - ProblemDetails
+            onFailure: Problem
         );
     }
 
@@ -63,9 +66,9 @@ public class TasksController(ITasksService tasksService)
     {
         var result = await _tasksService.Update(id, request);
 
-        return result.Map<IActionResult>(
+        return result.Map(
             onSuccess: _ => NoContent(),
-            onFailure: error => NotFound(error) // TODO: Return not only NotFound() responses - ProblemDetails
+            onFailure: Problem
         );
     }
 }
