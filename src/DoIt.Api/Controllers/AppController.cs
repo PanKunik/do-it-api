@@ -1,10 +1,11 @@
+using DoIt.Api.Controllers._Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DoIt.Api.Controllers;
 
-[ApiController]
 [Route("api/app")]
-public class AppController : ControllerBase
+public class AppController
+    : ApiController
 {
     public async Task<IActionResult> HealthCheck()
     {
