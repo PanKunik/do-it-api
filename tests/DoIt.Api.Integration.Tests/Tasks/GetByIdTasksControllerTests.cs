@@ -1,6 +1,8 @@
 ﻿using DoIt.Api.Controllers.Tasks;
+using DoIt.Api.Services.Tasks;
 using System.Net;
 using System.Net.Http.Json;
+using Constants = DoIt.Api.TestUtils.Constants;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
 
@@ -39,14 +41,14 @@ public class GetByIdTasksControllerTests
         // Arrange
         var firstTaskResult = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest("Task with title 1")
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value)
         );
 
         var firstTaskId = firstTaskResult!.Headers.Location!.Segments[3];
 
         var secondTaskResult = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest("Task with title 2")
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value)
         );
 
         // Act
@@ -57,12 +59,12 @@ public class GetByIdTasksControllerTests
             .Should()
             .BeTrue();
 
-        var parsedContent = await result.Content.ReadFromJsonAsync<GetTaskResponse>();
+        var parsedContent = await result.Content.ReadFromJsonAsync<TaskDTO>();
 
         parsedContent
             .Should()
-            .Match<GetTaskResponse>(
-                t => t.Title == "Task with title 1"
+            .Match<TaskDTO>(
+                t => t.Title == Constants.Tasks.TitleFromIndex(1).Value
                   && t.Id == Guid.Parse(firstTaskId)
             );
     }

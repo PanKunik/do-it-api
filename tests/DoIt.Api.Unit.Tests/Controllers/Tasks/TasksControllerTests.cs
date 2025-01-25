@@ -1,11 +1,15 @@
 ﻿using DoIt.Api.Controllers.Tasks;
+using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Services.Tasks;
+using DoIt.Api.Shared;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using NSubstitute;
 using System.Net;
 using System.Reflection;
+using Task = System.Threading.Tasks.Task;
+using Constants = DoIt.Api.TestUtils.Constants;
+using Microsoft.AspNetCore.Http;
 
 namespace DoIt.Api.Unit.Tests.Controllers.Tasks;
 
@@ -17,6 +21,7 @@ public class TasksControllerTests
     public TasksControllerTests()
     {
         _cut = new TasksController(_tasksService);
+        _cut.ControllerContext.HttpContext = new DefaultHttpContext();
     }
 
     [Fact]
@@ -32,7 +37,7 @@ public class TasksControllerTests
 
         attribute!.Template
             .Should()
-            .BeEquivalentTo("api/[controller]");
+            .BeEquivalentTo("api/tasks");
 
         await Task.CompletedTask;
     }
@@ -59,7 +64,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<GetTaskResponse>());
+            .Returns(new List<TaskDTO>());
 
         // Act
         var result = await _cut.Get();
@@ -80,7 +85,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<GetTaskResponse>());
+            .Returns(new List<TaskDTO>());
 
         // Act
         var result = (OkObjectResult) await _cut.Get();
@@ -88,7 +93,7 @@ public class TasksControllerTests
         // Assert
         result.StatusCode
             .Should()
-            .Be((int)HttpStatusCode.OK);
+            .Be((int) HttpStatusCode.OK);
     }
 
     [Fact]
@@ -97,7 +102,18 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<GetTaskResponse>());
+            .Returns(
+                new List<TaskDTO>()
+                {
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.NotDone,
+                        Constants.Tasks.Important
+                    )
+                }
+            );
 
         // Act
         var result = (OkObjectResult) await _cut.Get();
@@ -109,7 +125,22 @@ public class TasksControllerTests
 
         result.Value
             .Should()
-            .BeOfType<List<GetTaskResponse>>();
+            .BeOfType<List<TaskDTO>>();
+
+        result.Value
+            .Should()
+            .BeEquivalentTo(
+                new List<TaskDTO>()
+                {
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.NotDone,
+                        Constants.Tasks.Important
+                    )
+                }
+            );
     }
 
     [Fact]
@@ -118,7 +149,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<GetTaskResponse>());
+            .Returns(new List<TaskDTO>());
 
         // Act
         var result = await _cut.Get();
@@ -154,10 +185,15 @@ public class TasksControllerTests
     #region GetById
 
     [Fact]
-    public async Task GetById_WhenTaskNotFound_ShouldReturnNotFoundResult()
+    public async Task GetById_WhenTaskNotFound_ShouldReturnObjectResult()
     {
+        // Arrange
+        _tasksService
+            .GetById(Constants.Tasks.TaskId.Value)
+            .Returns(Result<TaskDTO>.Failure(Errors.Task.NotFound));
+
         // Act
-        var result = await _cut.GetById(Guid.NewGuid());
+        var result = await _cut.GetById(Constants.Tasks.TaskId.Value);
 
         // Assert
         result
@@ -166,17 +202,32 @@ public class TasksControllerTests
 
         result
             .Should()
-            .BeOfType<NotFoundResult>();
+            .BeOfType<ObjectResult>();
     }
 
     [Fact]
     public async Task GetById_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
     {
+        // Arrange
+        _tasksService
+            .GetById(Constants.Tasks.TaskId.Value)
+            .Returns(Result<TaskDTO>.Failure(Errors.Task.NotFound));
+
         // Act
-        var result = (NotFoundResult) await _cut.GetById(Guid.NewGuid());
+        var result = (ObjectResult) await _cut.GetById(Constants.Tasks.TaskId.Value);
 
         // Assert
-        result.StatusCode
+        result.Value
+            .Should()
+            .NotBeNull();
+
+        result.Value
+            .Should()
+            .BeOfType<ProblemDetails>();
+
+        var problemDetails = (ProblemDetails)result.Value!;
+
+        problemDetails.Status
             .Should()
             .Be((int)HttpStatusCode.NotFound);
     }
@@ -185,21 +236,22 @@ public class TasksControllerTests
     public async Task GetById_OnSuccess_ShouldReturnOkObjectResult()
     {
         // Arrange
-        var guid = Guid.NewGuid();
         _tasksService
-            .GetById(Arg.Is<Guid>(r => r == guid))
+            .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                new GetTaskResponse(
-                    guid,
-                    "Test title 1",
-                    DateTime.UtcNow,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.Done,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
         // Act
-        var result = await _cut.GetById(guid);
+        var result = await _cut.GetById(Constants.Tasks.TaskId.Value);
 
         // Assert
         result
@@ -215,48 +267,49 @@ public class TasksControllerTests
     public async Task GetById_OnSuccess_ShouldReturn200OKStatusCode()
     {
         // Arrange
-        var guid = Guid.NewGuid();
         _tasksService
-            .GetById(Arg.Is<Guid>(r => r == guid))
+            .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                new GetTaskResponse(
-                    guid,
-                    "Test title 1",
-                    DateTime.UtcNow,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.Done,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
         // Act
-        var result = (OkObjectResult) await _cut.GetById(guid);
+        var result = (OkObjectResult) await _cut.GetById(Constants.Tasks.TaskId.Value);
 
         // Assert
         result.StatusCode
             .Should()
-            .Be((int)HttpStatusCode.OK);
+            .Be((int) HttpStatusCode.OK);
     }
 
     [Fact]
     public async Task GetById_OnSuccess_ShouldReturnGetTaskResponse()
     {
         // Arrange
-        var guid = Guid.NewGuid();
-        var creatdAt = DateTime.UtcNow;
         _tasksService
-            .GetById(Arg.Is<Guid>(a => a == guid))
+            .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                new GetTaskResponse(
-                    guid,
-                    "Test title 1",
-                    creatdAt,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.Done,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
         // Act
-        var result = (OkObjectResult) await _cut.GetById(guid);
+        var result = (OkObjectResult) await _cut.GetById(Constants.Tasks.TaskId.Value);
 
         // Assert
         result.Value
@@ -265,12 +318,12 @@ public class TasksControllerTests
 
         result.Value
             .Should()
-            .Match<GetTaskResponse>(
-                r => r.Id == guid
-                  && r.Title == "Test title 1"
-                  && r.CreatedAt == creatdAt
-                  && r.IsDone == false
-                  && r.IsImportant == false
+            .Match<TaskDTO>(
+                r => r.Id == Constants.Tasks.TaskId.Value
+                  && r.Title == Constants.Tasks.Title.Value
+                  && r.CreatedAt == Constants.Tasks.CreatedAt
+                  && r.IsDone == Constants.Tasks.Done
+                  && r.IsImportant == Constants.Tasks.NotImportant
             );
     }
 
@@ -278,26 +331,27 @@ public class TasksControllerTests
     public async Task GetById_WhenInvoked_ShouldCallTasksServiceGetByIdOnceWithExpectedArgument()
     {
         // Arrange
-        var guid = Guid.NewGuid();
         _tasksService
-            .GetById(Arg.Is<Guid>(r => r == guid))
+            .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                new GetTaskResponse(
-                    guid,
-                    "Test title 1",
-                    DateTime.UtcNow,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.Done,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
         // Act
-        await _cut.GetById(guid);
+        await _cut.GetById(Constants.Tasks.TaskId.Value);
 
         // Assert
         await _tasksService
             .Received(1)
-            .GetById(Arg.Is<Guid>(a => a == guid));
+            .GetById(Arg.Is<Guid>(a => a == Constants.Tasks.TaskId.Value));
     }
 
     [Fact]
@@ -327,17 +381,18 @@ public class TasksControllerTests
     public async Task Create_OnSuccess_ShouldReturnCreatedAtActionObjectWithExpectedValues()
     {
         // Arrange
-        var guid = Guid.NewGuid();
-        var request = new CreateTaskRequest("Task title 1");
+        var request = new CreateTaskRequest(Constants.Tasks.Title.Value);
         _tasksService
-            .Create(Arg.Any<CreateTaskRequest>())
+            .Create(request)
             .Returns(
-                new CreateTaskResponse(
-                    guid,
-                    "Task title 1",
-                    DateTime.UtcNow,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.NotDone,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
@@ -363,29 +418,37 @@ public class TasksControllerTests
             .ContainEquivalentOf(
                 new KeyValuePair<string, Guid>(
                     "id",
-                    guid
+                    Constants.Tasks.TaskId.Value
                 )
             );
 
         actionResult!.Value
             .Should()
-            .Match<CreateTaskResponse>(r => r.Title == "Task title 1"); // TODO: Assert the rest of the object
+            .Match<TaskDTO>(
+                r => r.Id == Constants.Tasks.TaskId.Value
+                  && r.Title == Constants.Tasks.Title.Value
+                  && r.CreatedAt == Constants.Tasks.CreatedAt
+                  && r.IsDone == Constants.Tasks.NotDone
+                  && r.IsImportant == Constants.Tasks.NotImportant
+            );
     }
 
     [Fact]
     public async Task Create_OnSuccess_ShouldReturn201CreatedStatusCode()
     {
         // Arrange
-        var request = new CreateTaskRequest("Task title 1");
+        var request = new CreateTaskRequest(Constants.Tasks.Title.Value);
         _tasksService
-            .Create(Arg.Any<CreateTaskRequest>())
+            .Create(request)
             .Returns(
-                new CreateTaskResponse(
-                    Guid.NewGuid(),
-                    "Test title 1",
-                    DateTime.UtcNow,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.NotDone,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
@@ -395,33 +458,35 @@ public class TasksControllerTests
         // Assert
         result.StatusCode
             .Should()
-            .Be((int)HttpStatusCode.Created);
+            .Be((int) HttpStatusCode.Created);
     }
 
     [Fact]
     public async Task Create_WhenInvoked_ShouldCallTasksRepositoryCreateOnceWithExpectedParameter()
     {
         // Arrange
-        var title = string.Empty;
+        var request = new CreateTaskRequest(Constants.Tasks.Title.Value);
         _tasksService
-            .Create(Arg.Do<CreateTaskRequest>(p => title = p.Title))
+            .Create(request)
             .Returns(
-                new CreateTaskResponse(
-                    Guid.NewGuid(),
-                    title,
-                    DateTime.UtcNow,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.NotDone,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
         // Act
-        var result = await _cut.Create(new CreateTaskRequest("Test title 1"));
+        var result = await _cut.Create(request);
 
         // Assert
         await _tasksService
             .Received(1)
-            .Create(Arg.Is<CreateTaskRequest>(r => r.Title == "Test title 1")); // TODO: Assert rest of object
+            .Create(Arg.Is<CreateTaskRequest>(r => r.Title == Constants.Tasks.Title.Value));
     }
     
     [Fact]
@@ -453,11 +518,11 @@ public class TasksControllerTests
     {
         // Arrange
         _tasksService
-            .Delete(Arg.Any<Guid>())
-            .Returns(true);
+            .Delete(Constants.Tasks.TaskId.Value)
+            .Returns(Result<bool>.Success(true));
 
         // Act
-        var result = await _cut.Delete(Guid.NewGuid());
+        var result = await _cut.Delete(Constants.Tasks.TaskId.Value);
 
         // Assert
         result
@@ -474,16 +539,16 @@ public class TasksControllerTests
     {
         // Arrange
         _tasksService
-            .Delete(Arg.Any<Guid>())
-            .Returns(true);
+            .Delete(Constants.Tasks.TaskId.Value)
+            .Returns(Result<bool>.Success(true));
 
         // Act
-        var result = (NoContentResult) await _cut.Delete(Guid.NewGuid());
+        var result = (NoContentResult) await _cut.Delete(Constants.Tasks.TaskId.Value);
 
         // Assert
         result.StatusCode
             .Should()
-            .Be((int)HttpStatusCode.NoContent);
+            .Be((int) HttpStatusCode.NoContent);
     }
 
     [Fact]
@@ -510,27 +575,29 @@ public class TasksControllerTests
     public async Task Delete_WhenInvoked_ShouldCallTasksServiceDeleteOnceWithExpectedValue()
     {
         // Arrange
-        var guid = Guid.NewGuid();
+        _tasksService
+            .Delete(Constants.Tasks.TaskId.Value)
+            .Returns(Result<bool>.Success(true));
 
         // Act
-        var result = await _cut.Delete(guid);
+        var result = await _cut.Delete(Constants.Tasks.TaskId.Value);
 
         // Assert
         await _tasksService
             .Received(1)
-            .Delete(Arg.Is<Guid>(r => r == guid));
+            .Delete(Arg.Is<Guid>(r => r == Constants.Tasks.TaskId.Value));
     }
 
     [Fact]
-    public async Task Delete_WhenTaskNotFound_ShouldReturnNotFoundResult()
+    public async Task Delete_WhenTaskNotFound_ShouldReturnObjectResult()
     {
         // Arrange
         _tasksService
-            .Delete(Arg.Any<Guid>())
-            .Returns(false);
+            .Delete(Constants.Tasks.TaskId.Value)
+            .Returns(Result<bool>.Failure(Errors.Task.NotFound));
 
         // Act
-        var result = await _cut.Delete(Guid.NewGuid());
+        var result = await _cut.Delete(Constants.Tasks.TaskId.Value);
 
         // Assert
         result
@@ -539,7 +606,7 @@ public class TasksControllerTests
 
         result
             .Should()
-            .BeOfType<NotFoundResult>();
+            .BeOfType<ObjectResult>();
     }
 
     [Fact]
@@ -547,16 +614,26 @@ public class TasksControllerTests
     {
         // Arrange
         _tasksService
-            .Delete(Arg.Any<Guid>())
-            .Returns(false);
+            .Delete(Constants.Tasks.TaskId.Value)
+            .Returns(Result<bool>.Failure(Errors.Task.NotFound));
 
         // Act
-        var result = (NotFoundResult) await _cut.Delete(Guid.NewGuid());
+        var result = (ObjectResult) await _cut.Delete(Constants.Tasks.TaskId.Value);
 
         // Assert
-        result.StatusCode
+        result.Value
             .Should()
-            .Be((int)HttpStatusCode.NotFound);
+            .NotBeNull();
+
+        result.Value
+            .Should()
+            .BeOfType<ProblemDetails>();
+
+        var problemDetails = (ProblemDetails) result.Value!;
+
+        problemDetails.Status
+            .Should()
+            .Be((int) HttpStatusCode.NotFound);
     }
 
     #endregion
@@ -567,22 +644,29 @@ public class TasksControllerTests
     public async Task Update_OnSuccess_ShouldReturnNoContentResult()
     {
         // Arrange
+        var request = new UpdateTaskRequest(Constants.Tasks.Title.Value);
         _tasksService
             .Update(
-                Arg.Any<Guid>(),
-                Arg.Any<UpdateTaskRequest>())
+                Constants.Tasks.TaskId.Value,
+                request
+            )
             .Returns(
-                new UpdateTaskResponse(
-                    Guid.NewGuid(),
-                    "Test 1",
-                    DateTime.UtcNow,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.Done,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
         // Act
-        var result = await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+        var result = await _cut.Update(
+            Constants.Tasks.TaskId.Value,
+            request
+        );
         
         // Assert
         result
@@ -598,27 +682,34 @@ public class TasksControllerTests
     public async Task Update_OnSuccess_ShouldReturn204NoContentStatusCode()
     {
         // Arrange
+        var request = new UpdateTaskRequest(Constants.Tasks.Title.Value);
         _tasksService
             .Update(
-                Arg.Any<Guid>(),
-                Arg.Any<UpdateTaskRequest>())
+                Constants.Tasks.TaskId.Value,
+                request
+            )
             .Returns(
-                new UpdateTaskResponse(
-                    Guid.NewGuid(),
-                    "Test 1",
-                    DateTime.UtcNow,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.Done,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
         // Act
-        var result = (NoContentResult) await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+        var result = (NoContentResult) await _cut.Update(
+            Constants.Tasks.TaskId.Value,
+            request
+        );
 
         // Assert
         result.StatusCode
             .Should()
-            .Be((int)HttpStatusCode.NoContent);
+            .Be((int) HttpStatusCode.NoContent);
     }
 
     [Fact]
@@ -645,39 +736,56 @@ public class TasksControllerTests
     public async Task Update_WhenInvoked_ShouldCallTasksServiceUpdateOnce()
     {
         // Arrange
+        var request = new UpdateTaskRequest(Constants.Tasks.Title.Value);
         _tasksService
             .Update(
-                Arg.Any<Guid>(),
-                Arg.Any<UpdateTaskRequest>())
+                Constants.Tasks.TaskId.Value,
+                request
+            )
             .Returns(
-                new UpdateTaskResponse(
-                    Guid.NewGuid(),
-                    "Test 1",
-                    DateTime.UtcNow,
-                    false,
-                    false
+                Result<TaskDTO>.Success(
+                    new TaskDTO(
+                        Constants.Tasks.TaskId.Value,
+                        Constants.Tasks.Title.Value,
+                        Constants.Tasks.CreatedAt,
+                        Constants.Tasks.Done,
+                        Constants.Tasks.NotImportant
+                    )
                 )
             );
 
         // Act
-        await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+        await _cut.Update(
+            Constants.Tasks.TaskId.Value,
+            request
+        );
 
         // Assert
         await _tasksService
             .Received(1)
             .Update(
-                Arg.Any<Guid>(),
-                Arg.Is<UpdateTaskRequest>(
-                    a => a.Title == "Test 1"
-                )
+                Arg.Is(Constants.Tasks.TaskId.Value),
+                Arg.Is(request)
             );
     }
 
     [Fact]
-    public async Task Update_WhenTaskNotFound_ShouldReturnNotFoundResult()
+    public async Task Update_WhenTaskNotFound_ShouldReturnObjectResult()
     {
+        // Arrange
+        var request = new UpdateTaskRequest(Constants.Tasks.Title.Value);
+        _tasksService
+            .Update(
+                Constants.Tasks.TaskId.Value,
+                request
+            )
+            .Returns(Result<TaskDTO>.Failure(Errors.Task.NotFound));
+
         // Act
-        var result = await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+        var result = await _cut.Update(
+            Constants.Tasks.TaskId.Value,
+            request
+        );
 
         // Assert
         result
@@ -686,19 +794,41 @@ public class TasksControllerTests
 
         result
             .Should()
-            .BeOfType<NotFoundResult>();
+            .BeOfType<ObjectResult>();
     }
 
     [Fact]
     public async Task Update_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
     {
+        // Arrange
+        var request = new UpdateTaskRequest(Constants.Tasks.Title.Value);
+        _tasksService
+            .Update(
+                Constants.Tasks.TaskId.Value,
+                request
+            )
+            .Returns(Result<TaskDTO>.Failure(Errors.Task.NotFound));
+
         // Act
-        var result = (NotFoundResult) await _cut.Update(Guid.NewGuid(), new UpdateTaskRequest("Test 1"));
+        var result = (ObjectResult) await _cut.Update(
+            Constants.Tasks.TaskId.Value,
+            request
+        );
 
         // Assert
-        result.StatusCode
+        result.Value
             .Should()
-            .Be((int)HttpStatusCode.NotFound);
+            .NotBeNull();
+
+        result.Value
+            .Should()
+            .BeOfType<ProblemDetails>();
+
+        var problemDetails = (ProblemDetails) result.Value!;
+        
+        problemDetails.Status
+            .Should()
+            .Be((int) HttpStatusCode.NotFound);
     }
 
     #endregion

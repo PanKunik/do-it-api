@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DoIt.Api.Controllers.Tasks;
 
-// TODO: Write unit tests!
 // TODO: Write integration tests!
 
 [Route("api/tasks")]
@@ -27,7 +26,7 @@ public class TasksController(ITasksService tasksService)
         
         return result.Map(
             onSuccess: Ok,
-            onFailure: Problem  // TODO: Test with one of these the problemDetails ('Problem(error)')
+            onFailure: Problem
         );
     }
 

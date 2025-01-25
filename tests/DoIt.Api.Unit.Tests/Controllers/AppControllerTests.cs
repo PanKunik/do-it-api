@@ -66,7 +66,7 @@ public class AppControllerTests
 
         attribute!.Template
             .Should()
-            .Be("api/[controller]");
+            .Be("api/app");
 
         await Task.CompletedTask;
     }

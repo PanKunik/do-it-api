@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
-namespace DoIt.Api.Controllers._Common.Errors;
+namespace DoIt.Api.Controllers.Errors;
 
 public class ApiProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
     : ProblemDetailsFactory
@@ -94,10 +94,10 @@ public class ApiProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
         var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;
         if (traceId is not null)    // TODO: Check if we need to add this 'traceId' manually
         {
-            problemDetails.Extensions["traceId"] = traceId; // TODO: Extract these 'magic strings' to constants
+            problemDetails.Extensions[Constants.Error.TraceIdName] = traceId;
         }
 
-        var error = httpContext?.Items["error"] as Error; // TODO: Extract these 'magic strings' to constants
+        var error = httpContext?.Items[Constants.Error.ErrorsName] as Error;
         if (error is not null)
         {
             problemDetails.Title = error.Code;

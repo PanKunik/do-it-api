@@ -1,4 +1,5 @@
-﻿using DoIt.Api.Shared;
+﻿using DoIt.Api.Controllers.Errors;
+using DoIt.Api.Shared;
 using DoIt.Api.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,9 @@ namespace DoIt.Api.Controllers._Common;
 public class ApiController
     : ControllerBase
 {
-    public const string Error = "error";
-
     protected IActionResult Problem(Error error)
     {
-        HttpContext.Items[Error] = error;
+        HttpContext.Items[Constants.Error.ErrorsName] = error;
 
         var statusCode = error.Type switch
         {
