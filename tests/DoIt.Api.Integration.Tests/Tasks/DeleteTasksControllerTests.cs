@@ -1,6 +1,8 @@
 ﻿using DoIt.Api.Controllers.Tasks;
+using DoIt.Api.Services.Tasks;
 using System.Net;
 using System.Net.Http.Json;
+using Constants = DoIt.Api.TestUtils.Constants;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
 
@@ -23,19 +25,19 @@ public class DeleteTasksControllerTests
         // Arrange
         var firstTaskResponse = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest("First task")
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value)
         );
 
         var firstTaskId = firstTaskResponse!.Headers.Location!.Segments[3];
 
         var secondTaskResponse = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest("Second task")
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value)
         );
 
         var secondTaskId = secondTaskResponse!.Headers.Location!.Segments[3];
 
-        var tasksInDatabase = await _client.GetFromJsonAsync<List<GetTaskResponse>>("api/tasks");
+        var tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDTO>>("api/tasks");
 
         tasksInDatabase
             .Should()
@@ -52,6 +54,12 @@ public class DeleteTasksControllerTests
         (await result.Content.ReadAsStringAsync())
             .Should()
             .BeEmpty();
+
+        tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDTO>>("api/tasks");
+
+        tasksInDatabase
+            .Should()
+            .HaveCount(1);
     }
 
     [Fact]

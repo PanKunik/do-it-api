@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DoIt.Api.Controllers._Common;
+namespace DoIt.Api.Controllers.Errors;
 
 [Route("/error")]
 public class ErrorsController

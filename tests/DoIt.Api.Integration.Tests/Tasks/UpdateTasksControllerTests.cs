@@ -1,6 +1,7 @@
 ﻿using DoIt.Api.Controllers.Tasks;
 using System.Net;
 using System.Net.Http.Json;
+using Constants = DoIt.Api.TestUtils.Constants;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
 
@@ -23,7 +24,7 @@ public class UpdateTasksControllerTests
         // Arrange
         var createTaskResponse = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest("Test title 1")
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value)
         );
 
         var createdTaskId = createTaskResponse.Headers.Location!.Segments[3];
@@ -31,7 +32,7 @@ public class UpdateTasksControllerTests
         // Act
         var response = await _client.PutAsJsonAsync(
             $"api/tasks/{createdTaskId}",
-            new UpdateTaskRequest("Test title 2")
+            new UpdateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value)
         );
 
         // Assert
@@ -46,7 +47,7 @@ public class UpdateTasksControllerTests
         // Act
         var response = await _client.PutAsJsonAsync(
             $"api/tasks/{Guid.NewGuid()}",
-            new UpdateTaskRequest("Test title 2")
+            new UpdateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value)
         );
 
         // Assert

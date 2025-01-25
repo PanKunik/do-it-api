@@ -1,6 +1,8 @@
 ﻿using DoIt.Api.Controllers.Tasks;
+using DoIt.Api.Services.Tasks;
 using System.Net;
 using System.Net.Http.Json;
+using Constants = DoIt.Api.TestUtils.Constants;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
 
@@ -23,10 +25,10 @@ public class CreateTasksControllerTests
         // Act
         var response = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest("Test title 1")
+            new CreateTaskRequest(Constants.Tasks.Title.Value)
         );
 
-        var responseContent = await response.Content.ReadFromJsonAsync<CreateTaskResponse>();
+        var responseContent = await response.Content.ReadFromJsonAsync<TaskDTO>();
 
         // Assert
         response.StatusCode
@@ -35,11 +37,11 @@ public class CreateTasksControllerTests
 
         responseContent
             .Should()
-            .Match<CreateTaskResponse>(r => r.Title == "Test title 1");
+            .Match<TaskDTO>(r => r.Title == Constants.Tasks.Title.Value);
 
         response.Headers.Location
             .Should()
-            .Be($"http://localhost/api/Tasks/{responseContent!.Id}");
+            .Be($"http://localhost/api/tasks/{responseContent!.Id}");
     }
 
     public async Task InitializeAsync() => await Task.CompletedTask;
