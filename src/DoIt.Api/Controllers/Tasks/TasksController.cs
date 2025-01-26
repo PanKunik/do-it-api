@@ -38,9 +38,9 @@ public class TasksController(ITasksService tasksService)
         return result.Map(
             onSuccess: (createdTask)
                 => CreatedAtAction(
-                    nameof(GetById),
-                    new { id =  createdTask.Id },
-                    createdTask
+                    actionName: nameof(GetById),
+                    routeValues: new { id =  createdTask.Id },
+                    value: null
                 ),
             onFailure: Problem
         );

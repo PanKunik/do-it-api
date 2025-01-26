@@ -4,5 +4,5 @@ POST {{host}}/api/tasks
 Content-Type: application/json
 
 {
-  "title": "Test title 11"
+  "title": "Zadanie nr 15"
 }

@@ -424,13 +424,7 @@ public class TasksControllerTests
 
         actionResult!.Value
             .Should()
-            .Match<TaskDTO>(
-                r => r.Id == Constants.Tasks.TaskId.Value
-                  && r.Title == Constants.Tasks.Title.Value
-                  && r.CreatedAt == Constants.Tasks.CreatedAt
-                  && r.IsDone == Constants.Tasks.NotDone
-                  && r.IsImportant == Constants.Tasks.NotImportant
-            );
+            .BeNull();
     }
 
     [Fact]
