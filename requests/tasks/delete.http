@@ -1,5 +1,5 @@
 @host=http://localhost:5000
 
-@id=0605f66e-f970-4436-9e5a-65aee3c85440
+@id=192a79aa-e92e-4dcf-b11a-fcd9538816de
 
 DELETE {{host}}/api/tasks/{{id}}
