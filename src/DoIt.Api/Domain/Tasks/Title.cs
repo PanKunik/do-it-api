@@ -1,4 +1,5 @@
 ﻿using DoIt.Api.Domain.Shared;
+using DoIt.Api.Shared;
 
 namespace DoIt.Api.Domain.Tasks;
 
@@ -7,17 +8,22 @@ public class Title
 {
     private const int titleMaxLength = 100;
 
-    public string Value { get; private set; }
+    public string Value { get; }
 
-    public Title(string value)
+    private Title(string value)
+    {
+        Value = value;
+    }
+
+    public static Result<Title> CreateFrom(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentException("Value cannot be empty.", nameof(value));
+            return Errors.Task.EmptyTitle;
 
         if (value.Length > titleMaxLength)
-            throw new ArgumentException("Title cannot exceed 100 characters.", nameof(value));
+            return Errors.Task.TitleTooLong;
 
-        Value = value;
+        return new Title(value);
     }
 
     protected override IEnumerable<object> GetEqualityComponent()

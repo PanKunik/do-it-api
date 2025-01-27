@@ -1,4 +1,5 @@
 ﻿using DoIt.Api.Domain.Tasks;
+using DoIt.Api.Shared;
 using DoIt.Api.TestUtils;
 using FluentAssertions;
 
@@ -10,7 +11,7 @@ public class TaskIdTests
     public async System.Threading.Tasks.Task CreateFrom_WhenCalled_ShouldReturnExpectedObject()
     {
         // Arrange
-        var createTaskId = () => TaskId.CreateFrom(Constants.Tasks.TaskId.Value);
+        var createTaskId = () => TaskId.CreateFrom(Constants.Tasks.TaskId.Value).Value!;
 
         // Act
         var result = createTaskId();
@@ -28,18 +29,22 @@ public class TaskIdTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task CreateFrom_WhenPassedEmptyGuid_ShouldThrowException()
+    public async System.Threading.Tasks.Task CreateFrom_WhenPassedEmptyGuid_ShouldReturnErrorResult()
     {
         // Arrange
         var guid = Guid.Empty;
         var createTaskId = () => TaskId.CreateFrom(guid);
 
-        // Act & Assert
-        createTaskId
+        // Act
+        var result = createTaskId();
+
+        // Assert
+        result
             .Should()
-            .ThrowExactly<ArgumentException>()
-            .WithMessage("Value cannot be empty. (Parameter 'value')")
-            .WithParameterName("value");
+            .Match<Result<TaskId>>(
+                e => e.IsSuccess == false
+                  && e.Error == Errors.Task.EmptyTaskId
+            );
 
         await System.Threading.Tasks.Task.CompletedTask;
     }
@@ -48,8 +53,8 @@ public class TaskIdTests
     public async System.Threading.Tasks.Task Equals_WhenCalledForObjectWithSameValue_ShouldReturnTrue()
     {
         // Arrange
-        var left = TaskId.CreateFrom(Constants.Tasks.TaskIdFromIndex(0).Value);
-        var right = TaskId.CreateFrom(Constants.Tasks.TaskIdFromIndex(0).Value);
+        var left = TaskId.CreateFrom(Constants.Tasks.TaskIdFromIndex(0).Value).Value!;
+        var right = TaskId.CreateFrom(Constants.Tasks.TaskIdFromIndex(0).Value).Value!;
 
         // Act
         var result = left.Equals(right);
@@ -66,8 +71,8 @@ public class TaskIdTests
     public async System.Threading.Tasks.Task Equals_WhenCalledForObjectWithDifferentValue_ShouldReturnFalse()
     {
         // Arrange
-        var left = TaskId.CreateFrom(Constants.Tasks.TaskIdFromIndex(0).Value);
-        var right = TaskId.CreateFrom(Constants.Tasks.TaskIdFromIndex(1).Value);
+        var left = TaskId.CreateFrom(Constants.Tasks.TaskIdFromIndex(0).Value).Value!;
+        var right = TaskId.CreateFrom(Constants.Tasks.TaskIdFromIndex(1).Value).Value!;
 
         // Act
         var result = left.Equals(right);

@@ -21,34 +21,56 @@ public class TasksService(ITasksRepository repository)
 
     public async System.Threading.Tasks.Task<Result<TaskDTO>> GetById(Guid id)
     {
-        var taskId = TaskId.CreateFrom(id);
-        var result = await _repository.GetById(taskId);
+        var taskIdResult = TaskId.CreateFrom(id);
 
-        if (result is null)
-            return Errors.Task.NotFound;
+        if (!taskIdResult.IsSuccess)
+            return taskIdResult.Error!;
 
-        return result.ToDTO();
+        var result = await _repository.GetById(taskIdResult.Value!);
+
+        if (!result.IsSuccess)
+            return result.Error!;
+
+        return result.Value!.ToDTO();
     }
 
     public async System.Threading.Tasks.Task<Result<TaskDTO>> Create(CreateTaskRequest request)
     {
-        var newTask = new Task(
-            TaskId.CreateFrom(Guid.NewGuid()),
-            new Title(request.Title),
+        var taskIdResult = TaskId.CreateFrom(Guid.NewGuid());
+
+        if (!taskIdResult.IsSuccess)
+            return taskIdResult.Error!;
+
+        var taskTitleResult = Title.CreateFrom(request.Title);
+
+        if (!taskTitleResult.IsSuccess)
+            return taskTitleResult.Error!;
+
+        var taskResult = Task.Create(
+            taskIdResult.Value!,
+            taskTitleResult.Value!,
             DateTime.UtcNow,
             false,
             false
         );
 
-        var result = await _repository.Create(newTask);
+        if (!taskResult.IsSuccess)
+            return taskResult.Error!;
 
-        return result.ToDTO();
+        var result = await _repository.Create(taskResult.Value!);
+
+        return result.Value!.ToDTO();
     }
 
     public async System.Threading.Tasks.Task<Result<bool>> Delete(Guid id)
     {
-        var taskId = TaskId.CreateFrom(id);
-        var result = await _repository.Delete(taskId);
+        var taskIdResult = TaskId.CreateFrom(id);
+
+        if (!taskIdResult.IsSuccess)
+            return taskIdResult.Error!;
+
+        var result = await _repository.Delete(taskIdResult.Value!);
+
         return result
             ? result
             : Errors.Task.NotFound;
@@ -56,17 +78,25 @@ public class TasksService(ITasksRepository repository)
 
     public async System.Threading.Tasks.Task<Result<TaskDTO>> Update(Guid id, UpdateTaskRequest request)
     {
-        var taskId = TaskId.CreateFrom(id);
-        var title = new Title(request.Title);
-        var taskToUpdate = await _repository.GetById(taskId);
+        var taskIdResult = TaskId.CreateFrom(id);
 
-        if (taskToUpdate is null)
-            return Errors.Task.NotFound;
+        if (!taskIdResult.IsSuccess)
+            return taskIdResult.Error!;
 
-        taskToUpdate.UpdateTitle(title);
+        var titleResult = Title.CreateFrom(request.Title);
 
-        var result = await _repository.Update(taskToUpdate);
+        if (!titleResult.IsSuccess)
+            return titleResult.Error!;
 
-        return taskToUpdate.ToDTO();
+        var taskToUpdate = await _repository.GetById(taskIdResult.Value!);
+
+        if (!taskToUpdate.IsSuccess)
+            return taskToUpdate.Error!;
+
+        taskToUpdate.Value!.UpdateTitle(titleResult.Value!);
+
+        var result = await _repository.Update(taskToUpdate.Value!);
+
+        return taskToUpdate.Value!.ToDTO();
     }
 }
