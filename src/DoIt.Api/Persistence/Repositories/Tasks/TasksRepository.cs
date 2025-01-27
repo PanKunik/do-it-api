@@ -2,6 +2,7 @@
 using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Persistence.Database;
 using DoIt.Api.Persistence.Repositories.Tasks;
+using DoIt.Api.Shared;
 using Task = DoIt.Api.Domain.Tasks.Task;
 
 namespace DoIt.Api.Persistence.Repositories;
@@ -34,11 +35,11 @@ public class TasksRepository
         var result = await connection.QueryAsync<TaskRecord>(query);
 
         return result
-            .Select(r => r.ToDomain())
+            .Select(r => r.ToDomain().Value!)
             .ToList();
     }
 
-    public async System.Threading.Tasks.Task<Task?> GetById(TaskId taskId)
+    public async System.Threading.Tasks.Task<Result<Task>> GetById(TaskId taskId)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
 
@@ -54,15 +55,20 @@ public class TasksRepository
             WHERE
                 task_id = @Id";
 
-        var result = await connection.QueryFirstOrDefaultAsync<TaskRecord>(query, new { Id = taskId.Value });
+        var existingTask = await connection.QueryFirstOrDefaultAsync<TaskRecord>(query, new { Id = taskId.Value });
 
-        if (result is null)
-            return null;
+        if (existingTask is null)
+            return Errors.Task.NotFound;
 
-        return result.ToDomain();
+        var taskResult = existingTask.ToDomain();
+
+        if (!taskResult.IsSuccess)
+            return taskResult.Error!;
+
+        return taskResult.Value!;
     }
 
-    public async System.Threading.Tasks.Task<Task> Create(Task task)
+    public async System.Threading.Tasks.Task<Result<Task>> Create(Task task)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
 
@@ -84,14 +90,16 @@ public class TasksRepository
                 , @isImportant
             )";
 
-        var taskRecord = task.FromDomain()
-            ?? throw new ArgumentNullException(nameof(task));
+        var taskRecordResult = task.FromDomain();
 
-        var result = await connection.ExecuteAsync(command, taskRecord);
+        if (!taskRecordResult.IsSuccess)
+            return taskRecordResult.Error!;
+
+        var result = await connection.ExecuteAsync(command, taskRecordResult.Value!);
 
         if (result <= 0)
         {
-            throw new InvalidOperationException("Cannot insert data to database");
+            throw new InvalidOperationException("Cannot insert data to database"); // TODO: Result pattern
         }
 
         return task;

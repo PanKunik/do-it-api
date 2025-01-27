@@ -1,4 +1,5 @@
 ﻿using DoIt.Api.Domain.Tasks;
+using DoIt.Api.Shared;
 using DoIt.Api.TestUtils;
 using FluentAssertions;
 using Task = DoIt.Api.Domain.Tasks.Task;
@@ -11,13 +12,13 @@ public class TaskTests
     public async System.Threading.Tasks.Task Task_WhenCalled_ShouldCreateExpectedObject()
     {
         // Arrange
-        var createTask = () => new Task(
+        var createTask = () => Task.Create(
             Constants.Tasks.TaskId,
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.Done,
             Constants.Tasks.Important
-        );
+        ).Value!;
 
         // Act
         var result = createTask();
@@ -41,10 +42,10 @@ public class TaskTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Task_WhenPassedNullTaskId_ShouldThrowException()
+    public async System.Threading.Tasks.Task Task_WhenPassedNullTaskId_ShouldReturnResultError()
     {
         // Arrange
-        var createTask = () => new Task(
+        var createTask = () => Task.Create(
             taskId: null!,
             title: Constants.Tasks.Title,
             createdAt: Constants.Tasks.CreatedAt,
@@ -52,20 +53,25 @@ public class TaskTests
             Constants.Tasks.NotImportant
         );
 
-        // Act & Assert
-        createTask
+        // Act
+        var result = createTask();
+
+        // Assert
+        result
             .Should()
-            .ThrowExactly<ArgumentNullException>()
-            .WithParameterName("id");
+            .Match<Result<Task>>(
+                e => e.IsSuccess == false
+                  && e.Error == Errors.Task.NullTaskId
+            );
 
         await System.Threading.Tasks.Task.CompletedTask;
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Task_WhenPassedNullTitle_ShouldThrowException()
+    public async System.Threading.Tasks.Task Task_WhenPassedNullTitle_ShouldRetrnResultError()
     {
         // Arrange
-        var createTask = () => new Task(
+        var createTask = () => Task.Create(
             taskId: Constants.Tasks.TaskId,
             title: null!,
             createdAt: Constants.Tasks.CreatedAt,
@@ -73,11 +79,16 @@ public class TaskTests
             Constants.Tasks.Important
         );
 
-        // Act & Assert
-        createTask
+        // Act
+        var result = createTask();
+
+        // Assert
+        result
             .Should()
-            .ThrowExactly<ArgumentNullException>()
-            .WithParameterName("title");
+            .Match<Result<Task>>(
+                e => e.IsSuccess == false
+                  && e.Error == Errors.Task.NullTitle
+            );
 
         await System.Threading.Tasks.Task.CompletedTask;
     }
@@ -90,13 +101,13 @@ public class TaskTests
     )
     {
         // Arrange
-        var cut = new Task(
+        var cut = Task.Create(
             Constants.Tasks.TaskId,
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             actualState,
             Constants.Tasks.NotImportant
-        );
+        ).Value!;
 
         // Act
         cut.ChangeState();
@@ -117,13 +128,13 @@ public class TaskTests
     )
     {
         // Arrange
-        var cut = new Task(
+        var cut = Task.Create(
             Constants.Tasks.TaskId,
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
             actualState
-        );
+        ).Value!;
 
         // Act
         cut.ChangeImportance();
@@ -140,21 +151,21 @@ public class TaskTests
     public async System.Threading.Tasks.Task Equals_WhenCalledForObjectWithOtherValuesButSameTaskId_ShouldReturnTrue()
     {
         // Arrange
-        var left = new Task(
+        var left = Task.Create(
             Constants.Tasks.TaskId,
             Constants.Tasks.TitleFromIndex(0),
             Constants.Tasks.CreatedAtFromIndex(0),
             Constants.Tasks.NotDone,
             Constants.Tasks.NotImportant
-        );
+        ).Value!;
 
-        var right = new Task(
+        var right = Task.Create(
             Constants.Tasks.TaskId,
             Constants.Tasks.TitleFromIndex(1),
             Constants.Tasks.CreatedAtFromIndex(1),
             Constants.Tasks.Done,
             Constants.Tasks.Important
-        );
+        ).Value!;
 
         // Act
         var result = left.Equals(right);
@@ -171,21 +182,21 @@ public class TaskTests
     public async System.Threading.Tasks.Task Equals_WhenCalledForObjectWithSameValuesButOtherTaskId_ShouldReturnFalse()
     {
         // Arrange
-        var left = new Task(
+        var left = Task.Create(
             Constants.Tasks.TaskIdFromIndex(0),
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
             Constants.Tasks.NotImportant
-        );
+        ).Value!;
 
-        var right = new Task(
+        var right = Task.Create(
             Constants.Tasks.TaskIdFromIndex(1),
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
             Constants.Tasks.NotImportant
-        );
+        ).Value!;
 
         // Act
         var result = left.Equals(right);
@@ -202,13 +213,13 @@ public class TaskTests
     public async System.Threading.Tasks.Task UpdateTitle_WhenCalledWithNullTitle_ShouldThrowException()
     {
         // Arrange
-        var cut = new Task(
+        var cut = Task.Create(
             taskId: Constants.Tasks.TaskId,
             title: Constants.Tasks.Title,
             createdAt: Constants.Tasks.CreatedAt,
             isDone: Constants.Tasks.NotDone,
             Constants.Tasks.Important
-        );
+        ).Value!;
 
         var updateTitle = () => cut.UpdateTitle(null!);
 
@@ -225,21 +236,21 @@ public class TaskTests
     public async System.Threading.Tasks.Task UpdateTile_WhenPassedProperData_ShouldUpdateTitle()
     {
         // Arrange
-        var cut = new Task(
+        var cut = Task.Create(
             taskId: Constants.Tasks.TaskId,
             title: Constants.Tasks.Title,
             createdAt: Constants.Tasks.CreatedAt,
             isDone: Constants.Tasks.NotDone,
             Constants.Tasks.Important
-        );
+        ).Value!;
 
         // Act
-        cut.UpdateTitle(new Title("Updated task title"));
+        cut.UpdateTitle(Title.CreateFrom("Updated task title").Value!);
 
         // Arrange
         cut.Title
             .Should()
-            .BeEquivalentTo(new Title("Updated task title"));
+            .BeEquivalentTo(Title.CreateFrom("Updated task title").Value!);
 
         await System.Threading.Tasks.Task.CompletedTask;
     }
