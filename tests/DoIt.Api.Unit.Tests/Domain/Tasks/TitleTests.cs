@@ -11,22 +11,22 @@ public class TitleTests
     [InlineData("T")]
     [InlineData("Task title")]
     [InlineData("M%@HUf3Hp#7AG%JyweXCvwaOWaRw2aHY+#HGp#tQCu$+YtxbG9WysXKr*xOw0vJey@XTst3#1BTOubDN5F2OYOtoHfEc15FOq3Qs")]
-    public async System.Threading.Tasks.Task Title_WhenCalledWithProperValue_ShouldReturnExpectedObject(string value)
+    public async System.Threading.Tasks.Task TitleCreateFrom_WhenCalledWithProperValue_ShouldReturnExpectedObjectResultWithValue(string value)
     {
         // Arrange
-        var createTitle = () => Title.CreateFrom(value).Value!;
+        var createTitle = () => Title.CreateFrom(value);
 
         // Act
-        var result = createTitle();
+        var createTitleResult = createTitle();
 
         // Assert
-        result
+        createTitleResult
             .Should()
-            .NotBeNull();
+            .Match<Result<Title>>(r => r.IsSuccess);
 
-        result
+        createTitleResult.Value!
             .Should()
-            .Match<Title>(t => t.Value == value);
+            .Match<Title>(r => r.Value == value);
 
         await System.Threading.Tasks.Task.CompletedTask;
     }
@@ -35,39 +35,39 @@ public class TitleTests
     [InlineData("")]
     [InlineData(" ")]
     [InlineData(null)]
-    public async System.Threading.Tasks.Task Title_WhenPassedNullOrWhiteSpace_ShouldReturnResultError(string value)
+    public async System.Threading.Tasks.Task Title_WhenPassedNullOrWhiteSpace_ShouldReturnResultWithErrorTaskTitleCannotBeEmpty(string value)
     {
         // Arrange
         var createTitle = () => Title.CreateFrom(value);
 
         // Act
-        var result = createTitle();
+        var createTitleResult = createTitle();
 
         // Assert
-        result
+        createTitleResult
             .Should()
             .Match<Result<Title>>(
-                e => e.IsSuccess == false
-                  && e.Error == Errors.Task.EmptyTitle
+                e => e.IsFailure
+                  && e.Error == Errors.Task.TitleCannotBeEmpty
             );
 
         await System.Threading.Tasks.Task.CompletedTask;
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Title_WhenPassedValueWithOver100Characters_ShouldReturnErrorResult()
+    public async System.Threading.Tasks.Task Title_WhenPassedValueWithOver100Characters_ShouldReturnResultWithErrorTaskTitleTooLong()
     {
         // Arrange
         var createTitle = () => Title.CreateFrom("dwWY3pM5eakP3qbsku37HrW3bMEaA@%T9Q+aKZeRW%FzWwwucpjnFRXU2q9$pH!$j#M+azz72WQ&4vrFbw*8%eca5r$kps48d%REs");
 
         // Act
-        var result = createTitle();
+        var createTitleResult = createTitle();
 
         // Assert
-        result
+        createTitleResult
             .Should()
             .Match<Result<Title>>(
-                e => e.IsSuccess == false
+                e => e.IsFailure
                   && e.Error == Errors.Task.TitleTooLong
             );
 

@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DoIt.Api.Controllers.Tasks;
 
-// TODO: Write integration tests!
-
 [Route("api/tasks")]
 public class TasksController(ITasksService tasksService)
     : ApiController
@@ -52,7 +50,7 @@ public class TasksController(ITasksService tasksService)
         var result = await _tasksService.Delete(id);
 
         return result.Map(
-            onSuccess: _ => NoContent(),
+            onSuccess: NoContent,
             onFailure: Problem
         );
     }
@@ -66,7 +64,7 @@ public class TasksController(ITasksService tasksService)
         var result = await _tasksService.Update(id, request);
 
         return result.Map(
-            onSuccess: _ => NoContent(),
+            onSuccess: NoContent,
             onFailure: Problem
         );
     }

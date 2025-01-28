@@ -1,6 +1,6 @@
-﻿using DoIt.Api.Shared.Enums;
+﻿using DoIt.Api.Shared.Errors.Enums;
 
-namespace DoIt.Api.Shared;
+namespace DoIt.Api.Shared.Errors;
 
 public sealed record class Error
 {
@@ -17,6 +17,14 @@ public sealed record class Error
         Code = code;
         Message = message;
         Type = type;
+    }
+
+    public static Error Failure(
+        string code,
+        string message
+    )
+    {
+        return new Error(code, message, ErrorType.Failure);
     }
 
     public static Error Validation(

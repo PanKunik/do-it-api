@@ -1,28 +1,29 @@
-﻿namespace DoIt.Api.Shared;
+﻿using DoIt.Api.Shared.Errors;
 
-public class Result<T>
-{    
+namespace DoIt.Api.Shared;
+
+// TODO: Write tests
+public sealed class Result<T> : Result
+{
     private Result(T value)
+        : base()
     {
         Value = value;
-        Error = null;
     }
 
     private Result(Error error)
+        : base(error)
     {
-        Error = error;
         Value = default;
     }
 
     public T? Value { get; }
-    public Error? Error { get; }
-    public bool IsSuccess => Error == null;
 
     public static Result<T> Success(T value) => new Result<T>(value);
-    public static Result<T> Failure(Error error) => new Result<T>(error);
+    public new static Result<T> Failure(Error error) => new Result<T>(error);
 
-    public static implicit operator Result<T>(T value) => Result<T>.Success(value);
-    public static implicit operator Result<T>(Error error) => Result<T>.Failure(error);
+    public static implicit operator Result<T>(T value) => new Result<T>(value);
+    public static implicit operator Result<T>(Error error) => new Result<T>(error);
 
     public TResult Map<TResult>(
         Func<T, TResult> onSuccess,
@@ -30,5 +31,36 @@ public class Result<T>
     )
     {
         return IsSuccess ? onSuccess(Value!) : onFailure(Error!);
+    }
+}
+
+// TODO: Write tests
+public class Result
+{
+    protected Result()
+    {
+        Error = null;
+    }
+
+    protected Result(Error error)
+    {
+        Error = error;
+    }
+
+    public Error? Error { get; protected set; }
+    public bool IsSuccess => Error == null;
+    public bool IsFailure => !IsSuccess;
+
+    public static Result Success() => new Result();
+    public static Result Failure(Error error) => new Result(error);
+
+    public static implicit operator Result(Error error) => new Result(error);
+
+    public TResult Map<TResult>(
+        Func<TResult> onSuccess,
+        Func<Error, TResult> onFailure
+    )
+    {
+        return IsSuccess ? onSuccess() : onFailure(Error!);
     }
 }

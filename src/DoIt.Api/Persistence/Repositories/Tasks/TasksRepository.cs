@@ -3,6 +3,7 @@ using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Persistence.Database;
 using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Shared;
+using DoIt.Api.Shared.Errors;
 using Task = DoIt.Api.Domain.Tasks.Task;
 
 namespace DoIt.Api.Persistence.Repositories;
@@ -60,12 +61,7 @@ public class TasksRepository
         if (existingTask is null)
             return Errors.Task.NotFound;
 
-        var taskResult = existingTask.ToDomain();
-
-        if (!taskResult.IsSuccess)
-            return taskResult.Error!;
-
-        return taskResult.Value!;
+        return existingTask.ToDomain();
     }
 
     public async System.Threading.Tasks.Task<Result<Task>> Create(Task task)
@@ -92,20 +88,18 @@ public class TasksRepository
 
         var taskRecordResult = task.FromDomain();
 
-        if (!taskRecordResult.IsSuccess)
+        if (taskRecordResult.IsFailure)
             return taskRecordResult.Error!;
 
         var result = await connection.ExecuteAsync(command, taskRecordResult.Value!);
 
         if (result <= 0)
-        {
-            throw new InvalidOperationException("Cannot insert data to database"); // TODO: Result pattern
-        }
+            return Error.Failure("Failure", "Cannot insert `Task` entity to database.");
 
         return task;
     }
 
-    public async System.Threading.Tasks.Task<bool> Delete(TaskId taskId)
+    public async System.Threading.Tasks.Task<Result> Delete(TaskId taskId)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
 
@@ -115,10 +109,12 @@ public class TasksRepository
 
         var result = await connection.ExecuteAsync(command, new { Id = taskId.Value });
 
-        return result > 0;
+        return result > 0
+            ? Result.Success()
+            : Errors.Task.NotFound;
     }
 
-    public async System.Threading.Tasks.Task<bool> Update(Task task)
+    public async System.Threading.Tasks.Task<Result> Update(Task task)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
 
@@ -129,6 +125,8 @@ public class TasksRepository
 
         var result = await connection.ExecuteAsync(command, new { Id = task.Id.Value, Title = task.Title.Value });
 
-        return result > 0;
+        return result > 0
+            ? Result.Success()
+            : Errors.Task.NotFound;
     }
 }

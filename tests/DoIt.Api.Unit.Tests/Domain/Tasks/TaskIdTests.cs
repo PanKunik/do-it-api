@@ -8,20 +8,20 @@ namespace DoIt.Api.Unit.Tests.Domain.Tasks;
 public class TaskIdTests
 {
     [Fact]
-    public async System.Threading.Tasks.Task CreateFrom_WhenCalled_ShouldReturnExpectedObject()
+    public async System.Threading.Tasks.Task TaskIdCreateFrom_WhenCalledWithProperValue_ShouldReturnExpectedObjectResultWithValue()
     {
         // Arrange
-        var createTaskId = () => TaskId.CreateFrom(Constants.Tasks.TaskId.Value).Value!;
+        var createTaskId = () => TaskId.CreateFrom(Constants.Tasks.TaskId.Value);
 
         // Act
-        var result = createTaskId();
+        var createTaskIdResult = createTaskId();
 
         // Assert
-        result
+        createTaskIdResult
             .Should()
-            .NotBeNull();
+            .Match<Result<TaskId>>(r => r.IsSuccess);
 
-        result
+        createTaskIdResult.Value!
             .Should()
             .Match<TaskId>(id => id.Value == Constants.Tasks.TaskId.Value);
 
@@ -29,21 +29,20 @@ public class TaskIdTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task CreateFrom_WhenPassedEmptyGuid_ShouldReturnErrorResult()
+    public async System.Threading.Tasks.Task CreateFrom_WhenPassedEmptyGuid_ShouldReturnResultWithErrorTaskIdCannotBeEmpty()
     {
         // Arrange
-        var guid = Guid.Empty;
-        var createTaskId = () => TaskId.CreateFrom(guid);
+        var createTaskId = () => TaskId.CreateFrom(Guid.Empty);
 
         // Act
-        var result = createTaskId();
+        var createTaskIdResult = createTaskId();
 
         // Assert
-        result
+        createTaskIdResult
             .Should()
             .Match<Result<TaskId>>(
-                e => e.IsSuccess == false
-                  && e.Error == Errors.Task.EmptyTaskId
+                e => e.IsFailure
+                  && e.Error == Errors.Task.IdCannotBeEmpty
             );
 
         await System.Threading.Tasks.Task.CompletedTask;

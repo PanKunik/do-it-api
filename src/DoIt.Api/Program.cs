@@ -1,7 +1,7 @@
 using DoIt.Api.Persistence.Database;
 using DoIt.Api.Persistence;
-using DoIt.Api.Services.Tasks;
 using DoIt.Api.Controllers.Errors;
+using DoIt.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
-    app.UseExceptionHandler("/error");
+    app.UseExceptionHandler("/error"); // TODO: Check
     app.MapControllers();
 
     DbInitializer.Initialize(app.Configuration[DbConstants.DoItDbConnectionStringPath]!);
