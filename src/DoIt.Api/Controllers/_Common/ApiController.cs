@@ -1,6 +1,6 @@
 ﻿using DoIt.Api.Controllers.Errors;
-using DoIt.Api.Shared;
-using DoIt.Api.Shared.Enums;
+using DoIt.Api.Shared.Errors;
+using DoIt.Api.Shared.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DoIt.Api.Controllers._Common;

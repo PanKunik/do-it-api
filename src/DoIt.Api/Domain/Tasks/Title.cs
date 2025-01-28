@@ -18,7 +18,7 @@ public class Title
     public static Result<Title> CreateFrom(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return Errors.Task.EmptyTitle;
+            return Errors.Task.TitleCannotBeEmpty;
 
         if (value.Length > titleMaxLength)
             return Errors.Task.TitleTooLong;

@@ -2,7 +2,7 @@
 
 namespace DoIt.Api.Services.Tasks;
 
-public static class TasksExtensions
+public static class Extensions
 {
     public static TaskDTO ToDTO(this Task task)
         => new(

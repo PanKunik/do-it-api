@@ -35,10 +35,10 @@ public class Task
     )
     {
         if (taskId is null)
-            return Errors.Task.NullTaskId;
+            return Errors.Task.IdCannotBeNull;
 
         if (title is null)
-            return Errors.Task.NullTitle;
+            return Errors.Task.TitleCannotBeNull;
 
         return new Task(
             taskId,
@@ -49,19 +49,19 @@ public class Task
         );
     }
 
-    // TODO: Result pattern (non-generic)
-    public void UpdateTitle(Title title)
+    public Result UpdateTitle(Title title)
     {
-        Title = title ?? throw new ArgumentNullException(nameof(title));
+        if (title is null)
+            return Result.Failure(Errors.Task.TitleCannotBeNull);
+
+        Title = title;
+
+        return Result.Success();
     }
 
-
-    // TODO: Result pattern (non-generic)
     public void ChangeState()
         => IsDone = !IsDone;
 
-
-    // TODO: Result pattern (non-generic)
     public void ChangeImportance()
         => IsImportant = !IsImportant;
 }

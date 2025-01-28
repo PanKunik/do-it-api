@@ -16,10 +16,13 @@ public class TaskId
     public static Result<TaskId> CreateFrom(Guid value)
     {
         if (value == Guid.Empty)
-            return Errors.Task.EmptyTaskId;
+            return Errors.Task.IdCannotBeEmpty;
 
         return new TaskId(value);
     }
+
+    public static TaskId CreateUnique()
+        => new(Guid.NewGuid());
 
     protected override IEnumerable<object> GetEqualityComponent()
     {

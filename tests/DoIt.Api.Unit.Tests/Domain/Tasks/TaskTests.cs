@@ -9,7 +9,7 @@ namespace DoIt.Api.Unit.Tests.Domain.Tasks;
 public class TaskTests
 {
     [Fact]
-    public async System.Threading.Tasks.Task Task_WhenCalled_ShouldCreateExpectedObject()
+    public async System.Threading.Tasks.Task TaskCreate_WhenPassedProperData_ShouldCreateExpectedObjectResultWithValue()
     {
         // Arrange
         var createTask = () => Task.Create(
@@ -18,17 +18,17 @@ public class TaskTests
             Constants.Tasks.CreatedAt,
             Constants.Tasks.Done,
             Constants.Tasks.Important
-        ).Value!;
+        );
 
         // Act
-        var result = createTask();
+        var createTaskResult = createTask();
 
         // Assert
-        result
+        createTaskResult
             .Should()
-            .NotBeNull();
+            .Match<Result<Task>>(r => r.IsSuccess);
 
-        result
+        createTaskResult.Value!
             .Should()
             .Match<Task>(
                 t => t.Id == Constants.Tasks.TaskId
@@ -42,52 +42,52 @@ public class TaskTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Task_WhenPassedNullTaskId_ShouldReturnResultError()
+    public async System.Threading.Tasks.Task TaskCreate_WhenPassedNullTaskId_ShouldReturnResultWithErrorTaskIdCannotBeNull()
     {
         // Arrange
         var createTask = () => Task.Create(
             taskId: null!,
-            title: Constants.Tasks.Title,
-            createdAt: Constants.Tasks.CreatedAt,
-            isDone: Constants.Tasks.NotDone,
+            Constants.Tasks.Title,
+            Constants.Tasks.CreatedAt,
+            Constants.Tasks.NotDone,
             Constants.Tasks.NotImportant
         );
 
         // Act
-        var result = createTask();
+        var createTaskResult = createTask();
 
         // Assert
-        result
+        createTaskResult
             .Should()
             .Match<Result<Task>>(
-                e => e.IsSuccess == false
-                  && e.Error == Errors.Task.NullTaskId
+                e => e.IsFailure
+                  && e.Error == Errors.Task.IdCannotBeNull
             );
 
         await System.Threading.Tasks.Task.CompletedTask;
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Task_WhenPassedNullTitle_ShouldRetrnResultError()
+    public async System.Threading.Tasks.Task CreateTask_WhenPassedNullTitle_ShouldRetrnResultWithErrorTaskTitleCannotBeNull()
     {
         // Arrange
         var createTask = () => Task.Create(
-            taskId: Constants.Tasks.TaskId,
+            Constants.Tasks.TaskId,
             title: null!,
-            createdAt: Constants.Tasks.CreatedAt,
-            isDone: Constants.Tasks.NotDone,
+            Constants.Tasks.CreatedAt,
+            Constants.Tasks.NotDone,
             Constants.Tasks.Important
         );
 
         // Act
-        var result = createTask();
+        var createTaskResult = createTask();
 
         // Assert
-        result
+        createTaskResult
             .Should()
             .Match<Result<Task>>(
                 e => e.IsSuccess == false
-                  && e.Error == Errors.Task.NullTitle
+                  && e.Error == Errors.Task.TitleCannotBeNull
             );
 
         await System.Threading.Tasks.Task.CompletedTask;
@@ -105,7 +105,7 @@ public class TaskTests
             Constants.Tasks.TaskId,
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
-            actualState,
+            isDone: actualState,
             Constants.Tasks.NotImportant
         ).Value!;
 
@@ -133,7 +133,7 @@ public class TaskTests
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
-            actualState
+            isImportant: actualState
         ).Value!;
 
         // Act
@@ -210,24 +210,27 @@ public class TaskTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task UpdateTitle_WhenCalledWithNullTitle_ShouldThrowException()
+    public async System.Threading.Tasks.Task UpdateTitle_WhenCalledWithNullTitle_ShouldResulrnResultWithErrorTaskTitleCannotBeNull()
     {
         // Arrange
         var cut = Task.Create(
-            taskId: Constants.Tasks.TaskId,
-            title: Constants.Tasks.Title,
-            createdAt: Constants.Tasks.CreatedAt,
-            isDone: Constants.Tasks.NotDone,
+            Constants.Tasks.TaskId,
+            Constants.Tasks.Title,
+            Constants.Tasks.CreatedAt,
+            Constants.Tasks.NotDone,
             Constants.Tasks.Important
         ).Value!;
 
-        var updateTitle = () => cut.UpdateTitle(null!);
+        // Act
+        var updateTitleResult = cut.UpdateTitle(null!);
 
         // Act & Assert
-        updateTitle
+        updateTitleResult
             .Should()
-            .ThrowExactly<ArgumentNullException>()
-            .WithParameterName("title");
+            .Match<Result>(
+                r => r.IsFailure
+                  && r.Error == Errors.Task.TitleCannotBeNull
+            );
 
         await System.Threading.Tasks.Task.CompletedTask;
     }

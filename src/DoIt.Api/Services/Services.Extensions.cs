@@ -1,6 +1,8 @@
-﻿namespace DoIt.Api.Services.Tasks;
+﻿using DoIt.Api.Services.Tasks;
 
-public static class ServicesExtensions
+namespace DoIt.Api.Services;
+
+public static class Extensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {

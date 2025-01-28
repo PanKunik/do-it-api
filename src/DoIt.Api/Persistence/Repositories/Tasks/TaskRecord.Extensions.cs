@@ -4,21 +4,16 @@ using Task = DoIt.Api.Domain.Tasks.Task;
 
 namespace DoIt.Api.Persistence.Repositories.Tasks;
 
-public static class TasksExtensions
+public static class Extensions
 {
     public static Result<TaskRecord> FromDomain(this Task task)
     {
-        if (task is null)
-            return Errors.Task.NotFound;
-
-        return Result<TaskRecord>.Success(
-            new TaskRecord(
-                task.Id.Value,
-                task.Title.Value,
-                task.CreatedAt,
-                task.IsDone,
-                task.IsImportant
-            )
+        return new TaskRecord(
+            task.Id.Value,
+            task.Title.Value,
+            task.CreatedAt,
+            task.IsDone,
+            task.IsImportant
         );
     }
 
@@ -26,12 +21,12 @@ public static class TasksExtensions
     {
         var taskIdResult = TaskId.CreateFrom(taskRecord.Id);
 
-        if (!taskIdResult.IsSuccess)
+        if (taskIdResult.IsFailure)
             return taskIdResult.Error!;
 
         var titleResult = Title.CreateFrom(taskRecord.Title);
 
-        if (!titleResult.IsSuccess)
+        if (titleResult.IsFailure)
             return titleResult.Error!;
 
         return Task.Create(

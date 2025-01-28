@@ -1,4 +1,4 @@
-﻿using DoIt.Api.Shared;
+﻿using DoIt.Api.Shared.Errors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

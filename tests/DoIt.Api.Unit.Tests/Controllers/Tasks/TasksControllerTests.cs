@@ -1,5 +1,4 @@
 ﻿using DoIt.Api.Controllers.Tasks;
-using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Services.Tasks;
 using DoIt.Api.Shared;
 using FluentAssertions;
@@ -10,6 +9,7 @@ using System.Reflection;
 using Task = System.Threading.Tasks.Task;
 using Constants = DoIt.Api.TestUtils.Constants;
 using Microsoft.AspNetCore.Http;
+using DoIt.Api.Domain.Tasks;
 
 namespace DoIt.Api.Unit.Tests.Controllers.Tasks;
 
@@ -97,7 +97,7 @@ public class TasksControllerTests
     }
 
     [Fact]
-    public async Task Get_OnSuccess_ShouldReturnListOfGetTaskResponse()
+    public async Task Get_OnSuccess_ShouldReturnListOfTaskDTO()
     {
         // Arrange
         _tasksService
@@ -122,10 +122,6 @@ public class TasksControllerTests
         result.Value
             .Should()
             .NotBeNull();
-
-        result.Value
-            .Should()
-            .BeOfType<List<TaskDTO>>();
 
         result.Value
             .Should()
@@ -190,7 +186,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetById(Constants.Tasks.TaskId.Value)
-            .Returns(Result<TaskDTO>.Failure(Errors.Task.NotFound));
+            .Returns(Errors.Task.NotFound);
 
         // Act
         var result = await _cut.GetById(Constants.Tasks.TaskId.Value);
@@ -206,12 +202,12 @@ public class TasksControllerTests
     }
 
     [Fact]
-    public async Task GetById_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
+    public async Task GetById_WhenTaskNotFound_ShouldReturnProblemDetailsAsValue()
     {
         // Arrange
         _tasksService
             .GetById(Constants.Tasks.TaskId.Value)
-            .Returns(Result<TaskDTO>.Failure(Errors.Task.NotFound));
+            .Returns(Errors.Task.NotFound);
 
         // Act
         var result = (ObjectResult) await _cut.GetById(Constants.Tasks.TaskId.Value);
@@ -224,10 +220,21 @@ public class TasksControllerTests
         result.Value
             .Should()
             .BeOfType<ProblemDetails>();
+    }
 
-        var problemDetails = (ProblemDetails)result.Value!;
+    [Fact]
+    public async Task GetById_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
+    {
+        // Arrange
+        _tasksService
+            .GetById(Constants.Tasks.TaskId.Value)
+            .Returns(Errors.Task.NotFound);
 
-        problemDetails.Status
+        // Act
+        var result = ((ObjectResult) await _cut.GetById(Constants.Tasks.TaskId.Value)).Value as ProblemDetails;
+
+        // Assert
+        result!.Status
             .Should()
             .Be((int)HttpStatusCode.NotFound);
     }
@@ -239,14 +246,12 @@ public class TasksControllerTests
         _tasksService
             .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
-                        Constants.Tasks.TaskId.Value,
-                        Constants.Tasks.Title.Value,
-                        Constants.Tasks.CreatedAt,
-                        Constants.Tasks.Done,
-                        Constants.Tasks.NotImportant
-                    )
+                new TaskDTO(
+                    Constants.Tasks.TaskId.Value,
+                    Constants.Tasks.Title.Value,
+                    Constants.Tasks.CreatedAt,
+                    Constants.Tasks.Done,
+                    Constants.Tasks.NotImportant
                 )
             );
 
@@ -291,20 +296,18 @@ public class TasksControllerTests
     }
 
     [Fact]
-    public async Task GetById_OnSuccess_ShouldReturnGetTaskResponse()
+    public async Task GetById_OnSuccess_ShouldReturnExpectedTaskDTO()
     {
         // Arrange
         _tasksService
             .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
-                        Constants.Tasks.TaskId.Value,
-                        Constants.Tasks.Title.Value,
-                        Constants.Tasks.CreatedAt,
-                        Constants.Tasks.Done,
-                        Constants.Tasks.NotImportant
-                    )
+                new TaskDTO(
+                    Constants.Tasks.TaskId.Value,
+                    Constants.Tasks.Title.Value,
+                    Constants.Tasks.CreatedAt,
+                    Constants.Tasks.Done,
+                    Constants.Tasks.NotImportant
                 )
             );
 
@@ -334,14 +337,12 @@ public class TasksControllerTests
         _tasksService
             .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
-                        Constants.Tasks.TaskId.Value,
-                        Constants.Tasks.Title.Value,
-                        Constants.Tasks.CreatedAt,
-                        Constants.Tasks.Done,
-                        Constants.Tasks.NotImportant
-                    )
+                new TaskDTO(
+                    Constants.Tasks.TaskId.Value,
+                    Constants.Tasks.Title.Value,
+                    Constants.Tasks.CreatedAt,
+                    Constants.Tasks.Done,
+                    Constants.Tasks.NotImportant
                 )
             );
 
@@ -378,21 +379,19 @@ public class TasksControllerTests
     #region Create
 
     [Fact]
-    public async Task Create_OnSuccess_ShouldReturnCreatedAtActionObjectWithExpectedValues()
+    public async Task Create_OnSuccess_ShouldReturnExpectedCreatedAtActionObject()
     {
         // Arrange
         var request = new CreateTaskRequest(Constants.Tasks.Title.Value);
         _tasksService
             .Create(request)
             .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
-                        Constants.Tasks.TaskId.Value,
-                        Constants.Tasks.Title.Value,
-                        Constants.Tasks.CreatedAt,
-                        Constants.Tasks.NotDone,
-                        Constants.Tasks.NotImportant
-                    )
+                new TaskDTO(
+                    Constants.Tasks.TaskId.Value,
+                    Constants.Tasks.Title.Value,
+                    Constants.Tasks.CreatedAt,
+                    Constants.Tasks.NotDone,
+                    Constants.Tasks.NotImportant
                 )
             );
 
@@ -435,14 +434,12 @@ public class TasksControllerTests
         _tasksService
             .Create(request)
             .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
-                        Constants.Tasks.TaskId.Value,
-                        Constants.Tasks.Title.Value,
-                        Constants.Tasks.CreatedAt,
-                        Constants.Tasks.NotDone,
-                        Constants.Tasks.NotImportant
-                    )
+                new TaskDTO(
+                    Constants.Tasks.TaskId.Value,
+                    Constants.Tasks.Title.Value,
+                    Constants.Tasks.CreatedAt,
+                    Constants.Tasks.NotDone,
+                    Constants.Tasks.NotImportant
                 )
             );
 
@@ -513,7 +510,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .Delete(Constants.Tasks.TaskId.Value)
-            .Returns(Result<bool>.Success(true));
+            .Returns(Result.Success());
 
         // Act
         var result = await _cut.Delete(Constants.Tasks.TaskId.Value);
@@ -534,7 +531,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .Delete(Constants.Tasks.TaskId.Value)
-            .Returns(Result<bool>.Success(true));
+            .Returns(Result.Success());
 
         // Act
         var result = (NoContentResult) await _cut.Delete(Constants.Tasks.TaskId.Value);
@@ -571,7 +568,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .Delete(Constants.Tasks.TaskId.Value)
-            .Returns(Result<bool>.Success(true));
+            .Returns(Result.Success());
 
         // Act
         var result = await _cut.Delete(Constants.Tasks.TaskId.Value);
@@ -588,7 +585,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .Delete(Constants.Tasks.TaskId.Value)
-            .Returns(Result<bool>.Failure(Errors.Task.NotFound));
+            .Returns(Errors.Task.NotFound);
 
         // Act
         var result = await _cut.Delete(Constants.Tasks.TaskId.Value);
@@ -604,28 +601,43 @@ public class TasksControllerTests
     }
 
     [Fact]
+    public async Task Delete_WhenTaskNotFound_ShouldReturnProblemDetailsAsValue()
+    {
+        // Arrange
+        _tasksService
+            .Delete(Constants.Tasks.TaskId.Value)
+            .Returns(Errors.Task.NotFound);
+
+        // Act
+        var result = ((ObjectResult) await _cut.Delete(Constants.Tasks.TaskId.Value)).Value;
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<ProblemDetails>();
+    }
+
+    [Fact]
     public async Task Delete_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
     {
         // Arrange
         _tasksService
             .Delete(Constants.Tasks.TaskId.Value)
-            .Returns(Result<bool>.Failure(Errors.Task.NotFound));
+            .Returns(Errors.Task.NotFound);
 
         // Act
-        var result = (ObjectResult) await _cut.Delete(Constants.Tasks.TaskId.Value);
+        var result = ((ObjectResult) await _cut.Delete(Constants.Tasks.TaskId.Value)).Value as ProblemDetails;
 
         // Assert
-        result.Value
+        result
             .Should()
             .NotBeNull();
 
-        result.Value
-            .Should()
-            .BeOfType<ProblemDetails>();
-
-        var problemDetails = (ProblemDetails) result.Value!;
-
-        problemDetails.Status
+        result!.Status
             .Should()
             .Be((int) HttpStatusCode.NotFound);
     }
@@ -644,17 +656,7 @@ public class TasksControllerTests
                 Constants.Tasks.TaskId.Value,
                 request
             )
-            .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
-                        Constants.Tasks.TaskId.Value,
-                        Constants.Tasks.Title.Value,
-                        Constants.Tasks.CreatedAt,
-                        Constants.Tasks.Done,
-                        Constants.Tasks.NotImportant
-                    )
-                )
-            );
+            .Returns(Result.Success());
 
         // Act
         var result = await _cut.Update(
@@ -682,17 +684,7 @@ public class TasksControllerTests
                 Constants.Tasks.TaskId.Value,
                 request
             )
-            .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
-                        Constants.Tasks.TaskId.Value,
-                        Constants.Tasks.Title.Value,
-                        Constants.Tasks.CreatedAt,
-                        Constants.Tasks.Done,
-                        Constants.Tasks.NotImportant
-                    )
-                )
-            );
+            .Returns(Result.Success());
 
         // Act
         var result = (NoContentResult) await _cut.Update(
@@ -727,7 +719,7 @@ public class TasksControllerTests
     }
 
     [Fact]
-    public async Task Update_WhenInvoked_ShouldCallTasksServiceUpdateOnce()
+    public async Task Update_WhenInvoked_ShouldCallTasksServiceUpdateOnceWithExpectedArguments()
     {
         // Arrange
         var request = new UpdateTaskRequest(Constants.Tasks.Title.Value);
@@ -736,17 +728,7 @@ public class TasksControllerTests
                 Constants.Tasks.TaskId.Value,
                 request
             )
-            .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
-                        Constants.Tasks.TaskId.Value,
-                        Constants.Tasks.Title.Value,
-                        Constants.Tasks.CreatedAt,
-                        Constants.Tasks.Done,
-                        Constants.Tasks.NotImportant
-                    )
-                )
-            );
+            .Returns(Result.Success());
 
         // Act
         await _cut.Update(
@@ -773,7 +755,7 @@ public class TasksControllerTests
                 Constants.Tasks.TaskId.Value,
                 request
             )
-            .Returns(Result<TaskDTO>.Failure(Errors.Task.NotFound));
+            .Returns(Errors.Task.NotFound);
 
         // Act
         var result = await _cut.Update(
@@ -792,6 +774,34 @@ public class TasksControllerTests
     }
 
     [Fact]
+    public async Task Update_WhenTaskNotFound_ShouldReturnProblemDetailsAsValue()
+    {
+        // Arrange
+        var request = new UpdateTaskRequest(Constants.Tasks.Title.Value);
+        _tasksService
+            .Update(
+                Constants.Tasks.TaskId.Value,
+                request
+            )
+            .Returns(Errors.Task.NotFound);
+
+        // Act
+        var result = ((ObjectResult) await _cut.Update(
+            Constants.Tasks.TaskId.Value,
+            request
+        )).Value;
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<ProblemDetails>();
+    }
+
+    [Fact]
     public async Task Update_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
     {
         // Arrange
@@ -801,26 +811,20 @@ public class TasksControllerTests
                 Constants.Tasks.TaskId.Value,
                 request
             )
-            .Returns(Result<TaskDTO>.Failure(Errors.Task.NotFound));
+            .Returns(Errors.Task.NotFound);
 
         // Act
-        var result = (ObjectResult) await _cut.Update(
+        var result = ((ObjectResult) await _cut.Update(
             Constants.Tasks.TaskId.Value,
             request
-        );
+        )).Value as ProblemDetails;
 
         // Assert
-        result.Value
+        result
             .Should()
             .NotBeNull();
-
-        result.Value
-            .Should()
-            .BeOfType<ProblemDetails>();
-
-        var problemDetails = (ProblemDetails) result.Value!;
         
-        problemDetails.Status
+        result!.Status
             .Should()
             .Be((int) HttpStatusCode.NotFound);
     }
