@@ -2,7 +2,6 @@
 
 namespace DoIt.Api.Shared;
 
-// TODO: Write tests
 public sealed class Result<T> : Result
 {
     private Result(T value)
@@ -34,7 +33,6 @@ public sealed class Result<T> : Result
     }
 }
 
-// TODO: Write tests
 public class Result
 {
     protected Result()

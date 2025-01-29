@@ -1,7 +1,6 @@
 ﻿using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Shared;
 using DoIt.Api.TestUtils;
-using FluentAssertions;
 using Task = DoIt.Api.Domain.Tasks.Task;
 
 namespace DoIt.Api.Unit.Tests.Domain.Tasks;
