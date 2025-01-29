@@ -1,5 +1,4 @@
 ﻿using DoIt.Api.Controllers;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Reflection;

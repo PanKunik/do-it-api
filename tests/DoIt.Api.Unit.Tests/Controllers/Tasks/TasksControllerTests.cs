@@ -1,7 +1,6 @@
 ﻿using DoIt.Api.Controllers.Tasks;
 using DoIt.Api.Services.Tasks;
 using DoIt.Api.Shared;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using System.Net;
