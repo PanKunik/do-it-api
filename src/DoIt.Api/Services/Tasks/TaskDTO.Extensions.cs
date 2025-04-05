@@ -4,7 +4,7 @@ namespace DoIt.Api.Services.Tasks;
 
 public static class Extensions
 {
-    public static TaskDTO ToDTO(this Task task)
+    public static TaskDTO ToDto(this Task task)
         => new(
             task.Id.Value,
             task.Title.Value,

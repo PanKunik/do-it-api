@@ -15,7 +15,7 @@ public class TasksService(ITasksRepository repository)
     {
         var result = await _repository.GetAll();
         return result
-            .Select(r => r.ToDTO())
+            .Select(r => r.ToDto())
             .ToList();
     }
 
@@ -29,7 +29,7 @@ public class TasksService(ITasksRepository repository)
         var result = await _repository.GetById(taskIdResult.Value!);
 
         return result.Map<Result<TaskDTO>>(
-            onSuccess: value => value.ToDTO(),
+            onSuccess: value => value.ToDto(),
             onFailure: error => error
         );
     }
@@ -57,7 +57,7 @@ public class TasksService(ITasksRepository repository)
         if (createTaskResult.IsFailure)
             return createTaskResult.Error!;
 
-        return createTaskResult.Value!.ToDTO();
+        return createTaskResult.Value!.ToDto();
     }
 
     public async System.Threading.Tasks.Task<Result> Delete(Guid id)

@@ -17,7 +17,7 @@ public partial class Errors
         );
 
         public static Error IdCannotBeEmpty => Error.Validation(
-            "Task.IdCannotBeEmptyGuid",
+            "Task.IdCannotBeEmpty",
             "Id of the task cannot be empty guid."
         );
 

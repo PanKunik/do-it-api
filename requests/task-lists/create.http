@@ -1,0 +1,8 @@
+@host=http://localhost:5000
+
+POST {{host}}/api/task-lists
+Content-Type: application/json
+
+{
+  "name": "List of tasks 1"
+}

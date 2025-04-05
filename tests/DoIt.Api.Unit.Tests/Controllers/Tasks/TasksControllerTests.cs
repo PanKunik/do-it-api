@@ -24,7 +24,7 @@ public class TasksControllerTests
     }
 
     [Fact]
-    public async Task TaskController_ShouldContainRouteAttributeWithExpectedTemplate()
+    public async Task TasksController_ShouldContainRouteAttributeWithExpectedTemplate()
     {
         // Arrange
         var attribute = typeof(TasksController).GetCustomAttribute<RouteAttribute>();
@@ -42,7 +42,7 @@ public class TasksControllerTests
     }
 
     [Fact]
-    public async Task TaskController_ShouldContainApiControllerAttribute()
+    public async Task TasksController_ShouldContainApiControllerAttribute()
     {
         // Arrange
         var attribute = typeof(TasksController).GetCustomAttribute<ApiControllerAttribute>();
