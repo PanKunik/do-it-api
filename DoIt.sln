@@ -21,6 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "requests", "requests", "{284A4436-E344-458C-901B-565A7AD6A281}"
+	ProjectSection(SolutionItems) = preProject
+		requests\task-lists\create.http = requests\task-lists\create.http
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{13F0D23E-7474-41D3-B961-D3C4BCD6111D}"
 	ProjectSection(SolutionItems) = preProject
@@ -38,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tasks", "tasks", "{D7AB204F
 		requests\tasks\update.http = requests\tasks\update.http
 		requests\tasks\change-state.http = requests\tasks\change-state.http
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "task-lists", "task-lists", "{B376EA47-CA1E-4300-86F6-ADCF2D61A43B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +77,7 @@ Global
 		{13F0D23E-7474-41D3-B961-D3C4BCD6111D} = {284A4436-E344-458C-901B-565A7AD6A281}
 		{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44} = {792F18E8-9C8D-4A8E-91BB-05897BCFE5B8}
 		{D7AB204F-1A95-4E96-8003-256C9AFD9D8D} = {284A4436-E344-458C-901B-565A7AD6A281}
+		{B376EA47-CA1E-4300-86F6-ADCF2D61A43B} = {284A4436-E344-458C-901B-565A7AD6A281}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F6778ABD-6605-4432-8CF3-9FB3C5600B19}

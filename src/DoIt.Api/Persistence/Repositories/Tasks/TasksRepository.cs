@@ -8,16 +8,11 @@ using Task = DoIt.Api.Domain.Tasks.Task;
 
 namespace DoIt.Api.Persistence.Repositories;
 
-public class TasksRepository
+public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
     : ITasksRepository
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory;
-
-    public TasksRepository(IDbConnectionFactory dbConnectionFactory)
-    {
-        _dbConnectionFactory = dbConnectionFactory
-            ?? throw new ArgumentNullException(nameof(dbConnectionFactory));
-    }
+    private readonly IDbConnectionFactory _dbConnectionFactory
+        = dbConnectionFactory ?? throw new ArgumentNullException(nameof(dbConnectionFactory));
 
     public async System.Threading.Tasks.Task<List<Task>> GetAll()
     {

@@ -67,7 +67,7 @@ public class TaskTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task CreateTask_WhenPassedNullTitle_ShouldRetrnResultWithErrorTaskTitleCannotBeNull()
+    public async System.Threading.Tasks.Task CreateTask_WhenPassedNullTitle_ShouldReturnResultWithErrorTaskTitleCannotBeNull()
     {
         // Arrange
         var createTask = () => Task.Create(
@@ -209,7 +209,7 @@ public class TaskTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task UpdateTitle_WhenCalledWithNullTitle_ShouldResulrnResultWithErrorTaskTitleCannotBeNull()
+    public async System.Threading.Tasks.Task UpdateTitle_WhenCalledWithNullTitle_ShouldReturnResultWithErrorTaskTitleCannotBeNull()
     {
         // Arrange
         var cut = Task.Create(
