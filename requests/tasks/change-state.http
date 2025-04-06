@@ -2,4 +2,4 @@
 
 @id=579889d7-f07c-41f0-9af3-8772c0343725
 
-GET {{host}}/api/tasks/{{id}}
+PUT {{host}}/api/tasks/{{id}}/change-state

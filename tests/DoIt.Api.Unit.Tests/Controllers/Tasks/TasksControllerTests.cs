@@ -829,4 +829,146 @@ public class TasksControllerTests
     }
 
     #endregion
+    
+    #region ChangeState
+
+    [Fact]
+    public async Task ChangeState_OnSuccess_ShouldReturnNoContentResult()
+    {
+        // Arrange
+        _tasksService
+            .ChangeState(Constants.Tasks.TaskId.Value)
+            .Returns(Result.Success());
+        
+        // Act
+        var result = await _cut.ChangeState(Constants.Tasks.TaskId.Value);
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<NoContentResult>();
+    }
+
+    [Fact]
+    public async Task ChangeState_OnSuccess_ShouldReturn204NoContentStatusCode()
+    {
+        // Arrange
+        _tasksService
+            .ChangeState(Constants.Tasks.TaskId.Value)
+            .Returns(Result.Success());
+        
+        // Act
+        var result = (NoContentResult) await _cut.ChangeState(Constants.Tasks.TaskId.Value);
+        
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int) HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task ChangeState_ShouldContainHttpPutAttributeWithExpectedTemplate()
+    {
+        // Act
+        var methodData = typeof(TasksController).GetMethod("ChangeState");
+        
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpPutAttribute>();
+        
+        attribute
+            .Should()
+            .NotBeNull();
+        
+        attribute!.Template
+            .Should()
+            .BeEquivalentTo("{id:guid}/change-state");
+
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task ChangeState_WhenInvoked_ShouldCallTasksServiceChangeStateOnceWithExpectedArguments()
+    {
+        // Arrange
+        _tasksService
+            .ChangeState(Constants.Tasks.TaskId.Value)
+            .Returns(Result.Success());
+        
+        // Act
+        await _cut.ChangeState(Constants.Tasks.TaskId.Value);
+        
+        // Assert
+        await _tasksService
+            .Received(1)
+            .ChangeState(Arg.Is(Constants.Tasks.TaskId.Value));
+    }
+
+    [Fact]
+    public async Task ChangeState_WhenTaskNotFound_ShouldReturnObjectResult()
+    {
+        // Arrange
+        _tasksService
+            .ChangeState(Constants.Tasks.TaskId.Value)
+            .Returns(Errors.Task.NotFound);
+        
+        // Act
+        var result = await _cut.ChangeState(Constants.Tasks.TaskId.Value);
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<ObjectResult>();
+    }
+
+    [Fact]
+    public async Task ChangeState_WhenTaskNotFound_ShouldReturnProblemDetailsAsValue()
+    {
+        // Arrange
+        _tasksService
+            .ChangeState(Constants.Tasks.TaskId.Value)
+            .Returns(Errors.Task.NotFound);
+        
+        // Act
+        var result = ((ObjectResult)await _cut.ChangeState(Constants.Tasks.TaskId.Value)).Value;
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<ProblemDetails>();
+    }
+    
+    [Fact]
+    public async Task ChangeState_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
+    {
+        // Arrange
+        _tasksService
+            .ChangeState(Constants.Tasks.TaskId.Value)
+            .Returns(Errors.Task.NotFound);
+        
+        // Act
+        var result = ((ObjectResult)await _cut.ChangeState(Constants.Tasks.TaskId.Value)).Value as ProblemDetails;
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result!.Status
+            .Should()
+            .Be((int) HttpStatusCode.NotFound);
+    }
+    
+    #endregion
 }
