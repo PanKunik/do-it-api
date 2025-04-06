@@ -68,4 +68,15 @@ public class TasksController(ITasksService tasksService)
             onFailure: Problem
         );
     }
+
+    [HttpPut("{id:guid}/change-state")]
+    public async Task<IActionResult> ChangeState(Guid id)
+    {
+        var result = await _tasksService.ChangeState(id);
+
+        return result.Map(
+            onSuccess: NoContent,
+            onFailure: Problem
+        );
+    }
 }

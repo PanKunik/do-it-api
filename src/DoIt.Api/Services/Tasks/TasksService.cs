@@ -95,4 +95,24 @@ public class TasksService(ITasksRepository repository)
 
         return await _repository.Update(taskToUpdate);
     }
+
+    public async Task<Result> ChangeState(Guid id)
+    {
+        var taskIdResult = TaskId.CreateFrom(id);
+        
+        if (taskIdResult.IsFailure)
+            return taskIdResult.Error!;
+
+        var taskToDoResult = await _repository.GetById(taskIdResult.Value!);
+
+        if (taskToDoResult.IsFailure)
+            return taskToDoResult.Error!;
+
+        var taskToDo = taskToDoResult.Value!;
+        taskToDo.ChangeState();
+
+        await _repository.Update(taskToDo);
+        
+        return Result.Success();
+    }
 }

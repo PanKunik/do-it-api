@@ -120,10 +120,12 @@ public class TasksRepository
 
         var command = @"
             UPDATE public.tasks
-            SET title = @Title
+            SET
+                title = @Title,
+                is_done = @IsDone
             WHERE task_id = @Id";
 
-        var result = await connection.ExecuteAsync(command, new { Id = task.Id.Value, Title = task.Title.Value });
+        var result = await connection.ExecuteAsync(command, new { Id = task.Id.Value, Title = task.Title.Value, IsDone = task.IsDone });
 
         return result > 0
             ? Result.Success()

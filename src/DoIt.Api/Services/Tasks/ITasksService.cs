@@ -10,4 +10,5 @@ public interface ITasksService
     Task<Result<TaskDTO>> Create(CreateTaskRequest request);
     Task<Result> Delete(Guid id);
     Task<Result> Update(Guid id, UpdateTaskRequest request);
+    Task<Result> ChangeState(Guid id);
 }
