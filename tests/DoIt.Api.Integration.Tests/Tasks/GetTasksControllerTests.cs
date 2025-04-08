@@ -24,7 +24,7 @@ public class GetTasksControllerTests
     {
         // Act
         var response = await _client.GetAsync("api/tasks");
-        var responseContent = await response.Content.ReadFromJsonAsync<List<TaskDTO>>();
+        var responseContent = await response.Content.ReadFromJsonAsync<List<TaskDto>>();
 
         // Assert
         response.StatusCode
@@ -33,7 +33,7 @@ public class GetTasksControllerTests
 
         responseContent
             .Should()
-            .BeEquivalentTo(new List<TaskDTO>());
+            .BeEquivalentTo(new List<TaskDto>());
     }
 
     [Fact]
@@ -42,17 +42,17 @@ public class GetTasksControllerTests
         // Arrange
         await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value)
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value, null)
         );
 
         await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value)
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value, null)
         );
 
         // Act
         var response = await _client.GetAsync("api/tasks");
-        var responseContent = await response.Content.ReadFromJsonAsync<List<TaskDTO>>();
+        var responseContent = await response.Content.ReadFromJsonAsync<List<TaskDto>>();
 
         // Assert
         response.IsSuccessStatusCode

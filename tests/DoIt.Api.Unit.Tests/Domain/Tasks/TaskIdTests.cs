@@ -10,10 +10,10 @@ public class TaskIdTests
     public async System.Threading.Tasks.Task TaskIdCreateFrom_WhenCalledWithProperValue_ShouldReturnExpectedObjectResultWithValue()
     {
         // Arrange
-        var createTaskId = () => TaskId.CreateFrom(Constants.Tasks.TaskId.Value);
+        var createTaskId = TaskId.CreateFrom;
 
         // Act
-        var createTaskIdResult = createTaskId();
+        var createTaskIdResult = createTaskId(Constants.Tasks.TaskId.Value);
 
         // Assert
         createTaskIdResult
@@ -31,10 +31,10 @@ public class TaskIdTests
     public async System.Threading.Tasks.Task CreateFrom_WhenPassedEmptyGuid_ShouldReturnResultWithErrorTaskIdCannotBeEmpty()
     {
         // Arrange
-        var createTaskId = () => TaskId.CreateFrom(Guid.Empty);
+        var createTaskId = TaskId.CreateFrom;
 
         // Act
-        var createTaskIdResult = createTaskId();
+        var createTaskIdResult = createTaskId(Guid.Empty);
 
         // Assert
         createTaskIdResult

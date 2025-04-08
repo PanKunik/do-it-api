@@ -2,7 +2,7 @@
 using DoIt.Api.Shared;
 using Task = DoIt.Api.Domain.Tasks.Task;
 
-namespace DoIt.Api.Persistence.Repositories;
+namespace DoIt.Api.Persistence.Repositories.Tasks;
 
 public interface ITasksRepository
 {

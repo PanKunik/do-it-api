@@ -24,7 +24,7 @@ public class CreateTasksControllerTests
         // Act
         var response = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest(Constants.Tasks.Title.Value)
+            new CreateTaskRequest(Constants.Tasks.Title.Value, null)
         );
 
         var responseContent = await response.Content.ReadAsStringAsync();

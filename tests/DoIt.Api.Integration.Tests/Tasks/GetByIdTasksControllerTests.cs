@@ -41,14 +41,14 @@ public class GetByIdTasksControllerTests
         // Arrange
         var firstTaskResult = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value)
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value, null)
         );
 
         var firstTaskId = firstTaskResult!.Headers.Location!.Segments[3];
 
         var secondTaskResult = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value)
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value, null)
         );
 
         // Act
@@ -59,11 +59,11 @@ public class GetByIdTasksControllerTests
             .Should()
             .BeTrue();
 
-        var parsedContent = await result.Content.ReadFromJsonAsync<TaskDTO>();
+        var parsedContent = await result.Content.ReadFromJsonAsync<TaskDto>();
 
         parsedContent
             .Should()
-            .Match<TaskDTO>(
+            .Match<TaskDto>(
                 t => t.Title == Constants.Tasks.TitleFromIndex(1).Value
                   && t.Id == Guid.Parse(firstTaskId)
             );
