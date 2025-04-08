@@ -8,7 +8,7 @@ namespace DoIt.Api.Services.TaskLists;
 public class TaskListsService(ITaskListsRepository repository)
     : ITaskListsService
 {
-    public async Task<Result<TaskListDTO>> Create(CreateTaskListRequest request)
+    public async Task<Result<TaskListDto>> Create(CreateTaskListRequest request)
     {
         var taskListNameResult = Name.CreateFrom(request.Name);
         
@@ -30,5 +30,20 @@ public class TaskListsService(ITaskListsRepository repository)
             return createTaskListResult.Error!;
 
         return createTaskListResult.Value!.ToDto();
+    }
+
+    public async Task<Result<TaskListDto>> GetById(Guid id)
+    {
+        var taskListIdResult = TaskListId.CreateFrom(id);
+
+        if (taskListIdResult.IsFailure)
+            return taskListIdResult.Error!;
+
+        var result = await repository.GetById(taskListIdResult.Value!);
+
+        return result.Map<Result<TaskListDto>>(
+            onSuccess: value => value.ToDto(),
+            onFailure: error => error
+        );
     }
 }

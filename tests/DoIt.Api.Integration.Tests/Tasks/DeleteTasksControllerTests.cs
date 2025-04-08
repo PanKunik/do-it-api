@@ -25,19 +25,19 @@ public class DeleteTasksControllerTests
         // Arrange
         var firstTaskResponse = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value)
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value, null)
         );
 
         var firstTaskId = firstTaskResponse!.Headers.Location!.Segments[3];
 
         var secondTaskResponse = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value)
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value, null)
         );
 
         var secondTaskId = secondTaskResponse!.Headers.Location!.Segments[3];
 
-        var tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDTO>>("api/tasks");
+        var tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDto>>("api/tasks");
 
         tasksInDatabase
             .Should()
@@ -55,7 +55,7 @@ public class DeleteTasksControllerTests
             .Should()
             .BeEmpty();
 
-        tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDTO>>("api/tasks");
+        tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDto>>("api/tasks");
 
         tasksInDatabase
             .Should()

@@ -1,12 +1,11 @@
 ﻿using Dapper;
 using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Persistence.Database;
-using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Shared;
 using DoIt.Api.Shared.Errors;
 using Task = DoIt.Api.Domain.Tasks.Task;
 
-namespace DoIt.Api.Persistence.Repositories;
+namespace DoIt.Api.Persistence.Repositories.Tasks;
 
 public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
     : ITasksRepository
@@ -20,11 +19,12 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
 
         var query = @"
             SELECT
-                task_id AS Id
-                , title
-                , created_at AS CreatedAt
-                , is_done AS IsDone
-                , is_important AS IsImportant
+                task_id AS TaskId
+                , title AS TaskTitle
+                , created_at AS TaskCreatedAt
+                , is_done AS TaskIsDone
+                , is_important AS TaskIsImportant
+                , task_list_id AS TaskListId
             FROM
                 public.tasks";
 
@@ -41,11 +41,12 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
 
         var query = @"
             SELECT
-                task_id AS Id
-                , title
-                , created_at AS CreatedAt
-                , is_done AS IsDone
-                , is_important AS IsImportant
+                task_id AS TaskId
+                , title AS TaskTitle
+                , created_at AS TaskCreatedAt
+                , is_done AS TaskIsDone
+                , is_important AS TaskIsImportant
+                , task_list_id AS TaskListId
             FROM
                 public.tasks
             WHERE
@@ -71,14 +72,16 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
                 , created_at
                 , is_done
                 , is_important
+                , task_list_id
             )
             VALUES
             (
-                @Id
-                , @Title
-                , @CreatedAt
-                , @IsDone
-                , @isImportant
+                @TaskId
+                , @TaskTitle
+                , @TaskCreatedAt
+                , @TaskIsDone
+                , @TaskisImportant
+                , @TaskListId
             )";
 
         var taskRecordResult = task.FromDomain();

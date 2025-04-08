@@ -63,7 +63,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<TaskDTO>());
+            .Returns(new List<TaskDto>());
 
         // Act
         var result = await _cut.Get();
@@ -84,7 +84,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<TaskDTO>());
+            .Returns(new List<TaskDto>());
 
         // Act
         var result = (OkObjectResult) await _cut.Get();
@@ -102,14 +102,15 @@ public class TasksControllerTests
         _tasksService
             .GetAll()
             .Returns(
-                new List<TaskDTO>()
+                new List<TaskDto>()
                 {
-                    new TaskDTO(
+                    new TaskDto(
                         Constants.Tasks.TaskId.Value,
                         Constants.Tasks.Title.Value,
                         Constants.Tasks.CreatedAt,
                         Constants.Tasks.NotDone,
-                        Constants.Tasks.Important
+                        Constants.Tasks.Important,
+                        null
                     )
                 }
             );
@@ -125,14 +126,15 @@ public class TasksControllerTests
         result.Value
             .Should()
             .BeEquivalentTo(
-                new List<TaskDTO>()
+                new List<TaskDto>()
                 {
-                    new TaskDTO(
+                    new TaskDto(
                         Constants.Tasks.TaskId.Value,
                         Constants.Tasks.Title.Value,
                         Constants.Tasks.CreatedAt,
                         Constants.Tasks.NotDone,
-                        Constants.Tasks.Important
+                        Constants.Tasks.Important,
+                        null
                     )
                 }
             );
@@ -144,7 +146,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<TaskDTO>());
+            .Returns(new List<TaskDto>());
 
         // Act
         var result = await _cut.Get();
@@ -245,12 +247,13 @@ public class TasksControllerTests
         _tasksService
             .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                new TaskDTO(
+                new TaskDto(
                     Constants.Tasks.TaskId.Value,
                     Constants.Tasks.Title.Value,
                     Constants.Tasks.CreatedAt,
                     Constants.Tasks.Done,
-                    Constants.Tasks.NotImportant
+                    Constants.Tasks.NotImportant,
+                    null
                 )
             );
 
@@ -274,13 +277,14 @@ public class TasksControllerTests
         _tasksService
             .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
+                Result<TaskDto>.Success(
+                    new TaskDto(
                         Constants.Tasks.TaskId.Value,
                         Constants.Tasks.Title.Value,
                         Constants.Tasks.CreatedAt,
                         Constants.Tasks.Done,
-                        Constants.Tasks.NotImportant
+                        Constants.Tasks.NotImportant,
+                        null
                     )
                 )
             );
@@ -301,12 +305,13 @@ public class TasksControllerTests
         _tasksService
             .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                new TaskDTO(
+                new TaskDto(
                     Constants.Tasks.TaskId.Value,
                     Constants.Tasks.Title.Value,
                     Constants.Tasks.CreatedAt,
                     Constants.Tasks.Done,
-                    Constants.Tasks.NotImportant
+                    Constants.Tasks.NotImportant,
+                    null
                 )
             );
 
@@ -320,7 +325,7 @@ public class TasksControllerTests
 
         result.Value
             .Should()
-            .Match<TaskDTO>(
+            .Match<TaskDto>(
                 r => r.Id == Constants.Tasks.TaskId.Value
                   && r.Title == Constants.Tasks.Title.Value
                   && r.CreatedAt == Constants.Tasks.CreatedAt
@@ -336,12 +341,13 @@ public class TasksControllerTests
         _tasksService
             .GetById(Constants.Tasks.TaskId.Value)
             .Returns(
-                new TaskDTO(
+                new TaskDto(
                     Constants.Tasks.TaskId.Value,
                     Constants.Tasks.Title.Value,
                     Constants.Tasks.CreatedAt,
                     Constants.Tasks.Done,
-                    Constants.Tasks.NotImportant
+                    Constants.Tasks.NotImportant,
+                    null
                 )
             );
 
@@ -381,16 +387,21 @@ public class TasksControllerTests
     public async Task Create_OnSuccess_ShouldReturnExpectedCreatedAtActionObject()
     {
         // Arrange
-        var request = new CreateTaskRequest(Constants.Tasks.Title.Value);
+        var request = new CreateTaskRequest(
+            Constants.Tasks.Title.Value,
+            null
+        );
+        
         _tasksService
             .Create(request)
             .Returns(
-                new TaskDTO(
+                new TaskDto(
                     Constants.Tasks.TaskId.Value,
                     Constants.Tasks.Title.Value,
                     Constants.Tasks.CreatedAt,
                     Constants.Tasks.NotDone,
-                    Constants.Tasks.NotImportant
+                    Constants.Tasks.NotImportant,
+                    null
                 )
             );
 
@@ -429,16 +440,21 @@ public class TasksControllerTests
     public async Task Create_OnSuccess_ShouldReturn201CreatedStatusCode()
     {
         // Arrange
-        var request = new CreateTaskRequest(Constants.Tasks.Title.Value);
+        var request = new CreateTaskRequest(
+            Constants.Tasks.Title.Value,
+            null
+        );
+        
         _tasksService
             .Create(request)
             .Returns(
-                new TaskDTO(
+                new TaskDto(
                     Constants.Tasks.TaskId.Value,
                     Constants.Tasks.Title.Value,
                     Constants.Tasks.CreatedAt,
                     Constants.Tasks.NotDone,
-                    Constants.Tasks.NotImportant
+                    Constants.Tasks.NotImportant,
+                    null
                 )
             );
 
@@ -455,17 +471,22 @@ public class TasksControllerTests
     public async Task Create_WhenInvoked_ShouldCallTasksRepositoryCreateOnceWithExpectedParameter()
     {
         // Arrange
-        var request = new CreateTaskRequest(Constants.Tasks.Title.Value);
+        var request = new CreateTaskRequest(
+            Constants.Tasks.Title.Value,
+            Constants.TaskLists.TaskListId.Value
+        );
+        
         _tasksService
             .Create(request)
             .Returns(
-                Result<TaskDTO>.Success(
-                    new TaskDTO(
+                Result<TaskDto>.Success(
+                    new TaskDto(
                         Constants.Tasks.TaskId.Value,
                         Constants.Tasks.Title.Value,
                         Constants.Tasks.CreatedAt,
                         Constants.Tasks.NotDone,
-                        Constants.Tasks.NotImportant
+                        Constants.Tasks.NotImportant,
+                        Constants.TaskLists.TaskListId.Value
                     )
                 )
             );

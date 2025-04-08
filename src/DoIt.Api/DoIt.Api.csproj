@@ -16,4 +16,11 @@
 	<EmbeddedResource Include="Persistence/Database/Scripts/*.sql" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Services\Tasks\TaskDTO.cs" />
+    <Compile Remove="Services\TaskLists\TaskListDTO.cs" />
+    <Compile Include="Services\TaskLists\TaskListDto.cs" />
+    <Compile Include="Services\Tasks\TaskDto.cs" />
+  </ItemGroup>
+
 </Project>

@@ -24,7 +24,7 @@ public class UpdateTasksControllerTests
         // Arrange
         var createTaskResponse = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value)
+            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value, null)
         );
 
         var createdTaskId = createTaskResponse.Headers.Location!.Segments[3];
