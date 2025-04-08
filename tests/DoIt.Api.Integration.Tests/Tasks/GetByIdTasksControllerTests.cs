@@ -59,11 +59,11 @@ public class GetByIdTasksControllerTests
             .Should()
             .BeTrue();
 
-        var parsedContent = await result.Content.ReadFromJsonAsync<TaskDTO>();
+        var parsedContent = await result.Content.ReadFromJsonAsync<TaskDto>();
 
         parsedContent
             .Should()
-            .Match<TaskDTO>(
+            .Match<TaskDto>(
                 t => t.Title == Constants.Tasks.TitleFromIndex(1).Value
                   && t.Id == Guid.Parse(firstTaskId)
             );
