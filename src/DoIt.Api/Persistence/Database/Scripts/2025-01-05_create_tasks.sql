@@ -3,5 +3,6 @@ CREATE TABLE IF NOT EXISTS tasks (
 	title VARCHAR(100) NOT NULL,
 	created_at TIMESTAMP WITH TIME ZONE NOT NULL,
 	is_done BOOLEAN NOT NULL,
-	is_important BOOLEAN NOT NULL
+	is_important BOOLEAN NOT NULL,
+	task_list_id UUID NULL  -- TODO: Add FK
 );

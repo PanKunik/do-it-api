@@ -16,7 +16,8 @@ public class TaskTests
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.Done,
-            Constants.Tasks.Important
+            Constants.Tasks.Important,
+            Constants.TaskLists.TaskListId
         );
 
         // Act
@@ -35,6 +36,7 @@ public class TaskTests
                   && t.CreatedAt == Constants.Tasks.CreatedAt
                   && t.IsDone == Constants.Tasks.Done
                   && t.IsImportant == Constants.Tasks.Important
+                  && t.TaskListId == Constants.TaskLists.TaskListId
             );
 
         await System.Threading.Tasks.Task.CompletedTask;
@@ -49,7 +51,8 @@ public class TaskTests
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
-            Constants.Tasks.NotImportant
+            Constants.Tasks.NotImportant,
+            Constants.TaskLists.TaskListId
         );
 
         // Act
@@ -75,7 +78,8 @@ public class TaskTests
             title: null!,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
-            Constants.Tasks.Important
+            Constants.Tasks.Important,
+            Constants.TaskLists.TaskListId
         );
 
         // Act
@@ -105,7 +109,8 @@ public class TaskTests
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             isDone: actualState,
-            Constants.Tasks.NotImportant
+            Constants.Tasks.NotImportant,
+            Constants.TaskLists.TaskListId
         ).Value!;
 
         // Act
@@ -132,7 +137,8 @@ public class TaskTests
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
-            isImportant: actualState
+            isImportant: actualState,
+            Constants.TaskLists.TaskListId
         ).Value!;
 
         // Act
@@ -155,7 +161,8 @@ public class TaskTests
             Constants.Tasks.TitleFromIndex(0),
             Constants.Tasks.CreatedAtFromIndex(0),
             Constants.Tasks.NotDone,
-            Constants.Tasks.NotImportant
+            Constants.Tasks.NotImportant,
+            taskListId: null
         ).Value!;
 
         var right = Task.Create(
@@ -163,7 +170,8 @@ public class TaskTests
             Constants.Tasks.TitleFromIndex(1),
             Constants.Tasks.CreatedAtFromIndex(1),
             Constants.Tasks.Done,
-            Constants.Tasks.Important
+            Constants.Tasks.Important,
+            Constants.TaskLists.TaskListId
         ).Value!;
 
         // Act
@@ -186,7 +194,8 @@ public class TaskTests
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
-            Constants.Tasks.NotImportant
+            Constants.Tasks.NotImportant,
+            Constants.TaskLists.TaskListId
         ).Value!;
 
         var right = Task.Create(
@@ -194,7 +203,8 @@ public class TaskTests
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
-            Constants.Tasks.NotImportant
+            Constants.Tasks.NotImportant,
+            Constants.TaskLists.TaskListId
         ).Value!;
 
         // Act
@@ -217,7 +227,8 @@ public class TaskTests
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
-            Constants.Tasks.Important
+            Constants.Tasks.Important,
+            taskListId: null
         ).Value!;
 
         // Act
@@ -243,7 +254,8 @@ public class TaskTests
             title: Constants.Tasks.Title,
             createdAt: Constants.Tasks.CreatedAt,
             isDone: Constants.Tasks.NotDone,
-            Constants.Tasks.Important
+            isImportant: Constants.Tasks.Important,
+            taskListId: null
         ).Value!;
 
         // Act

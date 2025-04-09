@@ -1,12 +1,12 @@
 ﻿using DoIt.Api.Persistence.Database;
-using DoIt.Api.Persistence.Repositories;
 using DoIt.Api.Persistence.Repositories.TaskLists;
+using DoIt.Api.Persistence.Repositories.Tasks;
 
 namespace DoIt.Api.Persistence;
 
 public static class Extensions
 {
-    public static IServiceCollection AddPersistance(
+    public static IServiceCollection AddPersistence(
         this IServiceCollection services,
         IConfiguration configuration
     )

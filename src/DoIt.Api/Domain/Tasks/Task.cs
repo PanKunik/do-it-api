@@ -1,4 +1,5 @@
 ﻿using DoIt.Api.Domain.Shared;
+using DoIt.Api.Domain.TaskLists;
 using DoIt.Api.Shared;
 
 namespace DoIt.Api.Domain.Tasks;
@@ -10,13 +11,15 @@ public class Task
     public DateTime CreatedAt { get; }
     public bool IsDone { get; private set; }
     public bool IsImportant { get; private set; }
+    public TaskListId? TaskListId { get; }
 
     private Task(
         TaskId taskId,
         Title title,
         DateTime createdAt,
         bool isDone,
-        bool isImportant
+        bool isImportant,
+        TaskListId? taskListId
     )
         : base(taskId)
     {
@@ -24,6 +27,7 @@ public class Task
         CreatedAt = createdAt;
         IsDone = isDone;
         IsImportant = isImportant;
+        TaskListId = taskListId;
     }
 
     public static Result<Task> Create(
@@ -31,7 +35,8 @@ public class Task
         Title title,
         DateTime createdAt,
         bool isDone,
-        bool isImportant
+        bool isImportant,
+        TaskListId? taskListId
     )
     {
         if (taskId is null)
@@ -45,7 +50,8 @@ public class Task
             title,
             createdAt,
             isDone,
-            isImportant
+            isImportant,
+            taskListId
         );
     }
 

@@ -1,4 +1,5 @@
-﻿using DoIt.Api.Domain.Tasks;
+﻿using DoIt.Api.Domain.TaskLists;
+using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Shared;
 using Task = DoIt.Api.Domain.Tasks.Task;
 
@@ -13,18 +14,29 @@ public static class Extensions
             task.Title.Value,
             task.CreatedAt,
             task.IsDone,
-            task.IsImportant
+            task.IsImportant,
+            task.TaskListId?.Value
         );
     }
 
     public static Result<Task> ToDomain(this TaskRecord taskRecord)
     {
-        var taskIdResult = TaskId.CreateFrom(taskRecord.Id);
+        var taskIdResult = TaskId.CreateFrom(taskRecord.TaskId);
 
         if (taskIdResult.IsFailure)
             return taskIdResult.Error!;
 
-        var titleResult = Title.CreateFrom(taskRecord.Title);
+        Result<TaskListId>? taskListIdResult = null;
+        
+        if (taskRecord.TaskListId.HasValue)
+        {
+            taskListIdResult = TaskListId.CreateFrom(taskRecord.TaskListId.Value);
+
+            if (taskListIdResult.IsFailure)
+                return taskListIdResult.Error!;
+        }
+
+        var titleResult = Title.CreateFrom(taskRecord.TaskTitle);
 
         if (titleResult.IsFailure)
             return titleResult.Error!;
@@ -32,9 +44,10 @@ public static class Extensions
         return Task.Create(
             taskIdResult.Value!,
             titleResult.Value!,
-            taskRecord.CreatedAt,
-            taskRecord.IsDone,
-            taskRecord.IsImportant
+            taskRecord.TaskCreatedAt,
+            taskRecord.TaskIsDone,
+            taskRecord.TaskIsImportant,
+            taskListIdResult?.Value!
         );
     }
 }

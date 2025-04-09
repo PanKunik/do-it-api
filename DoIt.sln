@@ -21,9 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "requests", "requests", "{284A4436-E344-458C-901B-565A7AD6A281}"
-	ProjectSection(SolutionItems) = preProject
-		requests\task-lists\create.http = requests\task-lists\create.http
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{13F0D23E-7474-41D3-B961-D3C4BCD6111D}"
 	ProjectSection(SolutionItems) = preProject
@@ -43,6 +40,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tasks", "tasks", "{D7AB204F
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "task-lists", "task-lists", "{B376EA47-CA1E-4300-86F6-ADCF2D61A43B}"
+	ProjectSection(SolutionItems) = preProject
+		requests\task-lists\get-by-id.http = requests\task-lists\get-by-id.http
+		requests\task-lists\create.http = requests\task-lists\create.http
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
