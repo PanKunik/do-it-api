@@ -70,7 +70,7 @@ public class TasksController(ITasksService tasksService)
     [HttpPut("{id:guid}/change-state")]
     public async Task<IActionResult> ChangeState(Guid id)
     {
-        var result = await _tasksService.ChangeState(id);
+        var result = await tasksService.ChangeState(id);
 
         return result.Map(
             onSuccess: NoContent,
