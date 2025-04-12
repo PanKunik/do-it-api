@@ -30,5 +30,15 @@ public partial class Errors
             "TaskList.NameTooLong",
             "Name of the task list cannot be longer than 100 characters."
         );
+
+        public static Error TasksCannotBeNull => Error.Validation(
+            "TaskList.TasksCannotBeNull",
+            "List of tasks cannot be null."
+        );
+
+        public static Error NotFound => Error.NotFound(
+            "TaskList.NotFound",
+            "Task list with specified `id` doesn't exist."
+        );
     }
 }
