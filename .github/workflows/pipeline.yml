@@ -37,3 +37,15 @@ jobs:
           
       - name: Run unit tests
         run: dotnet test tests/DoIt.Api.Unit.Tests/DoIt.Api.Unit.Tests.csproj --configuration Release --no-build
+        
+  integration-tests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download application atrifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          
+      - name: Run integration tests
+        run: dotnet test tests/DoIt.Api.Integration.Tests/DoIt.Api.Integration.Tests.csproj --configuration Release --no-build
