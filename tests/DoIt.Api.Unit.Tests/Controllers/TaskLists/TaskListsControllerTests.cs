@@ -53,6 +53,146 @@ public class TaskListsControllerTests
         await Task.CompletedTask;
     }
     
+    #region GetAll
+
+    [Fact]
+    public async Task GetAll_OnSuccess_ShouldReturnOkObjectResult()
+    {
+        // Arrange
+        _taskListsService
+            .GetAll()
+            .Returns(
+                new List<TaskListDTO>
+                {
+                    new(
+                        Constants.TaskLists.TaskListId.Value,
+                        Constants.TaskLists.Name.Value,
+                        Constants.TaskLists.CreatedAt
+                    )
+                }
+            );
+        
+        // Act
+        var result = await _cut.GetAll();
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<OkObjectResult>();
+    }
+
+    [Fact]
+    public async Task GetAll_OnSuccess_ShouldReturn200OkStatusCode()
+    {
+        // Arrange
+        _taskListsService
+            .GetAll()
+            .Returns(
+                new List<TaskListDTO>
+                {
+                    new(
+                        Constants.TaskLists.TaskListId.Value,
+                        Constants.TaskLists.Name.Value,
+                        Constants.TaskLists.CreatedAt
+                    )
+                }
+            );
+        
+        // Act
+        var result = (OkObjectResult)await _cut.GetAll();
+        
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int) HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task GetAll_OnSuccess_ShouldReturnListOfTaskListDTO()
+    {
+        // Arrange
+        _taskListsService
+            .GetAll()
+            .Returns(new List<TaskListDTO>
+                {
+                    new(
+                        Constants.TaskLists.TaskListId.Value,
+                        Constants.TaskLists.Name.Value,
+                        Constants.TaskLists.CreatedAt
+                    )
+                }
+            );
+
+        // Act
+        var result = (OkObjectResult)await _cut.GetAll();
+
+        // Assert
+        result.Value
+            .Should()
+            .BeEquivalentTo(
+                new List<TaskListDTO>
+                {
+                    new(
+                        Constants.TaskLists.TaskListId.Value,
+                        Constants.TaskLists.Name.Value,
+                        Constants.TaskLists.CreatedAt
+                    )
+                }    
+            );
+    }
+
+    [Fact]
+    public async Task GetAll_WhenInvoked_ShouldCallTaskListsServiceGetAllOnce()
+    {
+        // Arrange
+        _taskListsService
+            .GetAll()
+            .Returns(
+                new List<TaskListDTO>
+                {
+                    new(
+                        Constants.TaskLists.TaskListId.Value,
+                        Constants.TaskLists.Name.Value,
+                        Constants.TaskLists.CreatedAt
+                    )
+                }
+            );
+        
+        // Act
+        await _cut.GetAll();
+        
+        // Assert
+        await _taskListsService
+            .Received(1)
+            .GetAll();
+    }
+
+    [Fact]
+    public async Task GetAll_ShouldContainHttpAttributeWithoutTemplate()
+    {
+        // Act
+        var methodData = typeof(TaskListsController).GetMethod(nameof(TaskListsController.GetAll));
+        
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpGetAttribute>();
+        
+        attribute
+            .Should()
+            .NotBeNull();
+        
+        attribute!.Template
+            .Should()
+            .BeNull();
+        
+        await Task.CompletedTask;
+    }
+    
+    #endregion
+    
     #region Create
 
     [Fact]
@@ -158,7 +298,7 @@ public class TaskListsControllerTests
     public async Task Create_ShouldContainHttpPostAttributeWithoutTemplate()
     {
         // Act
-        var methodData = typeof(TaskListsController).GetMethod("Create");
+        var methodData = typeof(TaskListsController).GetMethod(nameof(TaskListsController.Create));
 
         // Assert
         var attribute = methodData!.GetCustomAttribute<HttpPostAttribute>();

@@ -24,6 +24,17 @@ public class TaskListsController(ITaskListsService taskListsService)
         );
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await taskListsService.GetAll();
+
+        return result.Map(
+            onSuccess: Ok,
+            onFailure: Problem
+        );
+    }
+
     public async Task<IActionResult> GetById(int id)
     {
         return null;

@@ -6,4 +6,5 @@ namespace DoIt.Api.Services.TaskLists;
 public interface ITaskListsService
 {
     Task<Result<TaskListDTO>> Create(CreateTaskListRequest request);
+    Task<List<TaskListDTO>> GetAll();
 }
