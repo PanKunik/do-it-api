@@ -5,5 +5,5 @@ namespace DoIt.Api.Services.TaskLists;
 
 public interface ITaskListsService
 {
-    Task<Result<TaskListDTO>> Create(CreateTaskListRequest request);
+    Task<Result<TaskListDto>> Create(CreateTaskListRequest request);
 }

@@ -1,6 +1,6 @@
 ﻿namespace DoIt.Api.Services.Tasks;
 
-public sealed record TaskDTO(
+public sealed record TaskDto(
     Guid Id,
     string Title,
     DateTime CreatedAt,

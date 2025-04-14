@@ -9,7 +9,6 @@ public static class Extensions
     {
         services.AddScoped<ITasksService, TasksService>();
         services.AddScoped<ITaskListsService, TaskListsService>();
-
         return services;
     }
 }

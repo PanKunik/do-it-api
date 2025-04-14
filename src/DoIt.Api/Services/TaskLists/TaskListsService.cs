@@ -8,7 +8,7 @@ namespace DoIt.Api.Services.TaskLists;
 public class TaskListsService(ITaskListsRepository repository)
     : ITaskListsService
 {
-    public async Task<Result<TaskListDTO>> Create(CreateTaskListRequest request)
+    public async Task<Result<TaskListDto>> Create(CreateTaskListRequest request)
     {
         var taskListNameResult = Name.CreateFrom(request.Name);
         

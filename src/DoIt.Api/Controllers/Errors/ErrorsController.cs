@@ -9,6 +9,7 @@ public class ErrorsController
 {
     public IActionResult Error()
     {
+        // TODO: Check why this isn't used anywhere
         Exception? exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
 
         return Problem();

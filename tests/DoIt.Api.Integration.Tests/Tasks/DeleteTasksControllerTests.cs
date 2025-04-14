@@ -7,17 +7,11 @@ using Constants = DoIt.Api.TestUtils.Constants;
 namespace DoIt.Api.Integration.Tests.Tasks;
 
 [Collection("Tasks controller tests")]
-public class DeleteTasksControllerTests
+public class DeleteTasksControllerTests(DoItApiFactory apiFactory)
     : IAsyncLifetime
 {
-    private readonly HttpClient _client;
-    private readonly Func<Task> _resetDatabase;
-
-    public DeleteTasksControllerTests(DoItApiFactory apiFactory)
-    {
-        _client = apiFactory.HttpClient;
-        _resetDatabase = apiFactory.ResetDatabaseAsync;
-    }
+    private readonly HttpClient _client = apiFactory.HttpClient;
+    private readonly Func<Task> _resetDatabase = apiFactory.ResetDatabaseAsync;
 
     [Fact]
     public async Task Delete_WhenTasksExists_ShouldDeleteExpectedTask()
@@ -34,10 +28,8 @@ public class DeleteTasksControllerTests
             "api/tasks",
             new CreateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value)
         );
-
-        var secondTaskId = secondTaskResponse!.Headers.Location!.Segments[3];
-
-        var tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDTO>>("api/tasks");
+        
+        var tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDto>>("api/tasks");
 
         tasksInDatabase
             .Should()
@@ -55,7 +47,7 @@ public class DeleteTasksControllerTests
             .Should()
             .BeEmpty();
 
-        tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDTO>>("api/tasks");
+        tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDto>>("api/tasks");
 
         tasksInDatabase
             .Should()

@@ -34,12 +34,6 @@ public class Task
         bool isImportant
     )
     {
-        if (taskId is null)
-            return Errors.Task.IdCannotBeNull;
-
-        if (title is null)
-            return Errors.Task.TitleCannotBeNull;
-
         return new Task(
             taskId,
             title,
@@ -51,11 +45,7 @@ public class Task
 
     public Result UpdateTitle(Title title)
     {
-        if (title is null)
-            return Result.Failure(Errors.Task.TitleCannotBeNull);
-
         Title = title;
-
         return Result.Success();
     }
 

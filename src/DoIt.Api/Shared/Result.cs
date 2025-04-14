@@ -18,18 +18,20 @@ public sealed class Result<T> : Result
 
     public T? Value { get; }
 
-    public static Result<T> Success(T value) => new Result<T>(value);
-    public new static Result<T> Failure(Error error) => new Result<T>(error);
+    public static Result<T> Success(T value) => new(value);
+    public new static Result<T> Failure(Error error) => new(error);
 
-    public static implicit operator Result<T>(T value) => new Result<T>(value);
-    public static implicit operator Result<T>(Error error) => new Result<T>(error);
+    public static implicit operator Result<T>(T value) => new(value);
+    public static implicit operator Result<T>(Error error) => new(error);
 
     public TResult Map<TResult>(
         Func<T, TResult> onSuccess,
         Func<Error, TResult> onFailure
     )
     {
-        return IsSuccess ? onSuccess(Value!) : onFailure(Error!);
+        return IsSuccess
+            ? onSuccess(Value!)
+            : onFailure(Error!);
     }
 }
 
@@ -45,20 +47,22 @@ public class Result
         Error = error;
     }
 
-    public Error? Error { get; protected set; }
+    public Error? Error { get; }
     public bool IsSuccess => Error == null;
     public bool IsFailure => !IsSuccess;
 
-    public static Result Success() => new Result();
-    public static Result Failure(Error error) => new Result(error);
+    public static Result Success() => new();
+    public static Result Failure(Error error) => new(error);
 
-    public static implicit operator Result(Error error) => new Result(error);
+    public static implicit operator Result(Error error) => new(error);
 
     public TResult Map<TResult>(
         Func<TResult> onSuccess,
         Func<Error, TResult> onFailure
     )
     {
-        return IsSuccess ? onSuccess() : onFailure(Error!);
+        return IsSuccess
+            ? onSuccess()
+            : onFailure(Error!);
     }
 }

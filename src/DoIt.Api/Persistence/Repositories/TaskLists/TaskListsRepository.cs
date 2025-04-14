@@ -38,7 +38,7 @@ public class TaskListsRepository(IDbConnectionFactory dbConnectionFactory)
         var result = await connection.ExecuteAsync(command, taskListRecordResult.Value!);
 
         if (result <= 0)
-            return Error.Failure("Failure", "Cannot insert `TaskList` entity to database.");
+            return Error.Failure("Failure", $"Cannot insert `{ nameof(TaskList) }` entity to database.");
 
         return taskList;
     }

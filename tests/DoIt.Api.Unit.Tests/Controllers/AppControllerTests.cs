@@ -7,14 +7,13 @@ namespace DoIt.Api.Unit.Tests.Controllers;
 
 public class AppControllerTests
 {
+    private readonly AppController _cut = new();
+
     [Fact]
     public async Task HealthCheck_WhenInvoked_ShouldReturnOkResult()
     {
-        // Arrange
-        var cut = new AppController();
-
         // Act
-        var result = await cut.HealthCheck();
+        var result = await _cut.HealthCheck();
 
         // Assert
         result
@@ -25,11 +24,8 @@ public class AppControllerTests
     [Fact]
     public async Task HealthCheck_WhenInvoked_ShouldReturn200OKStatusCode()
     {
-        // Arrange
-        var cut = new AppController();
-
         // Act
-        var result = (OkObjectResult) await cut.HealthCheck();
+        var result = (OkObjectResult) await _cut.HealthCheck();
 
         // Assert
         result
@@ -39,7 +35,7 @@ public class AppControllerTests
     }
 
     [Fact]
-    public async Task AppCcontroller_ShouldContainApiControllerAttribute()
+    public async Task AppController_ShouldContainApiControllerAttribute()
     {
         // Arrange
         var attribute = typeof(AppController).GetCustomAttribute<ApiControllerAttribute>();
@@ -53,7 +49,7 @@ public class AppControllerTests
     }
 
     [Fact]
-    public async Task AppCcontroller_ShouldContainRouteAttributeWithExpectedTemplate()
+    public async Task AppController_ShouldContainRouteAttributeWithExpectedTemplate()
     {
         // Arrange
         var attribute = typeof(AppController).GetCustomAttribute<RouteAttribute>();

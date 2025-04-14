@@ -1,3 +1,4 @@
+using DoIt.Api.Domain;
 using DoIt.Api.Domain.TaskLists;
 using DoIt.Api.Shared;
 using DoIt.Api.TestUtils;

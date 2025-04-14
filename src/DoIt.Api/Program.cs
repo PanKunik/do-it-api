@@ -6,7 +6,7 @@ using DoIt.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services
-        .AddPersistance(builder.Configuration)
+        .AddPersistence(builder.Configuration)
         .AddServices()
         .AddOwnProblemDetails()
         .AddControllers();
@@ -21,4 +21,3 @@ var app = builder.Build();
 }
 
 app.Run();
-

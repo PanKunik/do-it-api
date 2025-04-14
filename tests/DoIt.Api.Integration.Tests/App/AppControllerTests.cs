@@ -2,15 +2,10 @@
 
 namespace DoIt.Api.Integration.Tests.App;
 
-public class AppControllerTests
+public class AppControllerTests(DoItApiFactory apiFactory)
     : IClassFixture<DoItApiFactory>
 {
-    private readonly HttpClient _client;
-
-    public AppControllerTests(DoItApiFactory apiFactory)
-    {
-        _client = apiFactory.CreateClient();
-    }
+    private readonly HttpClient _client = apiFactory.CreateClient();
 
     [Fact]
     public async Task Get_WhenInvoked_ShouldReturnOk()

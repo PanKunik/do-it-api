@@ -6,7 +6,7 @@ namespace DoIt.Api.Domain.Tasks;
 public class Title
     : ValueObject
 {
-    private const int titleMaxLength = 100;
+    private const int TitleMaxLength = 100;
 
     public string Value { get; }
 
@@ -20,7 +20,7 @@ public class Title
         if (string.IsNullOrWhiteSpace(value))
             return Errors.Task.TitleCannotBeEmpty;
 
-        if (value.Length > titleMaxLength)
+        if (value.Length > TitleMaxLength)
             return Errors.Task.TitleTooLong;
 
         return new Title(value);

@@ -64,7 +64,7 @@ public class TaskListsControllerTests
         _taskListsService
             .Create(request)
             .Returns(
-                new TaskListDTO(
+                new TaskListDto(
                     Constants.TaskLists.TaskListId.Value,
                     Constants.TaskLists.Name.Value,
                     Constants.TaskLists.CreatedAt
@@ -111,7 +111,7 @@ public class TaskListsControllerTests
         _taskListsService
             .Create(request)
             .Returns(
-                new TaskListDTO(
+                new TaskListDto(
                     Constants.TaskLists.TaskListId.Value,
                     Constants.TaskLists.Name.Value,
                     Constants.TaskLists.CreatedAt
@@ -136,8 +136,8 @@ public class TaskListsControllerTests
         _taskListsService
             .Create(request)
             .Returns(
-                Result<TaskListDTO>.Success(
-                    new TaskListDTO(
+                Result<TaskListDto>.Success(
+                    new TaskListDto(
                         Constants.TaskLists.TaskListId.Value,
                         Constants.TaskLists.Name.Value,
                         Constants.TaskLists.CreatedAt

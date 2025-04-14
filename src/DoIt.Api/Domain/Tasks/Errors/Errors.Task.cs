@@ -1,29 +1,19 @@
 ﻿using DoIt.Api.Shared.Errors;
 
-namespace DoIt.Api.Domain.Tasks;
+namespace DoIt.Api.Domain;
 
-public partial class Errors
+public static partial class Errors
 {
-    public class Task
+    public static class Task
     {
         public static Error NotFound => Error.NotFound(
             "Task.NotFound",
             "Task with specified `id` doesn't exist."
         );
 
-        public static Error IdCannotBeNull => Error.Validation(
-            "Task.IdCannotBeNull",
-            "Id of the task cannot be null."
-        );
-
         public static Error IdCannotBeEmpty => Error.Validation(
             "Task.IdCannotBeEmpty",
             "Id of the task cannot be empty guid."
-        );
-
-        public static Error TitleCannotBeNull => Error.Validation(
-            "Task.TitleCannotBeNull",
-            "Title of the task cannot be null."
         );
 
         public static Error TitleCannotBeEmpty => Error.Validation(

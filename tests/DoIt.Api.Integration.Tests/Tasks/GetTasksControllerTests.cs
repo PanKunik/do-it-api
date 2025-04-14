@@ -7,24 +7,18 @@ using Constants = DoIt.Api.TestUtils.Constants;
 namespace DoIt.Api.Integration.Tests.Tasks;
 
 [Collection("Tasks controller tests")]
-public class GetTasksControllerTests
+public class GetTasksControllerTests(DoItApiFactory apiFactory)
     : IAsyncLifetime
 {
-    private readonly HttpClient _client;
-    private readonly Func<Task> _resetDatabase;
-
-    public GetTasksControllerTests(DoItApiFactory apiFactory)
-    {
-        _client = apiFactory.HttpClient;
-        _resetDatabase = apiFactory.ResetDatabaseAsync;
-    }
+    private readonly HttpClient _client = apiFactory.HttpClient;
+    private readonly Func<Task> _resetDatabase = apiFactory.ResetDatabaseAsync;
 
     [Fact]
     public async Task Get_WithoutTasks_ShouldReturnEmptyListResponse()
     {
         // Act
         var response = await _client.GetAsync("api/tasks");
-        var responseContent = await response.Content.ReadFromJsonAsync<List<TaskDTO>>();
+        var responseContent = await response.Content.ReadFromJsonAsync<List<TaskDto>>();
 
         // Assert
         response.StatusCode
@@ -33,7 +27,7 @@ public class GetTasksControllerTests
 
         responseContent
             .Should()
-            .BeEquivalentTo(new List<TaskDTO>());
+            .BeEquivalentTo(new List<TaskDto>());
     }
 
     [Fact]
@@ -52,7 +46,7 @@ public class GetTasksControllerTests
 
         // Act
         var response = await _client.GetAsync("api/tasks");
-        var responseContent = await response.Content.ReadFromJsonAsync<List<TaskDTO>>();
+        var responseContent = await response.Content.ReadFromJsonAsync<List<TaskDto>>();
 
         // Assert
         response.IsSuccessStatusCode

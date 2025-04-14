@@ -2,7 +2,7 @@
 
 public abstract class ValueObject
 {
-    protected static bool EqualOperator(
+    private static bool EqualOperator(
         ValueObject left,
         ValueObject right
     )
@@ -13,7 +13,7 @@ public abstract class ValueObject
         return ReferenceEquals(left, right) || left!.Equals(right);
     }
 
-    protected static bool NotEqualOperator(
+    private static bool NotEqualOperator(
         ValueObject left,
         ValueObject right
     )
@@ -37,7 +37,7 @@ public abstract class ValueObject
     public override int GetHashCode()
     {
         return GetEqualityComponent()
-            .Select(x => x != null ? x.GetHashCode() : 0)
+            .Select(x => x.GetHashCode())
             .Aggregate((x, y) => x ^ y);
     }
 

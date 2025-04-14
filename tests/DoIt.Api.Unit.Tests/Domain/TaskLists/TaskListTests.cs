@@ -34,54 +34,6 @@ public class TaskListTests
         
         await Task.CompletedTask;
     }
-
-    [Fact]
-    public async Task TaskListCreate_WhenPassedNullTaskListId_ShouldReturnResultWithErrorTaskListIdCannotBeNull()
-    {
-        // Arrange
-        var createTaskList = TaskList.Create;
-
-        // Act
-        var createTaskListResult = createTaskList(
-            null,   // taskListId
-            Constants.TaskLists.Name,
-            Constants.TaskLists.CreatedAt
-        );
-
-        // Assert
-        createTaskListResult
-            .Should()
-            .Match<Result<TaskList>>(
-                e => e.IsFailure
-                  && e.Error == Errors.TaskList.IdCannotBeNull
-            );
-        
-        await Task.CompletedTask;
-    }
-
-    [Fact]
-    public async Task TaskListCreate_WhenPassedNullName_ShouldReturnResultWithErrorTaskListNameCannotBeNull()
-    {
-        // Arrange
-        var createTaskList = TaskList.Create;
-        
-        // Act
-        var createTaskListResult = createTaskList(
-            Constants.TaskLists.TaskListId,
-            null,
-            Constants.TaskLists.CreatedAt
-        );
-        
-        // Assert
-        createTaskListResult
-            .Should()
-            .Match<Result<TaskList>>(
-                r => r.IsFailure
-                  && r.Error == Errors.TaskList.NameCannotBeNull
-            );
-        
-        await Task.CompletedTask;
-    }
     
     [Fact]
     public async Task Equals_WhenCalledForObjectWithOtherValuesButSameTaskListId_ShouldReturnTrue()

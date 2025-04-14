@@ -9,17 +9,15 @@ public static class DbInitializer
     {
         EnsureDatabase.For.PostgresqlDatabase(connectionString);
 
-        var upgrader = DeployChanges.To.PostgresqlDatabase(connectionString)
+        var upgrade = DeployChanges.To.PostgresqlDatabase(connectionString)
             .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
             .WithTransaction()
             .LogToConsole()
             .Build();
 
-        var result = upgrader.PerformUpgrade();
+        var result = upgrade.PerformUpgrade();
 
         if (!result.Successful)
-        {
             throw new InvalidOperationException("Failed to upgrade the database.");
-        }
     }
 }

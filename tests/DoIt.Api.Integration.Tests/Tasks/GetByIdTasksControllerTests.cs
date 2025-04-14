@@ -7,17 +7,11 @@ using Constants = DoIt.Api.TestUtils.Constants;
 namespace DoIt.Api.Integration.Tests.Tasks;
 
 [Collection("Tasks controller tests")]
-public class GetByIdTasksControllerTests
+public class GetByIdTasksControllerTests(DoItApiFactory apiFactory)
     : IAsyncLifetime
 {
-    private readonly HttpClient _client;
-    private readonly Func<Task> _resetDatabase;
-
-    public GetByIdTasksControllerTests(DoItApiFactory apiFactory)
-    {
-        _client = apiFactory.HttpClient;
-        _resetDatabase = apiFactory.ResetDatabaseAsync;
-    }
+    private readonly HttpClient _client = apiFactory.HttpClient;
+    private readonly Func<Task> _resetDatabase = apiFactory.ResetDatabaseAsync;
 
     [Fact]
     public async Task GetById_WhenTaskDoesntExists_ShouldReturn404NotFound()
@@ -59,11 +53,11 @@ public class GetByIdTasksControllerTests
             .Should()
             .BeTrue();
 
-        var parsedContent = await result.Content.ReadFromJsonAsync<TaskDTO>();
+        var parsedContent = await result.Content.ReadFromJsonAsync<TaskDto>();
 
         parsedContent
             .Should()
-            .Match<TaskDTO>(
+            .Match<TaskDto>(
                 t => t.Title == Constants.Tasks.TitleFromIndex(1).Value
                   && t.Id == Guid.Parse(firstTaskId)
             );

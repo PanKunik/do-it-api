@@ -3,7 +3,7 @@
 public abstract class Entity<T>
     where T : class
 {
-    public T Id { get; protected set; }
+    public T Id { get; }
 
     protected Entity(T id)
     {

@@ -1,12 +1,12 @@
 ﻿using Dapper;
+using DoIt.Api.Domain;
 using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Persistence.Database;
-using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Shared;
 using DoIt.Api.Shared.Errors;
 using Task = DoIt.Api.Domain.Tasks.Task;
 
-namespace DoIt.Api.Persistence.Repositories;
+namespace DoIt.Api.Persistence.Repositories.Tasks;
 
 public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
     : ITasksRepository

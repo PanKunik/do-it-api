@@ -2,5 +2,5 @@
 
 public static class DbConstants
 {
-    public static readonly string DoItDbConnectionStringPath = "Database:ConnectionStrings:DoItDb";
+    public const string DoItDbConnectionStringPath = "Database:ConnectionStrings:DoItDb";
 }

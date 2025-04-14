@@ -52,10 +52,7 @@ public class ApiProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
         string? instance = null
     )
     {
-        if (modelStateDictionary is null)
-        {
-            throw new ArgumentNullException(nameof(modelStateDictionary));
-        }
+        ArgumentNullException.ThrowIfNull(modelStateDictionary, nameof(modelStateDictionary));
 
         statusCode ??= 400;
 
@@ -68,9 +65,7 @@ public class ApiProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
         };
 
         if (title is not null)
-        {
             problemDetails.Title = title;
-        }
 
         return problemDetails;
     }
@@ -90,15 +85,9 @@ public class ApiProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
         }
 
         problemDetails.Instance = httpContext.Request.Path;
+        problemDetails.Extensions[Constants.Error.TraceIdName] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
 
-        var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;
-        if (traceId is not null)    // TODO: Check if we need to add this 'traceId' manually
-        {
-            problemDetails.Extensions[Constants.Error.TraceIdName] = traceId;
-        }
-
-        var error = httpContext?.Items[Constants.Error.ErrorsName] as Error;
-        if (error is not null)
+        if (httpContext?.Items[Constants.Error.ErrorsName] is Error error)
         {
             problemDetails.Title = error.Code;
             problemDetails.Detail = error.Message;

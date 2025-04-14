@@ -1,24 +1,14 @@
 using DoIt.Api.Shared.Errors;
 
-namespace DoIt.Api.Domain.TaskLists;
+namespace DoIt.Api.Domain;
 
-public partial class Errors
+public static partial class Errors
 {
-    public class TaskList
+    public static class TaskList
     {
         public static Error IdCannotBeEmpty => Error.Validation(
             "TaskList.IdCannotBeEmpty",
             "Id of the task list cannot be empty guid."
-        );
-
-        public static Error IdCannotBeNull => Error.Validation(
-            "TaskList.IdCannotBeNull",
-            "Id of the task list cannot be null."
-        );
-
-        public static Error NameCannotBeNull => Error.Validation(
-            "TaskList.NameCannotBeNull",
-            "Name of the task list cannot be null."
         );
 
         public static Error NameCannotBeEmpty => Error.Validation(

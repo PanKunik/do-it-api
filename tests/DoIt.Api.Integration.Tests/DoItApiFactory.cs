@@ -35,10 +35,10 @@ public class DoItApiFactory
         _dbConnection = new NpgsqlConnection(_postgresContainer.GetConnectionString());
         HttpClient = CreateClient();
         await _dbConnection.OpenAsync();
-        _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions()
+        _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
             DbAdapter = DbAdapter.Postgres,
-            SchemasToInclude = new[] { "public" }
+            SchemasToInclude = ["public"]
         });
     }
 

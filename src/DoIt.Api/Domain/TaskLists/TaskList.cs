@@ -26,12 +26,6 @@ public class TaskList
         DateTime createdAt
     )
     {
-        if (taskListId is null)
-            return Errors.TaskList.IdCannotBeNull;
-        
-        if (name is null)
-            return Errors.TaskList.NameCannotBeNull;
-        
         return new TaskList(
             taskListId,
             name,
