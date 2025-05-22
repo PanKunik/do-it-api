@@ -39,9 +39,11 @@ public class Task
         TaskListId? taskListId
     )
     {
+        // TODO: Force not null
         if (taskId is null)
             return Errors.Task.IdCannotBeNull;
 
+        // TODO: Force not null
         if (title is null)
             return Errors.Task.TitleCannotBeNull;
 
@@ -57,6 +59,7 @@ public class Task
 
     public Result UpdateTitle(Title title)
     {
+        // TODO: Force not null
         if (title is null)
             return Result.Failure(Errors.Task.TitleCannotBeNull);
 

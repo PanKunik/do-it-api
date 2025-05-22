@@ -10,11 +10,11 @@ public partial class Constants
         public static readonly Title Title = Title.CreateFrom("Task title").Value!;
         public static readonly DateTime CreatedAt = new DateTime(2012, 12, 21);
 
-        public static readonly bool NotDone = false;
-        public static readonly bool Done = true;
+        public const bool NotDone = false;
+        public const bool Done = true;
 
-        public static readonly bool NotImportant = false;
-        public static readonly bool Important = true;
+        public const bool NotImportant = false;
+        public const bool Important = true;
 
         public static TaskId TaskIdFromIndex(int index)
             => TaskId.CreateFrom(new Guid($"00000000-0000-0000-0000-{(index + 1).ToString().PadLeft(12, '0')}")).Value!;

@@ -52,7 +52,10 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
             WHERE
                 task_id = @Id";
 
-        var existingTask = await connection.QueryFirstOrDefaultAsync<TaskRecord>(query, new { Id = taskId.Value });
+        var existingTask = await connection.QueryFirstOrDefaultAsync<TaskRecord>(
+            query,
+            new { Id = taskId.Value }
+        );
 
         if (existingTask is null)
             return Errors.Task.NotFound;
@@ -89,10 +92,16 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
         if (taskRecordResult.IsFailure)
             return taskRecordResult.Error!;
 
-        var result = await connection.ExecuteAsync(command, taskRecordResult.Value!);
+        var result = await connection.ExecuteAsync(
+            command,
+            taskRecordResult.Value!
+        );
 
         if (result <= 0)
-            return Error.Failure("Failure", "Cannot insert `Task` entity to database.");
+            return Error.Failure(
+                "Failure",
+                "Cannot insert `Task` entity to database."
+            );
 
         return task;
     }
@@ -105,11 +114,12 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
             DELETE FROM public.tasks
             WHERE task_id = @Id";
 
-        var result = await connection.ExecuteAsync(command, new { Id = taskId.Value });
+        var result = await connection.ExecuteAsync(
+            command,
+            new { Id = taskId.Value }
+        );
 
-        return result > 0
-            ? Result.Success()
-            : Errors.Task.NotFound;
+        return result > 0 ? Result.Success() : Errors.Task.NotFound;
     }
 
     public async System.Threading.Tasks.Task<Result> Update(Task task)
@@ -123,10 +133,16 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
                 is_done = @IsDone
             WHERE task_id = @Id";
 
-        var result = await connection.ExecuteAsync(command, new { Id = task.Id.Value, Title = task.Title.Value, IsDone = task.IsDone });
+        var result = await connection.ExecuteAsync(
+            command,
+            new
+            {
+                Id = task.Id.Value,
+                Title = task.Title.Value,
+                task.IsDone
+            }
+        );
 
-        return result > 0
-            ? Result.Success()
-            : Errors.Task.NotFound;
+        return result > 0 ? Result.Success() : Errors.Task.NotFound;
     }
 }

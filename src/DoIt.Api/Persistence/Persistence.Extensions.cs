@@ -14,7 +14,6 @@ public static class Extensions
         services.AddScoped<IDbConnectionFactory>(_ => new NpgsqlConnectionFactory(configuration[DbConstants.DoItDbConnectionStringPath]!));
         services.AddScoped<ITasksRepository, TasksRepository>();
         services.AddScoped<ITaskListsRepository, TaskListsRepository>();
-
         return services;
     }
 }

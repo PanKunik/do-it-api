@@ -14,7 +14,9 @@ public static class Extensions
             taskList.CreatedAt
         );
 
-        taskListRecord.Tasks = taskList.Tasks.Select(t => t.FromDomain().Value!).ToList();
+        taskListRecord.Tasks = taskList.Tasks
+            .Select(t => t.FromDomain().Value!)
+            .ToList();
         return taskListRecord;
     }
 
@@ -34,7 +36,9 @@ public static class Extensions
             taskListIdResult.Value!,
             taskListNameResult.Value!,
             taskListRecord.TaskListCreatedAt,
-            taskListRecord.Tasks.Select(t => t.ToDomain().Value!).ToList()  // TODO: What if result is false?
+            taskListRecord.Tasks
+                .Select(t => t.ToDomain().Value!)
+                .ToList()  // TODO: What if result is false?
         );
     }
 }

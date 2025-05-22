@@ -11,7 +11,10 @@ public class TaskTests
     public async System.Threading.Tasks.Task TaskCreate_WhenPassedProperData_ShouldCreateExpectedObjectResultWithValue()
     {
         // Arrange
-        var createTask = () => Task.Create(
+        var createTask = Task.Create;
+
+        // Act
+        var createTaskResult = createTask(
             Constants.Tasks.TaskId,
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
@@ -19,9 +22,6 @@ public class TaskTests
             Constants.Tasks.Important,
             Constants.TaskLists.TaskListId
         );
-
-        // Act
-        var createTaskResult = createTask();
 
         // Assert
         createTaskResult
@@ -46,17 +46,17 @@ public class TaskTests
     public async System.Threading.Tasks.Task TaskCreate_WhenPassedNullTaskId_ShouldReturnResultWithErrorTaskIdCannotBeNull()
     {
         // Arrange
-        var createTask = () => Task.Create(
-            taskId: null!,
+        var createTask = Task.Create;
+
+        // Act
+        var createTaskResult = createTask(
+            null!, // taskId
             Constants.Tasks.Title,
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
             Constants.Tasks.NotImportant,
             Constants.TaskLists.TaskListId
         );
-
-        // Act
-        var createTaskResult = createTask();
 
         // Assert
         createTaskResult
@@ -73,17 +73,17 @@ public class TaskTests
     public async System.Threading.Tasks.Task CreateTask_WhenPassedNullTitle_ShouldReturnResultWithErrorTaskTitleCannotBeNull()
     {
         // Arrange
-        var createTask = () => Task.Create(
+        var createTask = Task.Create;
+
+        // Act
+        var createTaskResult = createTask(
             Constants.Tasks.TaskId,
-            title: null!,
+            null!, // title
             Constants.Tasks.CreatedAt,
             Constants.Tasks.NotDone,
             Constants.Tasks.Important,
             Constants.TaskLists.TaskListId
         );
-
-        // Act
-        var createTaskResult = createTask();
 
         // Assert
         createTaskResult

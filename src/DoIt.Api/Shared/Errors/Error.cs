@@ -2,7 +2,7 @@
 
 namespace DoIt.Api.Shared.Errors;
 
-public sealed record class Error
+public sealed record Error
 {
     public string Code { get; }
     public string Message { get; }
@@ -24,7 +24,11 @@ public sealed record class Error
         string message
     )
     {
-        return new Error(code, message, ErrorType.Failure);
+        return new Error(
+            code,
+            message,
+            ErrorType.Failure
+        );
     }
 
     public static Error Validation(
@@ -32,7 +36,11 @@ public sealed record class Error
         string message
     )
     {
-        return new(code, message, ErrorType.Validation);
+        return new Error(
+            code,
+            message,
+            ErrorType.Validation
+        );
     }
 
     public static Error NotFound(
@@ -40,6 +48,10 @@ public sealed record class Error
         string message
     )
     {
-        return new(code, message, ErrorType.NotFound);
+        return new Error(
+            code,
+            message,
+            ErrorType.NotFound
+        );
     }
 }

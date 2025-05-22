@@ -6,7 +6,7 @@ namespace DoIt.Api.Domain.TaskLists;
 public class Name
     : ValueObject
 {
-    private const int nameMaxLength = 100;
+    private const int NameMaxLength = 100;
     
     public string Value { get; }
 
@@ -20,7 +20,7 @@ public class Name
         if (string.IsNullOrWhiteSpace(value))
             return Errors.TaskList.NameCannotBeEmpty;
 
-        if (value.Length > nameMaxLength)
+        if (value.Length > NameMaxLength)
             return Errors.TaskList.NameTooLong;
         
         return new Name(value);

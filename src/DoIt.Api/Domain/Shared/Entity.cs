@@ -1,14 +1,9 @@
 ﻿namespace DoIt.Api.Domain.Shared;
 
-public abstract class Entity<T>
+public abstract class Entity<T>(T id)
     where T : class
 {
-    public T Id { get; protected set; }
-
-    protected Entity(T id)
-    {
-        Id = id ?? throw new ArgumentNullException(nameof(id));
-    }
+    public T Id { get; } = id ?? throw new ArgumentNullException(nameof(id));
 
     public override bool Equals(object? obj)
     {
@@ -24,7 +19,10 @@ public abstract class Entity<T>
         return Id.Equals(other.Id);
     }
 
-    public static bool operator ==(Entity<T> one, Entity<T> two)
+    public static bool operator ==(
+        Entity<T>? one,
+        Entity<T>? two
+    )
     {
         if (one is null && two is null)
             return true;
@@ -35,7 +33,10 @@ public abstract class Entity<T>
         return one.Equals(two);
     }
 
-    public static bool operator !=(Entity<T> one, Entity<T> two)
+    public static bool operator !=(
+        Entity<T> one,
+        Entity<T> two
+    )
     {
         return !(one == two);
     }

@@ -1,7 +1,6 @@
 ﻿using DoIt.Api.Shared;
 using DoIt.Api.Shared.Errors;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 
 namespace DoIt.Api.Unit.Tests.Shared;
 public class ResultTests
@@ -28,7 +27,7 @@ public class ResultTests
     }
 
     [Fact]
-    public async Task ResultSuccess_WhenInvoked_ShouldSetIsSuccessfullEqualToTrue()
+    public async Task ResultSuccess_WhenInvoked_ShouldSetIsSuccessfullyEqualToTrue()
     {
         // Arrange
         var createSuccessResult = Result.Success;
@@ -85,7 +84,12 @@ public class ResultTests
         var createFailureResult = Result.Failure;
 
         // Act
-        var cut = createFailureResult(Error.Failure("GeneralFailure", "Message"));
+        var cut = createFailureResult(
+            Error.Failure(
+                "GeneralFailure",
+                "Message"
+            )
+        );
 
         // Assert
         cut
@@ -106,7 +110,12 @@ public class ResultTests
         var createFailureResult = Result.Failure;
 
         // Act
-        var cut = createFailureResult(Error.Failure("GeneralFailure", "Message"));
+        var cut = createFailureResult(
+            Error.Failure(
+                "GeneralFailure",
+                "Message"
+            )
+        );
 
         // Assert
         cut.IsSuccess
@@ -123,7 +132,12 @@ public class ResultTests
         var createFailureResult = Result.Failure;
 
         // Act
-        var cut = createFailureResult(Error.Failure("GeneralFailure", "Message"));
+        var cut = createFailureResult(
+            Error.Failure(
+                "GeneralFailure", 
+                "Message"
+            )
+        );
 
         // Assert
         cut.IsFailure
@@ -140,7 +154,12 @@ public class ResultTests
         var createFailureResult = Result.Failure;
 
         // Act
-        var cut = createFailureResult(Error.Failure("GeneralFailure", "Message"));
+        var cut = createFailureResult(
+            Error.Failure(
+                "GeneralFailure", 
+                "Message"
+            )
+        );
 
         // Assert
         cut.Error
@@ -158,7 +177,7 @@ public class ResultTests
     }
 
     [Fact]
-    public async Task ResultMap_WhenInvokedForSuccessfullResult_ShouldCallOnSuccessOnce()
+    public async Task ResultMap_WhenInvokedForSuccessfullyResult_ShouldCallOnSuccessOnce()
     {
         // Arrange
         var createSuccessResult = Result.Success;
@@ -188,7 +207,12 @@ public class ResultTests
     {
         // Arrange
         var createSuccessResult = Result.Failure;
-        var cut = createSuccessResult(Error.Failure("Code", "Message"));
+        var cut = createSuccessResult(
+            Error.Failure(
+                "Code", 
+                "Message"
+            )
+        );
 
         var success = Substitute.For<Func<int>>();
         var failure = Substitute.For<Func<Error, int>>();
@@ -213,7 +237,10 @@ public class ResultTests
     public async Task ResultImplicitOperatorError_WhenInvokedForFailedResult_ShouldCastToResultWithError()
     {
         // Arrange
-        Error error = Error.Failure("Code", "Message");
+        Error error = Error.Failure(
+            "Code", 
+            "Message"
+        );
 
         // Act
         Result result = error;

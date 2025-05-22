@@ -27,7 +27,7 @@ public class GenericResultTests
     }
 
     [Fact]
-    public async Task ResultTSuccess_WhenInvoked_ShouldSetIsSuccessfullEqualToTrue()
+    public async Task ResultTSuccess_WhenInvoked_ShouldSetIsSuccessEqualToTrue()
     {
         // Arrange
         Func<int, Result<int>> createSuccessResult = Result<int>.Success;
@@ -101,7 +101,12 @@ public class GenericResultTests
         Func<Error, Result<int>> createFailedResult = Result<int>.Failure;
 
         // Act
-        var cut = createFailedResult(Error.Failure("Code", "Message"));
+        var cut = createFailedResult(
+            Error.Failure(
+                "Code",
+                "Message"
+            )
+        );
 
         // Assert
         cut
@@ -122,7 +127,12 @@ public class GenericResultTests
         Func<Error, Result<int>> createFailedResult = Result<int>.Failure;
 
         // Act
-        var cut = createFailedResult(Error.Failure("Code", "Message"));
+        var cut = createFailedResult(
+            Error.Failure(
+                "Code",
+                "Message"
+            )
+        );
 
         // Assert
         cut.IsSuccess
@@ -139,7 +149,12 @@ public class GenericResultTests
         Func<Error, Result<int>> createFailedResult = Result<int>.Failure;
 
         // Act
-        var cut = createFailedResult(Error.Failure("Code", "Message"));
+        var cut = createFailedResult(
+            Error.Failure(
+                "Code",
+                "Message"
+            )
+        );
 
         // Assert
         cut.IsFailure
@@ -156,7 +171,12 @@ public class GenericResultTests
         Func<Error, Result<int>> createFailedResult = Result<int>.Failure;
 
         // Act
-        var cut = createFailedResult(Error.Failure("Code", "Message"));
+        var cut = createFailedResult(
+            Error.Failure(
+                "Code",
+                "Message"
+            )
+        );
 
         // Assert
         cut.Error
@@ -180,7 +200,12 @@ public class GenericResultTests
         Func<Error, Result<int>> createFailedResult = Result<int>.Failure;
 
         // Act
-        var cut = createFailedResult(Error.Failure("Code", "Message"));
+        var cut = createFailedResult(
+            Error.Failure(
+                "Code",
+                "Message"
+            )
+        );
 
         // Assert
         cut.Value
@@ -197,7 +222,12 @@ public class GenericResultTests
         Func<Error, Result<object>> createFailedResult = Result<object>.Failure;
 
         // Act
-        var cut = createFailedResult(Error.Failure("Code", "Message"));
+        var cut = createFailedResult(
+            Error.Failure(
+                "Code",
+                "Message"
+            )
+        );
 
         // Assert
         cut.Value
@@ -208,7 +238,7 @@ public class GenericResultTests
     }
 
     [Fact]
-    public async Task ResultTMap_WhenInvokedForSuccessfullResult_ShouldCallOnSuccessOnce()
+    public async Task ResultTMap_WhenInvokedForSuccessfulResult_ShouldCallOnSuccessOnce()
     {
         // Arrange
         Func<int, Result<int>> createSuccessResult = Result<int>.Success;
@@ -238,7 +268,12 @@ public class GenericResultTests
     {
         // Arrange
         Func<Error, Result<int>> createSuccessResult = Result<int>.Failure;
-        var cut = createSuccessResult(Error.Failure("Code", "Message"));
+        var cut = createSuccessResult(
+            Error.Failure(
+                "Code", 
+                "Message"
+            )
+        );
 
         var success = Substitute.For<Func<int, int>>();
         var failure = Substitute.For<Func<Error, int>>();
@@ -263,7 +298,7 @@ public class GenericResultTests
     public async Task ResultTImplicitOperatorValue_WhenInvokedForSuccessResultAsValueType_ShouldCastToResultWithValue()
     {
         // Arrange
-        int value = 1;
+        const int value = 1;
 
         // Act
         Result<int> result = value;
@@ -341,7 +376,10 @@ public class GenericResultTests
     public async Task ResultTImplicitOperatorError_WhenInvokedForFailedResultAsValueType_ShouldCastToResultWithError()
     {
         // Arrange
-        Error error = Error.Failure("Code", "Message");
+        Error error = Error.Failure(
+            "Code",
+            "Message"
+        );
 
         // Act
         Result<int> result = error;
@@ -385,7 +423,10 @@ public class GenericResultTests
     public async Task ResultTImplicitOperatorError_WhenInvokedForFailedResultAsReferenceType_ShouldCastToResultWithError()
     {
         // Arrange
-        Error error = Error.Failure("Code", "Message");
+        Error error = Error.Failure(
+            "Code",
+            "Message"
+        );
 
         // Act
         Result<object> result = error;

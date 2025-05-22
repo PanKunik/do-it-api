@@ -2,6 +2,4 @@
 
 [CollectionDefinition("Tasks controller tests")]
 public class SharedTestCollection
-    : ICollectionFixture<DoItApiFactory>
-{
-}
+    : ICollectionFixture<DoItApiFactory>;

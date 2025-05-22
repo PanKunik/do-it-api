@@ -7,9 +7,7 @@ public static class Extensions
     public static IServiceCollection AddOwnProblemDetails(this IServiceCollection services)
     {
         services.AddSingleton<ProblemDetailsFactory, ApiProblemDetailsFactory>();
-
         services.AddProblemDetails();
-
         return services;
     }
 }

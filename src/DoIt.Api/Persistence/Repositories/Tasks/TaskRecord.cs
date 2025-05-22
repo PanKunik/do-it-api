@@ -1,5 +1,6 @@
 ﻿namespace DoIt.Api.Persistence.Repositories.Tasks;
 
+// TODO: Find better naming for fields
 public sealed record TaskRecord(
     Guid TaskId,
     string TaskTitle,
