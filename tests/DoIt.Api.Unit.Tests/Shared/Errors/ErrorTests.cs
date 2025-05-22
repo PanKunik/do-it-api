@@ -45,7 +45,10 @@ public class ErrorTests
         var createFailureError = Error.Failure;
 
         // Act
-        var cut = createFailureError("Code", "Message");
+        var cut = createFailureError(
+            "Code",
+            "Message"
+        );
 
         // Assert
         cut
@@ -74,7 +77,10 @@ public class ErrorTests
         var createValidationError = Error.Validation;
 
         // Act
-        var cut = createValidationError("Code", "Message");
+        var cut = createValidationError(
+            "Code",
+            "Message"
+        );
 
         // Assert
         cut
@@ -103,7 +109,10 @@ public class ErrorTests
         var createNotFoundError = Error.NotFound;
 
         // Act
-        var cut = createNotFoundError("Code", "Message");
+        var cut = createNotFoundError(
+            "Code",
+            "Message"
+        );
 
         // Assert
         cut

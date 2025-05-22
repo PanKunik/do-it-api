@@ -1,7 +1,7 @@
-﻿using DoIt.Api.Controllers;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
+﻿using System.Net;
 using System.Reflection;
+using DoIt.Api.Controllers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DoIt.Api.Unit.Tests.Controllers;
 
@@ -39,7 +39,7 @@ public class AppControllerTests
     }
 
     [Fact]
-    public async Task AppCcontroller_ShouldContainApiControllerAttribute()
+    public async Task AppController_ShouldContainApiControllerAttribute()
     {
         // Arrange
         var attribute = typeof(AppController).GetCustomAttribute<ApiControllerAttribute>();
@@ -53,7 +53,7 @@ public class AppControllerTests
     }
 
     [Fact]
-    public async Task AppCcontroller_ShouldContainRouteAttributeWithExpectedTemplate()
+    public async Task AppController_ShouldContainRouteAttributeWithExpectedTemplate()
     {
         // Arrange
         var attribute = typeof(AppController).GetCustomAttribute<RouteAttribute>();

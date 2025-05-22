@@ -1,6 +1,6 @@
-using DoIt.Api.Persistence.Database;
-using DoIt.Api.Persistence;
 using DoIt.Api.Controllers.Errors;
+using DoIt.Api.Persistence;
+using DoIt.Api.Persistence.Database;
 using DoIt.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,4 +21,3 @@ var app = builder.Build();
 }
 
 app.Run();
-

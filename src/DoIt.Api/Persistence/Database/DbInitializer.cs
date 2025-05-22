@@ -1,5 +1,5 @@
-﻿using DbUp;
-using System.Reflection;
+﻿using System.Reflection;
+using DbUp;
 
 namespace DoIt.Api.Persistence.Database;
 
@@ -18,8 +18,6 @@ public static class DbInitializer
         var result = upgrader.PerformUpgrade();
 
         if (!result.Successful)
-        {
             throw new InvalidOperationException("Failed to upgrade the database.");
-        }
     }
 }

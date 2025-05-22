@@ -9,7 +9,6 @@ using DoIt.Api.TestUtils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
-using Task = DoIt.Api.Domain.Tasks.Task;
 
 namespace DoIt.Api.Unit.Tests.Controllers.TaskLists;
 
@@ -25,7 +24,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task TaskListsController_ShouldContainRouteAttributeWithExpectedTemplate()
+    public async Task TaskListsController_ShouldContainRouteAttributeWithExpectedTemplate()
     {
         // Arrange
         var attribute = typeof(TaskListsController).GetCustomAttribute<RouteAttribute>();
@@ -39,11 +38,11 @@ public class TaskListsControllerTests
             .Should()
             .BeEquivalentTo("api/task-lists");
 
-        await System.Threading.Tasks.Task.CompletedTask;
+        await Task.CompletedTask;
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task TaskListsController_ShouldContainApiControllerAttribute()
+    public async Task TaskListsController_ShouldContainApiControllerAttribute()
     {
         // Arrange
         var attribute = typeof(TaskListsController).GetCustomAttribute<ApiControllerAttribute>();
@@ -53,13 +52,13 @@ public class TaskListsControllerTests
             .Should()
             .NotBeNull();
 
-        await System.Threading.Tasks.Task.CompletedTask;
+        await Task.CompletedTask;
     }
 
     #region Create
 
     [Fact]
-    public async System.Threading.Tasks.Task Create_OnSuccess_ShouldReturnExpectedCreatedAtActionObject()
+    public async Task Create_OnSuccess_ShouldReturnExpectedCreatedAtActionObject()
     {
         // Arrange
         var request = new CreateTaskListRequest(Constants.TaskLists.Name.Value);
@@ -107,7 +106,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Create_OnSuccess_ShouldReturn201CreatedStatusCode()
+    public async Task Create_OnSuccess_ShouldReturn201CreatedStatusCode()
     {
         // Arrange
         var request = new CreateTaskListRequest(Constants.TaskLists.Name.Value);
@@ -133,7 +132,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task
+    public async Task
         Create_WhenInvoked_ShouldCallTaskListsServiceCreateOnceWithExpectedParameters()
     {
         // Arrange
@@ -162,7 +161,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Create_ShouldContainHttpPostAttributeWithoutTemplate()
+    public async Task Create_ShouldContainHttpPostAttributeWithoutTemplate()
     {
         // Act
         var methodData = typeof(TaskListsController).GetMethod("Create");
@@ -178,7 +177,7 @@ public class TaskListsControllerTests
             .Should()
             .BeNull();
 
-        await System.Threading.Tasks.Task.CompletedTask;
+        await Task.CompletedTask;
     }
 
     #endregion
@@ -186,7 +185,7 @@ public class TaskListsControllerTests
     #region GetById
 
     [Fact]
-    public async System.Threading.Tasks.Task GetById_WhenTaskListNotFound_ShouldReturnObjectResult()
+    public async Task GetById_WhenTaskListNotFound_ShouldReturnObjectResult()
     {
         // Arrange
         _taskListsService
@@ -207,7 +206,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetById_WhenTaskListNotFound_ShouldReturnProblemDetailsAsValue()
+    public async Task GetById_WhenTaskListNotFound_ShouldReturnProblemDetailsAsValue()
     {
         // Arrange
         _taskListsService
@@ -228,7 +227,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetById_WhenTaskListNotFound_ShouldReturn404NotFoundStatusCode()
+    public async Task GetById_WhenTaskListNotFound_ShouldReturn404NotFoundStatusCode()
     {
         // Arrange
         _taskListsService
@@ -245,7 +244,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetById_OnSuccess_ShouldReturnOkObjectResult()
+    public async Task GetById_OnSuccess_ShouldReturnOkObjectResult()
     {
         // Arrange
         _taskListsService
@@ -273,7 +272,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetById_OnSuccess_ShouldReturn200OKStatusCode()
+    public async Task GetById_OnSuccess_ShouldReturn200OKStatusCode()
     {
         // Arrange
         _taskListsService
@@ -299,7 +298,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetById_OnSuccess_ShouldReturnExpectedTaskDTO()
+    public async Task GetById_OnSuccess_ShouldReturnExpectedTaskDTO()
     {
         // Arrange
         _taskListsService
@@ -331,7 +330,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task
+    public async Task
         GetById_WhenInvoked_ShouldCallTaskListsServiceGetByIdOnceWithExpectedArgument()
     {
         // Arrange
@@ -356,7 +355,7 @@ public class TaskListsControllerTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task GetById_ShouldContainHttpGetAttributeWithExpectedTemplate()
+    public async Task GetById_ShouldContainHttpGetAttributeWithExpectedTemplate()
     {
         // Arrange
         var methodData = typeof(TaskListsController).GetMethod("GetById");
@@ -371,7 +370,7 @@ public class TaskListsControllerTests
             .Should()
             .BeEquivalentTo("{id:guid}");
 
-        await System.Threading.Tasks.Task.CompletedTask;
+        await Task.CompletedTask;
     }
 
     #endregion

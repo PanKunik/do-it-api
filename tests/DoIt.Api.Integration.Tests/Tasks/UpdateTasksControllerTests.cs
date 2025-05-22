@@ -1,22 +1,15 @@
-﻿using DoIt.Api.Controllers.Tasks;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
+using DoIt.Api.Controllers.Tasks;
 using Constants = DoIt.Api.TestUtils.Constants;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
 
 [Collection("Tasks controller tests")]
-public class UpdateTasksControllerTests
-    : IAsyncLifetime
+public class UpdateTasksControllerTests(DoItApiFactory apiFactory) : IAsyncLifetime
 {
-    private readonly HttpClient _client;
-    private readonly Func<Task> _resetDatabase;
-
-    public UpdateTasksControllerTests(DoItApiFactory apiFactory)
-    {
-        _client = apiFactory.HttpClient;
-        _resetDatabase = apiFactory.ResetDatabaseAsync;
-    }
+    private readonly HttpClient _client = apiFactory.HttpClient;
+    private readonly Func<Task> _resetDatabase = apiFactory.ResetDatabaseAsync;
 
     [Fact]
     public async Task Update_WhenInvokedForExistingTask_ShouldReturnNoContentResult()
@@ -24,7 +17,10 @@ public class UpdateTasksControllerTests
         // Arrange
         var createTaskResponse = await _client.PostAsJsonAsync(
             "api/tasks",
-            new CreateTaskRequest(Constants.Tasks.TitleFromIndex(1).Value, null)
+            new CreateTaskRequest(
+                Constants.Tasks.TitleFromIndex(1).Value,
+                null
+            )
         );
 
         var createdTaskId = createTaskResponse.Headers.Location!.Segments[3];

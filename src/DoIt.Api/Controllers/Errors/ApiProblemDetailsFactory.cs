@@ -1,9 +1,9 @@
-﻿using DoIt.Api.Shared.Errors;
+﻿using System.Diagnostics;
+using DoIt.Api.Shared.Errors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
-using System.Diagnostics;
 
 namespace DoIt.Api.Controllers.Errors;
 
@@ -53,9 +53,7 @@ public class ApiProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
     )
     {
         if (modelStateDictionary is null)
-        {
             throw new ArgumentNullException(nameof(modelStateDictionary));
-        }
 
         statusCode ??= 400;
 
@@ -68,9 +66,7 @@ public class ApiProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
         };
 
         if (title is not null)
-        {
             problemDetails.Title = title;
-        }
 
         return problemDetails;
     }
@@ -93,12 +89,9 @@ public class ApiProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
 
         var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;
         if (traceId is not null)    // TODO: Check if we need to add this 'traceId' manually
-        {
             problemDetails.Extensions[Constants.Error.TraceIdName] = traceId;
-        }
 
-        var error = httpContext?.Items[Constants.Error.ErrorsName] as Error;
-        if (error is not null)
+        if (httpContext?.Items[Constants.Error.ErrorsName] is Error error)
         {
             problemDetails.Title = error.Code;
             problemDetails.Detail = error.Message;

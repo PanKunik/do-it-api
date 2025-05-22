@@ -45,7 +45,7 @@ public class Result
         Error = error;
     }
 
-    public Error? Error { get; protected set; }
+    public Error? Error { get; }
     public bool IsSuccess => Error == null;
     public bool IsFailure => !IsSuccess;
 

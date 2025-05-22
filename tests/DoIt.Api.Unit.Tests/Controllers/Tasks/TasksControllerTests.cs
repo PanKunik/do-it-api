@@ -1,14 +1,14 @@
-﻿using DoIt.Api.Controllers.Tasks;
+﻿using System.Net;
+using System.Reflection;
+using DoIt.Api.Controllers.Tasks;
+using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Services.Tasks;
 using DoIt.Api.Shared;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
-using System.Net;
-using System.Reflection;
-using Task = System.Threading.Tasks.Task;
 using Constants = DoIt.Api.TestUtils.Constants;
-using Microsoft.AspNetCore.Http;
-using DoIt.Api.Domain.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace DoIt.Api.Unit.Tests.Controllers.Tasks;
 
@@ -63,7 +63,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<TaskDto>());
+            .Returns([]);
 
         // Act
         var result = await _cut.Get();
@@ -84,7 +84,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<TaskDto>());
+            .Returns([]);
 
         // Act
         var result = (OkObjectResult) await _cut.Get();
@@ -102,8 +102,7 @@ public class TasksControllerTests
         _tasksService
             .GetAll()
             .Returns(
-                new List<TaskDto>()
-                {
+                [
                     new TaskDto(
                         Constants.Tasks.TaskId.Value,
                         Constants.Tasks.Title.Value,
@@ -112,7 +111,7 @@ public class TasksControllerTests
                         Constants.Tasks.Important,
                         null
                     )
-                }
+                ]
             );
 
         // Act
@@ -146,7 +145,7 @@ public class TasksControllerTests
         // Arrange
         _tasksService
             .GetAll()
-            .Returns(new List<TaskDto>());
+            .Returns([]);
 
         // Act
         var result = await _cut.Get();
@@ -311,7 +310,7 @@ public class TasksControllerTests
                     Constants.Tasks.CreatedAt,
                     Constants.Tasks.Done,
                     Constants.Tasks.NotImportant,
-                    null
+                    TaskListId: null
                 )
             );
 
@@ -347,7 +346,7 @@ public class TasksControllerTests
                     Constants.Tasks.CreatedAt,
                     Constants.Tasks.Done,
                     Constants.Tasks.NotImportant,
-                    null
+                    TaskListId: null
                 )
             );
 
@@ -389,7 +388,7 @@ public class TasksControllerTests
         // Arrange
         var request = new CreateTaskRequest(
             Constants.Tasks.Title.Value,
-            null
+            TaskListId: null
         );
         
         _tasksService
@@ -401,7 +400,7 @@ public class TasksControllerTests
                     Constants.Tasks.CreatedAt,
                     Constants.Tasks.NotDone,
                     Constants.Tasks.NotImportant,
-                    null
+                    TaskListId: null
                 )
             );
 
@@ -422,7 +421,7 @@ public class TasksControllerTests
             .Should()
             .Be(nameof(TasksController.GetById));
 
-        actionResult!.RouteValues
+        actionResult.RouteValues
             .Should()
             .ContainEquivalentOf(
                 new KeyValuePair<string, Guid>(
@@ -442,7 +441,7 @@ public class TasksControllerTests
         // Arrange
         var request = new CreateTaskRequest(
             Constants.Tasks.Title.Value,
-            null
+            TaskListId: null
         );
         
         _tasksService
@@ -454,7 +453,7 @@ public class TasksControllerTests
                     Constants.Tasks.CreatedAt,
                     Constants.Tasks.NotDone,
                     Constants.Tasks.NotImportant,
-                    null
+                    TaskListId: null
                 )
             );
 
@@ -492,7 +491,7 @@ public class TasksControllerTests
             );
 
         // Act
-        var result = await _cut.Create(request);
+        await _cut.Create(request);
 
         // Assert
         await _tasksService

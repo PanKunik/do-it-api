@@ -1,5 +1,5 @@
-﻿using Npgsql;
-using System.Data;
+﻿using System.Data;
+using Npgsql;
 
 namespace DoIt.Api.Persistence.Database;
 
@@ -19,9 +19,7 @@ public class NpgsqlConnectionFactory
     public async Task<IDbConnection> CreateConnectionAsync()
     {
         var connection = new NpgsqlConnection(_connectionString);
-
         await connection.OpenAsync();
-
         return connection;
     }
 }

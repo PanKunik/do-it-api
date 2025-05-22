@@ -13,10 +13,10 @@ public class TitleTests
     public async System.Threading.Tasks.Task TitleCreateFrom_WhenCalledWithProperValue_ShouldReturnExpectedObjectResultWithValue(string value)
     {
         // Arrange
-        var createTitle = () => Title.CreateFrom(value);
+        var createTitle = Title.CreateFrom;
 
         // Act
-        var createTitleResult = createTitle();
+        var createTitleResult = createTitle(value);
 
         // Assert
         createTitleResult
@@ -37,10 +37,10 @@ public class TitleTests
     public async System.Threading.Tasks.Task Title_WhenPassedNullOrWhiteSpace_ShouldReturnResultWithErrorTaskTitleCannotBeEmpty(string value)
     {
         // Arrange
-        var createTitle = () => Title.CreateFrom(value);
+        var createTitle = Title.CreateFrom;
 
         // Act
-        var createTitleResult = createTitle();
+        var createTitleResult = createTitle(value);
 
         // Assert
         createTitleResult
@@ -57,10 +57,10 @@ public class TitleTests
     public async System.Threading.Tasks.Task Title_WhenPassedValueWithOver100Characters_ShouldReturnResultWithErrorTaskTitleTooLong()
     {
         // Arrange
-        var createTitle = () => Title.CreateFrom("dwWY3pM5eakP3qbsku37HrW3bMEaA@%T9Q+aKZeRW%FzWwwucpjnFRXU2q9$pH!$j#M+azz72WQ&4vrFbw*8%eca5r$kps48d%REs");
+        var createTitle = Title.CreateFrom;
 
         // Act
-        var createTitleResult = createTitle();
+        var createTitleResult = createTitle("dwWY3pM5eakP3qbsku37HrW3bMEaA@%T9Q+aKZeRW%FzWwwucpjnFRXU2q9$pH!$j#M+azz72WQ&4vrFbw*8%eca5r$kps48d%REs");
 
         // Assert
         createTitleResult

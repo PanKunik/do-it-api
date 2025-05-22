@@ -31,9 +31,11 @@ public class TaskList
         List<Task>? tasks = null
     )
     {
+        // TODO: Force not null
         if (taskListId is null)
             return Errors.TaskList.IdCannotBeNull;
         
+        // TODO: Force not null
         if (name is null)
             return Errors.TaskList.NameCannotBeNull;
         
