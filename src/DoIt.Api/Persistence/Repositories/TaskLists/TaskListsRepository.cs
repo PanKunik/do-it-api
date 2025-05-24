@@ -26,9 +26,9 @@ public class TaskListsRepository(IDbConnectionFactory dbConnectionFactory)
             )
             VALUES 
             (
-                @TaskListId
-                , @TaskListName
-                , @TaskListCreatedAt
+                @Id
+                , @Name
+                , @CreatedAt
             )";
 
         var taskListRecordResult = taskList.FromDomain();
@@ -36,10 +36,16 @@ public class TaskListsRepository(IDbConnectionFactory dbConnectionFactory)
         if (taskListRecordResult.IsFailure)
             return taskListRecordResult.Error!;
 
-        var result = await connection.ExecuteAsync(command, taskListRecordResult.Value!);
+        var result = await connection.ExecuteAsync(
+            command,
+            taskListRecordResult.Value!
+        );
 
         if (result <= 0)
-            return Error.Failure("Failure", "Cannot insert `TaskList` entity to database.");
+            return Error.Failure(
+                "Failure",
+                "Cannot insert `TaskList` entity to database."
+            );
 
         return taskList;
     }
@@ -50,37 +56,42 @@ public class TaskListsRepository(IDbConnectionFactory dbConnectionFactory)
 
         var query = @"
             SELECT
-                tl.task_list_id AS TaskListId
-                , tl.name AS TaskListName
-                , tl.created_at AS TaskListCreatedAt
-                , t.task_id AS TaskId
-                , t.title AS TaskTitle
-                , t.created_at AS TaskCreatedAt
-                , t.is_done AS TaskIsDone
-                , t.is_important AS TaskIsImportant
+                task_list_id AS Id
+                , name AS Name
+                , created_at AS CreatedAt
             FROM
-                public.task_lists tl
-            LEFT JOIN
-                public.tasks t
-            ON
-                t.task_list_id = tl.task_list_id
+                public.task_lists
             WHERE
-                tl.task_list_id = @Id";
+                task_list_id = @Id;
 
-        var existingTaskList = (await connection.QueryAsync<TaskListRecord, List<TaskRecord>, TaskListRecord>(
-                query,
-                (taskList, tasks) =>
-                {
-                    taskList.Tasks = tasks;
-                    return taskList;
-                },
-                new { Id = taskListId.Value },
-                splitOn: "TaskId")
-            ).FirstOrDefault();
+            SELECT
+                task_id AS Id
+                , title AS Title
+                , created_at AS CreatedAt
+                , is_done AS IsDone
+                , is_important AS IsImportant
+                , task_list_id AS TaskListId
+            FROM
+                public.tasks
+            WHERE
+                task_list_id = @Id;";
 
-        if (existingTaskList is null)
+        var queryResult = await connection.QueryMultipleAsync(
+            query,
+            new { Id = taskListId.Value }
+        );
+        
+        var taskListRecord = queryResult
+            .Read<TaskListRecord>()
+            .SingleOrDefault();
+        
+        var tasks =  queryResult.Read<TaskRecord>();
+
+        if (taskListRecord is null)
             return Errors.TaskList.NotFound;
+        
+        taskListRecord.Tasks = tasks.ToList();
 
-        return existingTaskList.ToDomain();
+        return taskListRecord.ToDomain();
     }
 }

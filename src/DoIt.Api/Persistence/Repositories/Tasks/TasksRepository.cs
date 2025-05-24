@@ -19,11 +19,11 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
 
         var query = @"
             SELECT
-                task_id AS TaskId
-                , title AS TaskTitle
-                , created_at AS TaskCreatedAt
-                , is_done AS TaskIsDone
-                , is_important AS TaskIsImportant
+                task_id AS Id
+                , title AS Title
+                , created_at AS CreatedAt
+                , is_done AS IsDone
+                , is_important AS IsImportant
                 , task_list_id AS TaskListId
             FROM
                 public.tasks";
@@ -41,11 +41,11 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
 
         var query = @"
             SELECT
-                task_id AS TaskId
-                , title AS TaskTitle
-                , created_at AS TaskCreatedAt
-                , is_done AS TaskIsDone
-                , is_important AS TaskIsImportant
+                task_id AS Id
+                , title AS Title
+                , created_at AS CreatedAt
+                , is_done AS IsDone
+                , is_important AS IsImportant
                 , task_list_id AS TaskListId
             FROM
                 public.tasks
@@ -79,11 +79,11 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
             )
             VALUES
             (
-                @TaskId
-                , @TaskTitle
-                , @TaskCreatedAt
-                , @TaskIsDone
-                , @TaskisImportant
+                @Id
+                , @Title
+                , @CreatedAt
+                , @IsDone
+                , @IsImportant
                 , @TaskListId
             )";
 
