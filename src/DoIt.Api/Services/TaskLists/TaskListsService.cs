@@ -18,7 +18,7 @@ public class TaskListsService(ITaskListsRepository repository)
         var taskListResult = TaskList.Create(
             TaskListId.CreateUnique(),
             taskListNameResult.Value!,
-            DateTime.Now
+            DateTime.UtcNow
         );
         
         if (taskListResult.IsFailure)

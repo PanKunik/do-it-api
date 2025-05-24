@@ -21,7 +21,7 @@ public static class Extensions
 
     public static Result<Task> ToDomain(this TaskRecord taskRecord)
     {
-        var taskIdResult = TaskId.CreateFrom(taskRecord.TaskId);
+        var taskIdResult = TaskId.CreateFrom(taskRecord.Id);
 
         if (taskIdResult.IsFailure)
             return taskIdResult.Error!;
@@ -36,7 +36,7 @@ public static class Extensions
                 return taskListIdResult.Error!;
         }
 
-        var titleResult = Title.CreateFrom(taskRecord.TaskTitle);
+        var titleResult = Title.CreateFrom(taskRecord.Title);
 
         if (titleResult.IsFailure)
             return titleResult.Error!;
@@ -44,9 +44,9 @@ public static class Extensions
         return Task.Create(
             taskIdResult.Value!,
             titleResult.Value!,
-            taskRecord.TaskCreatedAt,
-            taskRecord.TaskIsDone,
-            taskRecord.TaskIsImportant,
+            taskRecord.CreatedAt,
+            taskRecord.IsDone,
+            taskRecord.IsImportant,
             taskListIdResult?.Value!
         );
     }

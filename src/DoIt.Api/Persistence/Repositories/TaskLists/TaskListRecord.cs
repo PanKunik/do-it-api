@@ -2,28 +2,27 @@ using DoIt.Api.Persistence.Repositories.Tasks;
 
 namespace DoIt.Api.Persistence.Repositories.TaskLists;
 
-// TODO: Find better naming for fields
 public sealed class TaskListRecord(
-    Guid TaskListId,
-    string TaskListName,
-    DateTime TaskListCreatedAt
+    Guid Id,
+    string Name,
+    DateTime CreatedAt
 )
 {
-    public Guid TaskListId { get; init; } = TaskListId;
-    public string TaskListName { get; init; } = TaskListName;
-    public DateTime TaskListCreatedAt { get; init; } = TaskListCreatedAt;
+    public Guid Id { get; } = Id;
+    public string Name { get; } = Name;
+    public DateTime CreatedAt { get; } = CreatedAt;
     public List<TaskRecord>? Tasks { get; set; }
 
-    public void Deconstruct(
-        out Guid TaskListId,
-        out string TaskListName,
-        out DateTime TaskListCreatedAt,
-        out List<TaskRecord>? Tasks
-    )
-    {
-        TaskListId = this.TaskListId;
-        TaskListName = this.TaskListName;
-        TaskListCreatedAt = this.TaskListCreatedAt;
-        Tasks = this.Tasks;
-    }
+    // public void Deconstruct(
+    //     out Guid Id,
+    //     out string Name,
+    //     out DateTime CreatedAt,
+    //     out List<TaskRecord>? Tasks
+    // )
+    // {
+    //     Id = this.Id;
+    //     Name = this.Name;
+    //     CreatedAt = this.CreatedAt;
+    //     Tasks = this.Tasks;
+    // }
 }

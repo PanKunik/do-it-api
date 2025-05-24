@@ -22,12 +22,12 @@ public static class Extensions
 
     public static Result<TaskList> ToDomain(this TaskListRecord taskListRecord)
     {
-        var taskListIdResult = TaskListId.CreateFrom(taskListRecord.TaskListId);
+        var taskListIdResult = TaskListId.CreateFrom(taskListRecord.Id);
         
         if (taskListIdResult.IsFailure)
             return taskListIdResult.Error!;
         
-        var taskListNameResult = Name.CreateFrom(taskListRecord.TaskListName);
+        var taskListNameResult = Name.CreateFrom(taskListRecord.Name);
         
         if (taskListNameResult.IsFailure)
             return taskListNameResult.Error!;
@@ -35,7 +35,7 @@ public static class Extensions
         return TaskList.Create(
             taskListIdResult.Value!,
             taskListNameResult.Value!,
-            taskListRecord.TaskListCreatedAt,
+            taskListRecord.CreatedAt,
             taskListRecord.Tasks
                 .Select(t => t.ToDomain().Value!)
                 .ToList()  // TODO: What if result is false?
