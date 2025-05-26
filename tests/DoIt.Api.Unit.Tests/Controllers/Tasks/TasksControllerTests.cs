@@ -388,6 +388,7 @@ public class TasksControllerTests
         // Arrange
         var request = new CreateTaskRequest(
             Constants.Tasks.Title.Value,
+            IsImportant: null,
             TaskListId: null
         );
         
@@ -441,6 +442,7 @@ public class TasksControllerTests
         // Arrange
         var request = new CreateTaskRequest(
             Constants.Tasks.Title.Value,
+            IsImportant: null,
             TaskListId: null
         );
         
@@ -472,6 +474,7 @@ public class TasksControllerTests
         // Arrange
         var request = new CreateTaskRequest(
             Constants.Tasks.Title.Value,
+            Constants.Tasks.Important,
             Constants.TaskLists.TaskListId.Value
         );
         
@@ -484,7 +487,7 @@ public class TasksControllerTests
                         Constants.Tasks.Title.Value,
                         Constants.Tasks.CreatedAt,
                         Constants.Tasks.NotDone,
-                        Constants.Tasks.NotImportant,
+                        Constants.Tasks.Important,
                         Constants.TaskLists.TaskListId.Value
                     )
                 )

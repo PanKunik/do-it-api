@@ -19,7 +19,8 @@ public class UpdateTasksControllerTests(DoItApiFactory apiFactory) : IAsyncLifet
             "api/tasks",
             new CreateTaskRequest(
                 Constants.Tasks.TitleFromIndex(1).Value,
-                null
+                IsImportant: null,
+                TaskListId: null
             )
         );
 

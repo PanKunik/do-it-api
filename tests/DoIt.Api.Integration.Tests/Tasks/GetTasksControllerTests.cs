@@ -38,7 +38,8 @@ public class GetTasksControllerTests(DoItApiFactory apiFactory)
             "api/tasks",
             new CreateTaskRequest(
                 Constants.Tasks.TitleFromIndex(1).Value,
-                null
+                IsImportant: null,
+                TaskListId: null
             )
         );
 
@@ -46,7 +47,8 @@ public class GetTasksControllerTests(DoItApiFactory apiFactory)
             "api/tasks",
             new CreateTaskRequest(
                 Constants.Tasks.TitleFromIndex(2).Value,
-                null
+                IsImportant: null,
+                TaskListId: null
             )
         );
 
