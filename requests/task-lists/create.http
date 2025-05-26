@@ -4,5 +4,5 @@ POST {{host}}/api/task-lists
 Content-Type: application/json
 
 {
-  "name": "List of tasks 1"
+  "name": "My task list"
 }

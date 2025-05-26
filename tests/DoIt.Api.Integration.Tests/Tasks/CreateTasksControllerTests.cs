@@ -20,7 +20,8 @@ public class CreateTasksControllerTests(DoItApiFactory apiFactory)
             "api/tasks",
             new CreateTaskRequest(
                 Constants.Tasks.Title.Value,
-                null
+                IsImportant: null,
+                TaskListId: null
             )
         );
 

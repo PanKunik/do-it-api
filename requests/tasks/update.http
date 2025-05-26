@@ -1,10 +1,10 @@
 @host=http://localhost:5000
 
-@id=cf9e32e8-4fa8-411d-a5c7-e48d1dd725a1
+@id=71dc2873-6642-4d33-86db-86fd2910c05d
 
 PUT {{host}}/api/tasks/{{id}}
 Content-Type: application/json
 
 {
-  "title": "Pouczy� si� C#"
+  "title": "Posprzątać garaż 22222"
 }
