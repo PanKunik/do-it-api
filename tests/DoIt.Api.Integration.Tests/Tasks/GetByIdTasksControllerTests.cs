@@ -1,7 +1,10 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using DoIt.Api.Controllers.Tasks;
+using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Services.Tasks;
+using DoIt.Api.TestUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Constants = DoIt.Api.TestUtils.Constants;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
@@ -12,9 +15,10 @@ public class GetByIdTasksControllerTests(DoItApiFactory apiFactory)
 {
     private readonly HttpClient _client = apiFactory.HttpClient;
     private readonly Func<Task> _resetDatabase = apiFactory.ResetDatabaseAsync;
+    private readonly ITasksRepository _tasksRepository = apiFactory.Services.GetRequiredService<ITasksRepository>();
 
     [Fact]
-    public async Task GetById_WhenTaskDoesntExists_ShouldReturn404NotFound()
+    public async Task GetById_WhenTaskDoesntExist_ShouldReturn404NotFound()
     {
         // Act
         var result = await _client.GetAsync($"api/tasks/{Guid.NewGuid()}");
@@ -33,28 +37,14 @@ public class GetByIdTasksControllerTests(DoItApiFactory apiFactory)
     public async Task GetById_WhenTasksExists_ShouldReturnOnlyOneTask()
     {
         // Arrange
-        var firstTaskResult = await _client.PostAsJsonAsync(
-            "api/tasks",
-            new CreateTaskRequest(
-                Constants.Tasks.TitleFromIndex(1).Value,
-                IsImportant: null,
-                TaskListId: null
-            )
-        );
+        var tasks = TaskListsUtilities.CreateTasks(2);
+        foreach (var task in tasks)
+            await _tasksRepository.Create(task);
 
-        var firstTaskId = firstTaskResult!.Headers.Location!.Segments[3];
-
-        var secondTaskResult = await _client.PostAsJsonAsync(
-            "api/tasks",
-            new CreateTaskRequest(
-                Constants.Tasks.TitleFromIndex(2).Value,
-                IsImportant: null,
-                TaskListId: null
-            )
-        );
+        var expectedTask = tasks.Last();
 
         // Act
-        var result = await _client.GetAsync($"api/tasks/{firstTaskId}");
+        var result = await _client.GetAsync($"api/tasks/{expectedTask.Id.Value}");
 
         // Assert
         result.IsSuccessStatusCode
@@ -66,8 +56,10 @@ public class GetByIdTasksControllerTests(DoItApiFactory apiFactory)
         parsedContent
             .Should()
             .Match<TaskDto>(
-                t => t.Title == Constants.Tasks.TitleFromIndex(1).Value
-                  && t.Id == Guid.Parse(firstTaskId)
+                t => t.Title == expectedTask.Title.Value
+                  && t.Id == expectedTask.Id.Value
+                  && t.IsDone == expectedTask.IsDone
+                  && t.IsImportant == expectedTask.IsImportant
             );
     }
 

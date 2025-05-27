@@ -13,7 +13,7 @@ public static class TaskListsUtilities
                 tasks ?? CreateTasks(3)
             ).Value!;
 
-    public static List<Task> CreateTasks(int tasksCount = 1)
+    public static List<Task> CreateTasks(int tasksCount = 1, TaskListId? taskListId = null)
         => Enumerable
             .Range(0, tasksCount)
             .Select(r => Task.Create(
@@ -22,7 +22,7 @@ public static class TaskListsUtilities
                     Constants.Tasks.CreatedAtFromIndex(r),
                     Constants.Tasks.NotDone,
                     Constants.Tasks.NotImportant,
-                    Constants.TaskLists.TaskListId
+                    taskListId
                 ).Value!
             )
             .ToList();

@@ -1,8 +1,13 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using DoIt.Api.Controllers.Tasks;
+using DoIt.Api.Domain.Tasks;
+using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Services.Tasks;
+using DoIt.Api.TestUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Constants = DoIt.Api.TestUtils.Constants;
+using Task = System.Threading.Tasks.Task;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
 
@@ -12,9 +17,10 @@ public class GetTasksControllerTests(DoItApiFactory apiFactory)
 {
     private readonly HttpClient _client = apiFactory.HttpClient;
     private readonly Func<Task> _resetDatabase = apiFactory.ResetDatabaseAsync;
+    private readonly ITasksRepository _tasksRepository = apiFactory.Services.GetRequiredService<ITasksRepository>();
 
     [Fact]
-    public async Task Get_WithoutTasks_ShouldReturnEmptyListResponse()
+    public async Task Get_WithoutAnyTasks_ShouldReturnEmptyListResponse()
     {
         // Act
         var response = await _client.GetAsync("api/tasks");
@@ -31,26 +37,12 @@ public class GetTasksControllerTests(DoItApiFactory apiFactory)
     }
 
     [Fact]
-    public async Task Get_WhenTasksExists_ShouldReturnListOfAllTasks()
+    public async Task Get_WhenTasksExist_ShouldReturnListOfAllTasks()
     {
         // Arrange
-        await _client.PostAsJsonAsync(
-            "api/tasks",
-            new CreateTaskRequest(
-                Constants.Tasks.TitleFromIndex(1).Value,
-                IsImportant: null,
-                TaskListId: null
-            )
-        );
-
-        await _client.PostAsJsonAsync(
-            "api/tasks",
-            new CreateTaskRequest(
-                Constants.Tasks.TitleFromIndex(2).Value,
-                IsImportant: null,
-                TaskListId: null
-            )
-        );
+        var tasks = TaskListsUtilities.CreateTasks(5);
+        foreach (var task in tasks)
+            await _tasksRepository.Create(task);
 
         // Act
         var response = await _client.GetAsync("api/tasks");
@@ -63,7 +55,7 @@ public class GetTasksControllerTests(DoItApiFactory apiFactory)
 
         responseContent
             .Should()
-            .HaveCount(2);
+            .HaveCount(5);
     }
 
     public async Task InitializeAsync() => await Task.CompletedTask;
