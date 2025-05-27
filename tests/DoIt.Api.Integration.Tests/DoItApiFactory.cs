@@ -1,7 +1,11 @@
 ﻿using System.Data.Common;
+using DoIt.Api.Persistence.Database;
+using DoIt.Api.Persistence.Repositories.TaskLists;
+using DoIt.Api.Persistence.Repositories.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
@@ -58,6 +62,14 @@ public class DoItApiFactory
                     )
                     .Build()
             );
+
+        builder.ConfigureServices(
+            services =>
+            {
+                services.AddSingleton<IDbConnectionFactory>(_ => new NpgsqlConnectionFactory(_postgresContainer.GetConnectionString()));
+                services.AddSingleton<ITasksRepository, TasksRepository>();
+                services.AddSingleton<ITaskListsRepository, TaskListsRepository>();
+            });
     }
 
     public new async Task DisposeAsync()

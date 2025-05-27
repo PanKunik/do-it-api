@@ -1,7 +1,11 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using DoIt.Api.Controllers.TaskLists;
 using DoIt.Api.Controllers.Tasks;
+using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Services.Tasks;
+using DoIt.Api.TestUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Constants = DoIt.Api.TestUtils.Constants;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
@@ -12,39 +16,26 @@ public class DeleteTasksControllerTests(DoItApiFactory apiFactory)
 {
     private readonly HttpClient _client = apiFactory.HttpClient;
     private readonly Func<Task> _resetDatabase = apiFactory.ResetDatabaseAsync;
+    private readonly ITasksRepository _tasksRepository = apiFactory.Services.GetRequiredService<ITasksRepository>();
 
     [Fact]
     public async Task Delete_WhenTasksExists_ShouldDeleteExpectedTask()
     {
         // Arrange
-        var firstTaskResponse = await _client.PostAsJsonAsync(
-            "api/tasks",
-            new CreateTaskRequest(
-                Constants.Tasks.TitleFromIndex(1).Value,
-                IsImportant: null,
-                TaskListId: null
-            )
-        );
+        var tasks = TaskListsUtilities.CreateTasks(5);
+        foreach (var task in tasks)
+            await _tasksRepository.Create(task);
 
-        var firstTaskId = firstTaskResponse.Headers.Location!.Segments[3];
+        var taskToDelete = tasks.Last();
 
-        var secondTaskResponse = await _client.PostAsJsonAsync(
-            "api/tasks",
-            new CreateTaskRequest(
-                Constants.Tasks.TitleFromIndex(2).Value,
-                IsImportant: null,
-                TaskListId: null
-            )
-        );
-        
         var tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDto>>("api/tasks");
 
         tasksInDatabase
             .Should()
-            .HaveCount(2);
+            .HaveCount(5);
 
         // Act
-        var result = await _client.DeleteAsync($"api/tasks/{firstTaskId}");
+        var result = await _client.DeleteAsync($"api/tasks/{taskToDelete.Id.Value}");
 
         // Assert
         result.StatusCode
@@ -59,11 +50,11 @@ public class DeleteTasksControllerTests(DoItApiFactory apiFactory)
 
         tasksInDatabase
             .Should()
-            .HaveCount(1);
+            .HaveCount(4);
     }
 
     [Fact]
-    public async Task Delete_WhenTaskDoesntExists_ShouldReturn404NotFound()
+    public async Task Delete_WhenTaskDoesntExist_ShouldReturn404NotFound()
     {
         // Act
         var result = await _client.DeleteAsync($"api/tasks/{Guid.NewGuid()}");

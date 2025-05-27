@@ -1,6 +1,10 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using DoIt.Api.Controllers.Tasks;
+using DoIt.Api.Domain.TaskLists;
+using DoIt.Api.Persistence.Repositories.Tasks;
+using DoIt.Api.TestUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Constants = DoIt.Api.TestUtils.Constants;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
@@ -10,25 +14,21 @@ public class UpdateTasksControllerTests(DoItApiFactory apiFactory) : IAsyncLifet
 {
     private readonly HttpClient _client = apiFactory.HttpClient;
     private readonly Func<Task> _resetDatabase = apiFactory.ResetDatabaseAsync;
+    private readonly ITasksRepository _tasksRepository = apiFactory.Services.GetRequiredService<ITasksRepository>();
 
     [Fact]
     public async Task Update_WhenInvokedForExistingTask_ShouldReturnNoContentResult()
     {
         // Arrange
-        var createTaskResponse = await _client.PostAsJsonAsync(
-            "api/tasks",
-            new CreateTaskRequest(
-                Constants.Tasks.TitleFromIndex(1).Value,
-                IsImportant: null,
-                TaskListId: null
-            )
-        );
+        var tasks = TaskListsUtilities.CreateTasks(5);
+        foreach (var task in tasks)
+            await _tasksRepository.Create(task);
 
-        var createdTaskId = createTaskResponse.Headers.Location!.Segments[3];
+        var taskToUpdate = tasks.Last();
 
         // Act
         var response = await _client.PutAsJsonAsync(
-            $"api/tasks/{createdTaskId}",
+            $"api/tasks/{taskToUpdate.Id.Value}",
             new UpdateTaskRequest(Constants.Tasks.TitleFromIndex(2).Value)
         );
 
@@ -36,6 +36,11 @@ public class UpdateTasksControllerTests(DoItApiFactory apiFactory) : IAsyncLifet
         response.StatusCode
             .Should()
             .Be(HttpStatusCode.NoContent);
+
+        var updatedTask = await _tasksRepository.GetById(taskToUpdate.Id);
+        updatedTask.Value!.Title
+            .Should()
+            .Be(Constants.Tasks.TitleFromIndex(2));
     }
 
     [Fact]
