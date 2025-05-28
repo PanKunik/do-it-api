@@ -4,6 +4,7 @@ using DoIt.Api.Controllers.Tasks;
 using DoIt.Api.Domain.TaskLists;
 using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.TestUtils;
+using DoIt.Api.TestUtils.Builders;
 using Microsoft.Extensions.DependencyInjection;
 using Constants = DoIt.Api.TestUtils.Constants;
 
@@ -20,11 +21,10 @@ public class UpdateTasksControllerTests(DoItApiFactory apiFactory) : IAsyncLifet
     public async Task Update_WhenInvokedForExistingTask_ShouldReturnNoContentResult()
     {
         // Arrange
-        var tasks = TaskListsUtilities.CreateTasks(5);
-        foreach (var task in tasks)
-            await _tasksRepository.Create(task);
+        for (int i = 1; i <= 5; i++)
+            await TaskBuilder.Default(i).SaveInRepository(_tasksRepository);
 
-        var taskToUpdate = tasks.Last();
+        var taskToUpdate = (await _tasksRepository.GetAll()).Last();
 
         // Act
         var response = await _client.PutAsJsonAsync(
