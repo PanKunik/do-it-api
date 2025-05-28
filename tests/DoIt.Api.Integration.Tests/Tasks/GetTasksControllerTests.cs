@@ -5,6 +5,7 @@ using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Services.Tasks;
 using DoIt.Api.TestUtils;
+using DoIt.Api.TestUtils.Builders;
 using Microsoft.Extensions.DependencyInjection;
 using Constants = DoIt.Api.TestUtils.Constants;
 using Task = System.Threading.Tasks.Task;
@@ -40,9 +41,8 @@ public class GetTasksControllerTests(DoItApiFactory apiFactory)
     public async Task Get_WhenTasksExist_ShouldReturnListOfAllTasks()
     {
         // Arrange
-        var tasks = TaskListsUtilities.CreateTasks(5);
-        foreach (var task in tasks)
-            await _tasksRepository.Create(task);
+        for (int i = 1; i <= 5; i++)
+            await TaskBuilder.Default(i).SaveInRepository(_tasksRepository);
 
         // Act
         var response = await _client.GetAsync("api/tasks");

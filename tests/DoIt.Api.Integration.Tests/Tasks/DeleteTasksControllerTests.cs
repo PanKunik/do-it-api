@@ -5,6 +5,7 @@ using DoIt.Api.Controllers.Tasks;
 using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Services.Tasks;
 using DoIt.Api.TestUtils;
+using DoIt.Api.TestUtils.Builders;
 using Microsoft.Extensions.DependencyInjection;
 using Constants = DoIt.Api.TestUtils.Constants;
 
@@ -22,11 +23,10 @@ public class DeleteTasksControllerTests(DoItApiFactory apiFactory)
     public async Task Delete_WhenTasksExists_ShouldDeleteExpectedTask()
     {
         // Arrange
-        var tasks = TaskListsUtilities.CreateTasks(5);
-        foreach (var task in tasks)
-            await _tasksRepository.Create(task);
-
-        var taskToDelete = tasks.Last();
+        for (int i = 1; i <= 5; i++)
+            await TaskBuilder.Default(i).SaveInRepository(_tasksRepository);
+        
+        var taskToDelete = (await _tasksRepository.GetAll()).Last();
 
         var tasksInDatabase = await _client.GetFromJsonAsync<List<TaskDto>>("api/tasks");
 

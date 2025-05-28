@@ -4,6 +4,7 @@ using DoIt.Api.Controllers.Tasks;
 using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Services.Tasks;
 using DoIt.Api.TestUtils;
+using DoIt.Api.TestUtils.Builders;
 using Microsoft.Extensions.DependencyInjection;
 using Constants = DoIt.Api.TestUtils.Constants;
 
@@ -34,14 +35,13 @@ public class GetByIdTasksControllerTests(DoItApiFactory apiFactory)
     }
 
     [Fact]
-    public async Task GetById_WhenTasksExists_ShouldReturnOnlyOneTask()
+    public async Task GetById_WhenTasksExist_ShouldReturnOnlyOneTask()
     {
         // Arrange
-        var tasks = TaskListsUtilities.CreateTasks(2);
-        foreach (var task in tasks)
-            await _tasksRepository.Create(task);
-
-        var expectedTask = tasks.Last();
+        for (int i = 1; i <= 5; i++)
+            await TaskBuilder.Default(i).SaveInRepository(_tasksRepository);
+            
+        var expectedTask = (await _tasksRepository.GetAll()).Last();
 
         // Act
         var result = await _client.GetAsync($"api/tasks/{expectedTask.Id.Value}");
