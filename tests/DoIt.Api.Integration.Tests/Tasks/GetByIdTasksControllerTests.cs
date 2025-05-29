@@ -1,12 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using DoIt.Api.Controllers.Tasks;
 using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Services.Tasks;
-using DoIt.Api.TestUtils;
 using DoIt.Api.TestUtils.Builders;
 using Microsoft.Extensions.DependencyInjection;
-using Constants = DoIt.Api.TestUtils.Constants;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
 
@@ -60,6 +57,7 @@ public class GetByIdTasksControllerTests(DoItApiFactory apiFactory)
                   && t.Id == expectedTask.Id.Value
                   && t.IsDone == expectedTask.IsDone
                   && t.IsImportant == expectedTask.IsImportant
+                  && t.CreatedAt == expectedTask.CreatedAt
             );
     }
 

@@ -1,6 +1,6 @@
 using DoIt.Api.Domain.TaskLists;
-using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Shared;
+using Task = DoIt.Api.Domain.Tasks.Task;
 
 namespace DoIt.Api.Persistence.Repositories.TaskLists;
 
@@ -14,13 +14,13 @@ public static class Extensions
             taskList.CreatedAt
         );
 
-        taskListRecord.Tasks = taskList.Tasks
-            .Select(t => t.FromDomain().Value!)
-            .ToList();
         return taskListRecord;
     }
 
-    public static Result<TaskList> ToDomain(this TaskListRecord taskListRecord)
+    public static Result<TaskList> ToDomain(
+        this TaskListRecord taskListRecord,
+        List<Task>? tasks = null
+    )
     {
         var taskListIdResult = TaskListId.CreateFrom(taskListRecord.Id);
         
@@ -36,9 +36,7 @@ public static class Extensions
             taskListIdResult.Value!,
             taskListNameResult.Value!,
             taskListRecord.CreatedAt,
-            taskListRecord.Tasks
-                .Select(t => t.ToDomain().Value!)
-                .ToList()  // TODO: What if result is false?
+            tasks
         );
     }
 }

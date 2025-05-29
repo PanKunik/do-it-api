@@ -1,9 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using DoIt.Api.Controllers.TaskLists;
-using DoIt.Api.Persistence.Repositories.TaskLists;
 using DoIt.Api.TestUtils;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DoIt.Api.Integration.Tests.TaskLists;
 

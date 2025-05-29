@@ -2,7 +2,6 @@
 using System.Net.Http.Json;
 using DoIt.Api.Controllers.Tasks;
 using DoIt.Api.Persistence.Repositories.Tasks;
-using DoIt.Api.TestUtils.Builders;
 using Microsoft.Extensions.DependencyInjection;
 using Constants = DoIt.Api.TestUtils.Constants;
 

@@ -32,6 +32,14 @@ public class TaskListsService(ITaskListsRepository repository)
         return createTaskListResult.Value!.ToDto();
     }
 
+    public async Task<List<TaskListDto>> GetAll()
+    {
+        var result = await repository.GetAll();
+        return result
+            .Select(r => r.ToDto())
+            .ToList();
+    }
+
     public async Task<Result<TaskListDto>> GetById(Guid id)
     {
         var taskListIdResult = TaskListId.CreateFrom(id);

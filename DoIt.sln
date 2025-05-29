@@ -43,6 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "task-lists", "task-lists", 
 	ProjectSection(SolutionItems) = preProject
 		requests\task-lists\get-by-id.http = requests\task-lists\get-by-id.http
 		requests\task-lists\create.http = requests\task-lists\create.http
+		requests\task-lists\get.http = requests\task-lists\get.http
 	EndProjectSection
 EndProject
 Global
