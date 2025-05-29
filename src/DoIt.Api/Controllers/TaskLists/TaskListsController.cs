@@ -8,6 +8,13 @@ namespace DoIt.Api.Controllers.TaskLists;
 public class TaskListsController(ITaskListsService taskListsService)
     : ApiController
 {
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        var taskLists = await taskListsService.GetAll();
+        return Ok(taskLists);
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Create(CreateTaskListRequest request)
     {

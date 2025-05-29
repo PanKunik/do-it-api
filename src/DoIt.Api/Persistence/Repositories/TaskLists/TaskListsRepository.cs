@@ -13,6 +13,25 @@ public class TaskListsRepository(IDbConnectionFactory dbConnectionFactory)
     private readonly IDbConnectionFactory _dbConnectionFactory
         = dbConnectionFactory ?? throw new ArgumentNullException(nameof(dbConnectionFactory));
 
+    public async Task<List<TaskList>> GetAll()
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+
+        var query = @"
+            SELECT
+                task_list_id AS Id,
+                name AS Name,
+                created_at AS CreatedAt
+            FROM
+                public.task_lists";
+        
+        var result = await connection.QueryAsync<TaskListRecord>(query);
+        
+        return result
+            .Select(r => r.ToDomain().Value!)
+            .ToList();
+    }
+    
     public async Task<Result<TaskList>> Create(TaskList taskList)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();
@@ -85,13 +104,15 @@ public class TaskListsRepository(IDbConnectionFactory dbConnectionFactory)
             .Read<TaskListRecord>()
             .SingleOrDefault();
         
-        var tasks =  queryResult.Read<TaskRecord>();
-
         if (taskListRecord is null)
             return Errors.TaskList.NotFound;
         
-        taskListRecord.Tasks = tasks.ToList();
+        var taskRecords =  queryResult.Read<TaskRecord>();
 
-        return taskListRecord.ToDomain();
+        var tasks = taskRecords
+            .Select(t => t.ToDomain().Value!)
+            .ToList();
+        
+        return taskListRecord.ToDomain(tasks);
     }
 }

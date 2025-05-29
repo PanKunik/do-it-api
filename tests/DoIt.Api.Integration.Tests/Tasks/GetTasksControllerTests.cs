@@ -1,13 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using DoIt.Api.Controllers.Tasks;
-using DoIt.Api.Domain.Tasks;
 using DoIt.Api.Persistence.Repositories.Tasks;
 using DoIt.Api.Services.Tasks;
-using DoIt.Api.TestUtils;
 using DoIt.Api.TestUtils.Builders;
 using Microsoft.Extensions.DependencyInjection;
-using Constants = DoIt.Api.TestUtils.Constants;
 using Task = System.Threading.Tasks.Task;
 
 namespace DoIt.Api.Integration.Tests.Tasks;
@@ -43,6 +39,8 @@ public class GetTasksControllerTests(DoItApiFactory apiFactory)
         // Arrange
         for (int i = 1; i <= 5; i++)
             await TaskBuilder.Default(i).SaveInRepository(_tasksRepository);
+        
+        var expectedTasks = await _tasksRepository.GetAll();
 
         // Act
         var response = await _client.GetAsync("api/tasks");
@@ -52,10 +50,10 @@ public class GetTasksControllerTests(DoItApiFactory apiFactory)
         response.IsSuccessStatusCode
             .Should()
             .BeTrue();
-
+        
         responseContent
             .Should()
-            .HaveCount(5);
+            .BeEquivalentTo(expectedTasks.Select(t => t.ToDto()));
     }
 
     public async Task InitializeAsync() => await Task.CompletedTask;

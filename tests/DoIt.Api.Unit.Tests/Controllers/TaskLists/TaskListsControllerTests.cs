@@ -55,6 +55,125 @@ public class TaskListsControllerTests
         await Task.CompletedTask;
     }
 
+    #region GetAll
+    
+    [Fact]
+    public async Task Get_OnSuccess_ShouldReturnOkObjectResult()
+    {
+        // Arrange
+        _taskListsService
+            .GetAll()
+            .Returns([]);
+
+        // Act
+        var result = await _cut.Get();
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<OkObjectResult>();
+    }
+    
+    [Fact]
+    public async Task Get_OnSuccess_ShouldReturn200OKStatusCode()
+    {
+        // Arrange
+        _taskListsService
+            .GetAll()
+            .Returns([]);
+
+        // Act
+        var result = (OkObjectResult) await _cut.Get();
+
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int) HttpStatusCode.OK);
+    }
+    
+    [Fact]
+    public async Task Get_OnSuccess_ShouldReturnListOfTaskListDTO()
+    {
+        // Arrange
+        _taskListsService
+            .GetAll()
+            .Returns(
+                [
+                    new TaskListDto(
+                        Constants.TaskLists.TaskListId.Value,
+                        Constants.TaskLists.Name.Value,
+                        Constants.TaskLists.CreatedAt,
+                        Tasks: null
+                    )
+                ]
+            );
+
+        // Act
+        var result = (OkObjectResult) await _cut.Get();
+
+        // Assert
+        result.Value
+            .Should()
+            .NotBeNull();
+
+        result.Value
+            .Should()
+            .BeEquivalentTo(
+                new List<TaskListDto>()
+                {
+                    new(
+                        Constants.TaskLists.TaskListId.Value,
+                        Constants.TaskLists.Name.Value,
+                        Constants.TaskLists.CreatedAt,
+                        Tasks: null
+                    )
+                }
+            );
+    }
+    
+    [Fact]
+    public async Task Get_WhenInvoked_ShouldCallTaskListsRepositoryGetAllOnce()
+    {
+        // Arrange
+        _taskListsService
+            .GetAll()
+            .Returns([]);
+
+        // Act
+        var result = await _cut.Get();
+
+        // Assert
+        await _taskListsService
+            .Received(1)
+            .GetAll();
+    }
+    
+    [Fact]
+    public async Task Get_ShouldContainHttpGetAttributeWithoutTemplate()
+    {
+        // Act
+        var methodData = typeof(TaskListsController).GetMethod("Get");
+
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpGetAttribute>();
+
+        attribute
+            .Should()
+            .NotBeNull();
+
+        attribute!.Template
+            .Should()
+            .BeNull();
+
+        await Task.CompletedTask;
+    }
+    
+    #endregion
+    
     #region Create
 
     [Fact]
