@@ -11,4 +11,5 @@ public interface ITasksService
     Task<Result> Delete(Guid id);
     Task<Result> Update(Guid id, UpdateTaskRequest request);
     Task<Result> ChangeState(Guid id);
+    Task<Result> ChangeImportance(Guid id);
 }

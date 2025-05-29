@@ -994,4 +994,146 @@ public class TasksControllerTests
     }
     
     #endregion
+    
+    #region ChangeImportance
+
+    [Fact]
+    public async Task ChangeImportance_OnSuccess_ShouldReturnNoContentResult()
+    {
+        // Arrange
+        _tasksService
+            .ChangeImportance(Constants.Tasks.TaskId.Value)
+            .Returns(Result.Success());
+        
+        // Act
+        var result = await _cut.ChangeImportance(Constants.Tasks.TaskId.Value);
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<NoContentResult>();
+    }
+
+    [Fact]
+    public async Task ChangeImportance_OnSuccess_ShouldReturn204NoContentStatusCode()
+    {
+        // Arrange
+        _tasksService
+            .ChangeImportance(Constants.Tasks.TaskId.Value)
+            .Returns(Result.Success());
+        
+        // Act
+        var result = (NoContentResult) await _cut.ChangeImportance(Constants.Tasks.TaskId.Value);
+        
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int) HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task ChangeImportance_ShouldContainHttpPutAttributeWithExpectedTemplate()
+    {
+        // Act
+        var methodData = typeof(TasksController).GetMethod("ChangeImportance");
+        
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpPutAttribute>();
+        
+        attribute
+            .Should()
+            .NotBeNull();
+        
+        attribute!.Template
+            .Should()
+            .BeEquivalentTo("{id:guid}/change-importance");
+
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task ChangeImportance_WhenInvoked_ShouldCallTasksServiceChangeImportanceOnceWithExpectedArguments()
+    {
+        // Arrange
+        _tasksService
+            .ChangeImportance(Constants.Tasks.TaskId.Value)
+            .Returns(Result.Success());
+        
+        // Act
+        await _cut.ChangeImportance(Constants.Tasks.TaskId.Value);
+        
+        // Assert
+        await _tasksService
+            .Received(1)
+            .ChangeImportance(Arg.Is(Constants.Tasks.TaskId.Value));
+    }
+
+    [Fact]
+    public async Task ChangeImportance_WhenTaskNotFound_ShouldReturnObjectResult()
+    {
+        // Arrange
+        _tasksService
+            .ChangeImportance(Constants.Tasks.TaskId.Value)
+            .Returns(Errors.Task.NotFound);
+        
+        // Act
+        var result = await _cut.ChangeImportance(Constants.Tasks.TaskId.Value);
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<ObjectResult>();
+    }
+
+    [Fact]
+    public async Task ChangeImportance_WhenTaskNotFound_ShouldReturnProblemDetailsAsValue()
+    {
+        // Arrange
+        _tasksService
+            .ChangeImportance(Constants.Tasks.TaskId.Value)
+            .Returns(Errors.Task.NotFound);
+        
+        // Act
+        var result = ((ObjectResult)await _cut.ChangeImportance(Constants.Tasks.TaskId.Value)).Value;
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<ProblemDetails>();
+    }
+    
+    [Fact]
+    public async Task ChangeImportance_WhenTaskNotFound_ShouldReturn404NotFoundStatusCode()
+    {
+        // Arrange
+        _tasksService
+            .ChangeImportance(Constants.Tasks.TaskId.Value)
+            .Returns(Errors.Task.NotFound);
+        
+        // Act
+        var result = ((ObjectResult)await _cut.ChangeImportance(Constants.Tasks.TaskId.Value)).Value as ProblemDetails;
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result!.Status
+            .Should()
+            .Be((int) HttpStatusCode.NotFound);
+    }
+    
+    #endregion
 }

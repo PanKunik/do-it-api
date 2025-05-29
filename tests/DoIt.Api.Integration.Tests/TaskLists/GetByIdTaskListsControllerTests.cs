@@ -67,7 +67,7 @@ public class GetByIdTaskListsControllerTests(DoItApiFactory apiFactory)
                 l => l.Id == expectedTaskList.Id.Value
                   && l.Name ==  expectedTaskList.Name.Value
                   && l.CreatedAt == expectedTaskList.CreatedAt
-                  && l.Tasks.SequenceEqual(expectedTasks.Select(t => t.ToDto()))
+                  && l.Tasks!.SequenceEqual(expectedTasks.Select(t => t.ToDto()))
             );
     }
     

@@ -77,4 +77,15 @@ public class TasksController(ITasksService tasksService)
             onFailure: Problem
         );
     }
+
+    [HttpPut("{id:guid}/change-importance")]
+    public async Task<IActionResult> ChangeImportance(Guid id)
+    {
+        var result = await tasksService.ChangeImportance(id);
+
+        return result.Map(
+            onSuccess: NoContent,
+            onFailure: Problem
+        );
+    }
 }

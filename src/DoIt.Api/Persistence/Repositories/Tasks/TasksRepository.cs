@@ -130,7 +130,8 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
             UPDATE public.tasks
             SET
                 title = @Title,
-                is_done = @IsDone
+                is_done = @IsDone,
+                is_important = @IsImportant
             WHERE task_id = @Id";
 
         var result = await connection.ExecuteAsync(
@@ -139,7 +140,8 @@ public class TasksRepository(IDbConnectionFactory dbConnectionFactory)
             {
                 Id = task.Id.Value,
                 Title = task.Title.Value,
-                task.IsDone
+                task.IsDone,
+                task.IsImportant
             }
         );
 
