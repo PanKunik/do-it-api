@@ -112,7 +112,7 @@ public class TasksService(ITasksRepository tasksRepository, ITaskListsRepository
         return await tasksRepository.Update(taskToUpdate);
     }
 
-    public async Task<Result> ChangeState(Guid id)
+    public async System.Threading.Tasks.Task<Result> ChangeState(Guid id)
     {
         var taskIdResult = TaskId.CreateFrom(id);
         
@@ -126,6 +126,26 @@ public class TasksService(ITasksRepository tasksRepository, ITaskListsRepository
 
         var taskToDo = taskToDoResult.Value!;
         taskToDo.ChangeState();
+
+        await tasksRepository.Update(taskToDo);
+        
+        return Result.Success();
+    }
+
+    public async System.Threading.Tasks.Task<Result> ChangeImportance(Guid id)
+    {
+        var taskIdResult = TaskId.CreateFrom(id);
+        
+        if (taskIdResult.IsFailure)
+            return taskIdResult.Error!;
+
+        var taskToDoResult = await tasksRepository.GetById(taskIdResult.Value!);
+
+        if (taskToDoResult.IsFailure)
+            return taskToDoResult.Error!;
+
+        var taskToDo = taskToDoResult.Value!;
+        taskToDo.ChangeImportance();
 
         await tasksRepository.Update(taskToDo);
         

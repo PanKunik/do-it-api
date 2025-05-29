@@ -47,6 +47,18 @@ public class TaskBuilder
         return this;
     }
 
+    public TaskBuilder WithIsDone(bool isDone)
+    {
+        IsDone = isDone;
+        return this;
+    }
+
+    public TaskBuilder WithIsImportant(bool isImportant)
+    {
+        IsImportant = isImportant;
+        return this;
+    }
+
     public TaskBuilder WithTaskListId(Guid taskListId)
     {
         TaskListId = TaskListId.CreateFrom(taskListId).Value!;

@@ -36,7 +36,7 @@ public class TaskTests
                   && t.CreatedAt == Constants.Tasks.CreatedAt
                   && t.IsDone == Constants.Tasks.Done
                   && t.IsImportant == Constants.Tasks.Important
-                  && t.TaskListId == Constants.TaskLists.TaskListId
+                  && t.TaskListId! == Constants.TaskLists.TaskListId
             );
 
         await System.Threading.Tasks.Task.CompletedTask;

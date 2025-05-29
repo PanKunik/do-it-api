@@ -6,5 +6,5 @@ public sealed record TaskListDto(
     Guid Id,
     string Name,
     DateTime CreatedAt,
-    List<TaskDto> Tasks
+    List<TaskDto>? Tasks
 );
