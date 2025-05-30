@@ -1,22 +1,15 @@
-using DoIt.Api.Domain.TaskLists;
-using Task = DoIt.Api.Domain.Tasks.Task;
+using DoIt.Api.Domain.AssignmentsLists;
+using DoIt.Api.Domain.Assignments;
 
 namespace DoIt.Api.TestUtils;
 
+[Obsolete("Move to builders")]
 public static class TaskListsUtilities
 {
-    public static TaskList CreateTaskList(List<Task>? tasks = null)
-        => TaskList.Create(
-                Constants.TaskLists.TaskListId,
-                Constants.TaskLists.Name,
-                Constants.TaskLists.CreatedAt,
-                tasks ?? CreateTasks(3)
-            ).Value!;
-
-    public static List<Task> CreateTasks(int tasksCount = 1, TaskListId? taskListId = null)
+    public static List<Assignment> CreateTasks(int tasksCount = 1, AssignmentsListId? taskListId = null)
         => Enumerable
             .Range(0, tasksCount)
-            .Select(r => Task.Create(
+            .Select(r => Assignment.Create(
                     Constants.Tasks.TaskIdFromIndex(r),
                     Constants.Tasks.TitleFromIndex(r),
                     Constants.Tasks.CreatedAtFromIndex(r),

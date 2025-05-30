@@ -30,7 +30,7 @@ public abstract class ValueObject
 
         var other = (ValueObject) obj;
 
-        return this.GetEqualityComponent()
+        return GetEqualityComponent()
             .SequenceEqual(other.GetEqualityComponent());
     }
 

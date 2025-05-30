@@ -1,5 +1,0 @@
-@host=http://localhost:5000
-
-@id=71dc2873-6642-4d33-86db-86fd2910c05d
-
-PUT {{host}}/api/tasks/{{id}}/change-state

@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS assignments (
+	assignment_id UUID NOT NULL PRIMARY KEY,
+	title VARCHAR(100) NOT NULL,
+	created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+	is_done BOOLEAN NOT NULL,
+	is_important BOOLEAN NOT NULL
+);
