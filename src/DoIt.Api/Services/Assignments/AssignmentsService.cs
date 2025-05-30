@@ -128,9 +128,7 @@ public class AssignmentsService(
 
         var assignmentToDo = assignmentToDoResult.Value!;
         assignmentToDo.ChangeState();
-        await assignmentsRepository.Update(assignmentToDo);
-        
-        return Result.Success();
+        return await assignmentsRepository.Update(assignmentToDo);
     }
 
     public async Task<Result> ChangeImportance(Guid id)
@@ -147,8 +145,6 @@ public class AssignmentsService(
     
         var assignmentToChange = assignmentToChangeResult.Value!;
         assignmentToChange.ChangeImportance();
-        await assignmentsRepository.Update(assignmentToChange);
-        
-        return Result.Success();
+        return await assignmentsRepository.Update(assignmentToChange);
     }
 }

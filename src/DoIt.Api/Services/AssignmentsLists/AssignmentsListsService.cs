@@ -36,6 +36,31 @@ public class AssignmentsListsService(
         );
     }
 
+    public async Task<Result> Delete(Guid id)
+    {
+        var assignmentsListIdResult = AssignmentsListId.CreateFrom(id);
+
+        if (assignmentsListIdResult.IsFailure)
+            return assignmentsListIdResult.Error!;
+        
+        var assignmentsListResult = await repository.GetById(assignmentsListIdResult.Value!);
+        
+        if (assignmentsListResult.IsFailure)
+            return assignmentsListResult.Error!;
+
+        var assignments = assignmentsListResult.Value!.Assignments;
+        foreach (var assignment in assignments)
+        {
+            assignment.DetachFromList();
+            var assignmentUpdateResult = await assignmentsRepository.Update(assignment);
+            
+            if (assignmentUpdateResult.IsFailure)
+                return assignmentUpdateResult.Error!;
+        }
+
+        return await repository.Delete(assignmentsListIdResult.Value!);
+    }
+
     public async Task<List<AssignmentsListDto>> GetAll()
     {
         var result = await repository.GetAll();
@@ -78,12 +103,7 @@ public class AssignmentsListsService(
             return assignmentsListResult.Error!;
         
         assignmentsListResult.Value!.AttachAssignment(assignmentResult.Value!);
-        
-        var updateResult = await assignmentsRepository.Update(assignmentResult.Value!);
-        return updateResult.Map(
-            onSuccess: Result.Success,
-            onFailure: error => error
-        );
+        return await assignmentsRepository.Update(assignmentResult.Value!);
     }
     
     public async Task<Result> DetachAssignment(Guid id, Guid assignmentId)
@@ -108,10 +128,6 @@ public class AssignmentsListsService(
         if (detachResult.IsFailure)
             return detachResult.Error!;
         
-        var updateResult = await assignmentsRepository.Update(assignmentResult.Value!);
-        return updateResult.Map(
-            onSuccess: Result.Success,
-            onFailure: error => error
-        );
+        return await assignmentsRepository.Update(assignmentResult.Value!);
     }
 }
