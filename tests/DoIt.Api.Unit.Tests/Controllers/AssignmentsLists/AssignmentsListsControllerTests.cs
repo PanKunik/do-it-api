@@ -493,4 +493,368 @@ public class AssignmentsListsControllerTests
     }
 
     #endregion
+    
+    #region AttachAssignment
+    
+    [Fact]
+    public async Task AttachAssignment_OnSuccess_ShouldReturnNoContentResult()
+    {
+        // Arrange
+        _assignmentsListsService
+            .AttachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Result.Success());
+        
+        // Act
+        var result = await _cut.AttachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        );
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<NoContentResult>();
+    }
+
+    [Fact]
+    public async Task AttachAssignment_OnSuccess_ShouldReturn204NoContentStatusCode()
+    {
+        // Arrange
+        _assignmentsListsService
+            .AttachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Result.Success());
+        
+        // Act
+        var result = (NoContentResult) await _cut.AttachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        );
+        
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int) HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task AttachAssignment_ShouldContainHttpPutAttributeWithExpectedTemplate()
+    {
+        // Act
+        var methodData = typeof(AssignmentsListsController).GetMethod("AttachAssignment");
+        
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpPutAttribute>();
+        
+        attribute
+            .Should()
+            .NotBeNull();
+        
+        attribute!.Template
+            .Should()
+            .BeEquivalentTo("{id:guid}/attach/{assignmentId:guid}");
+
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task AttachAssignment_WhenInvoked_ShouldCallAssignmentsServiceAttachAssignmentOnceWithExpectedArguments()
+    {
+        // Arrange
+        _assignmentsListsService
+            .AttachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Result.Success());
+        
+        // Act
+        await _cut.AttachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        );
+        
+        // Assert
+        await _assignmentsListsService
+            .Received(1)
+            .AttachAssignment(
+                Arg.Is(Constants.AssignmentsLists.AssignmentsListId.Value),
+                Arg.Is(Constants.Tasks.AssignmentId.Value)
+            );
+    }
+
+    [Fact]
+    public async Task AttachAssignment_WhenAssignmentNotFound_ShouldReturnObjectResult()
+    {
+        // Arrange
+        _assignmentsListsService
+            .AttachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Errors.Assignment.NotFound);
+        
+        // Act
+        var result = await _cut.AttachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        );
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<ObjectResult>();
+    }
+    
+
+    [Fact]
+    public async Task AttachAssignment_WhenAssignmentNotFound_ShouldReturnProblemDetailsAsValue()
+    {
+        // Arrange
+        _assignmentsListsService
+            .AttachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Errors.Assignment.NotFound);
+        
+        // Act
+        var result = ((ObjectResult)await _cut.AttachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        )).Value;
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<ProblemDetails>();
+    }
+    
+    [Fact]
+    public async Task AttachAssignment_WhenAssignmentNotFound_ShouldReturn404NotFoundStatusCode()
+    {
+        // Arrange
+        _assignmentsListsService
+            .AttachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Errors.Assignment.NotFound);
+        
+        // Act
+        var result = ((ObjectResult)await _cut.AttachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        )).Value as ProblemDetails;
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result!.Status
+            .Should()
+            .Be((int) HttpStatusCode.NotFound);
+    }
+    
+    #endregion
+    
+    #region DetachAssignment
+    
+    [Fact]
+    public async Task DetachAssignment_OnSuccess_ShouldReturnNoContentResult()
+    {
+        // Arrange
+        _assignmentsListsService
+            .DetachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Result.Success());
+        
+        // Act
+        var result = await _cut.DetachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        );
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<NoContentResult>();
+    }
+
+    [Fact]
+    public async Task DetachAssignment_OnSuccess_ShouldReturn204NoContentStatusCode()
+    {
+        // Arrange
+        _assignmentsListsService
+            .DetachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Result.Success());
+        
+        // Act
+        var result = (NoContentResult) await _cut.DetachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        );
+        
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int) HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task DetachAssignment_ShouldContainHttpPutAttributeWithExpectedTemplate()
+    {
+        // Act
+        var methodData = typeof(AssignmentsListsController).GetMethod("DetachAssignment");
+        
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpPutAttribute>();
+        
+        attribute
+            .Should()
+            .NotBeNull();
+        
+        attribute!.Template
+            .Should()
+            .BeEquivalentTo("{id:guid}/detach/{assignmentId:guid}");
+
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task DetachAssignment_WhenInvoked_ShouldCallAssignmentsServiceDetachAssignmentOnceWithExpectedArguments()
+    {
+        // Arrange
+        _assignmentsListsService
+            .DetachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Result.Success());
+        
+        // Act
+        await _cut.DetachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        );
+        
+        // Assert
+        await _assignmentsListsService
+            .Received(1)
+            .DetachAssignment(
+                Arg.Is(Constants.AssignmentsLists.AssignmentsListId.Value),
+                Arg.Is(Constants.Tasks.AssignmentId.Value)
+            );
+    }
+
+    [Fact]
+    public async Task DetachAssignment_WhenAssignmentNotFound_ShouldReturnObjectResult()
+    {
+        // Arrange
+        _assignmentsListsService
+            .DetachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Errors.Assignment.NotFound);
+        
+        // Act
+        var result = await _cut.DetachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        );
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<ObjectResult>();
+    }
+    
+
+    [Fact]
+    public async Task DetachAssignment_WhenAssignmentNotFound_ShouldReturnProblemDetailsAsValue()
+    {
+        // Arrange
+        _assignmentsListsService
+            .DetachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Errors.Assignment.NotFound);
+        
+        // Act
+        var result = ((ObjectResult)await _cut.DetachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        )).Value;
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result
+            .Should()
+            .BeOfType<ProblemDetails>();
+    }
+    
+    [Fact]
+    public async Task DetachAssignment_WhenAssignmentNotFound_ShouldReturn404NotFoundStatusCode()
+    {
+        // Arrange
+        _assignmentsListsService
+            .DetachAssignment(
+                Constants.AssignmentsLists.AssignmentsListId.Value,
+                Constants.Tasks.AssignmentId.Value
+            )
+            .Returns(Errors.Assignment.NotFound);
+        
+        // Act
+        var result = ((ObjectResult)await _cut.DetachAssignment(
+            Constants.AssignmentsLists.AssignmentsListId.Value,
+            Constants.Tasks.AssignmentId.Value
+        )).Value as ProblemDetails;
+        
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+        
+        result!.Status
+            .Should()
+            .Be((int) HttpStatusCode.NotFound);
+    }
+    
+    #endregion
 }

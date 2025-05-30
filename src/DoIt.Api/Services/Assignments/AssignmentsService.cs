@@ -128,7 +128,6 @@ public class AssignmentsService(
 
         var assignmentToDo = assignmentToDoResult.Value!;
         assignmentToDo.ChangeState();
-
         await assignmentsRepository.Update(assignmentToDo);
         
         return Result.Success();
@@ -140,15 +139,14 @@ public class AssignmentsService(
         
         if (assignmentIdResult.IsFailure)
             return assignmentIdResult.Error!;
-
+    
         var assignmentToChangeResult = await assignmentsRepository.GetById(assignmentIdResult.Value!);
-
+    
         if (assignmentToChangeResult.IsFailure)
             return assignmentToChangeResult.Error!;
-
+    
         var assignmentToChange = assignmentToChangeResult.Value!;
         assignmentToChange.ChangeImportance();
-
         await assignmentsRepository.Update(assignmentToChange);
         
         return Result.Success();

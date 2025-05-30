@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assignments-lists", "assign
 		requests\assignments-lists\get-by-id.http = requests\assignments-lists\get-by-id.http
 		requests\assignments-lists\create.http = requests\assignments-lists\create.http
 		requests\assignments-lists\get.http = requests\assignments-lists\get.http
+		requests\assignments-lists\attach-assignment.http = requests\assignments-lists\attach-assignment.http
+		requests\assignments-lists\detach-assignment.http = requests\assignments-lists\detach-assignment.http
 	EndProjectSection
 EndProject
 Global

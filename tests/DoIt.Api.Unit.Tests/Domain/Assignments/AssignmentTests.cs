@@ -1,6 +1,7 @@
 ﻿using DoIt.Api.Domain.Assignments;
 using DoIt.Api.Shared;
 using DoIt.Api.TestUtils;
+using DoIt.Api.TestUtils.Builders;
 
 namespace DoIt.Api.Unit.Tests.Domain.Assignments;
 
@@ -184,6 +185,87 @@ public class AssignmentTests
             .Should()
             .BeEquivalentTo(Title.CreateFrom("Updated task title").Value!);
 
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task AttachToList_WhenInvokedForAssignmentNotAttachedToAnyList_ShouldAttachToListWithPassedId()
+    {
+        // Arrange
+        var assignment = AssignmentBuilder.Default().Build();
+        var assignmentsListId = AssignmentsListBuilder.Default().Build().Id;
+        
+        // Act
+        assignment.AttachToList(assignmentsListId);
+        
+        // Assert
+        assignment.AssignmentsListId
+            .Should()
+            .NotBeNull();
+        
+        assignment.AssignmentsListId
+            .Should()
+            .Be(assignmentsListId);
+        
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task AttachToList_WhenInvokedForAssignmentAlreadyAttachedToOtherList_ShouldChangeAttachedAttachmentListIdToPassedId()
+    {
+        // Arrange
+        var assignmentsListId = AssignmentsListBuilder.Default().Build().Id;
+        var assignment = AssignmentBuilder.Default().WithAssignmentsListId(assignmentsListId.Value).Build();
+        
+        var otherListId = AssignmentsListBuilder.Default(2).Build().Id;
+        
+        // Act
+        assignment.AttachToList(otherListId);
+        
+        // Assert
+        assignment.AssignmentsListId
+            .Should()
+            .NotBeNull();
+        
+        assignment.AssignmentsListId
+            .Should()
+            .Be(otherListId);
+        
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task DetachFromList_WhenInvokedForAttachedAssignment_ShouldSetAssignmentsListIdToNull()
+    {
+        // Arrange
+        var assignmentsListId = AssignmentsListBuilder.Default().Build().Id;
+        var assignment = AssignmentBuilder.Default().WithAssignmentsListId(assignmentsListId.Value).Build();
+        
+        // Act
+        assignment.DetachFromList();
+        
+        // Assert
+        assignment.AssignmentsListId
+            .Should()
+            .BeNull();
+        
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task DetachFromList_WhenInvokedForNotAttachedAssignments_ShouldLeaveAssignmentsListIdAsNull()
+    {
+        // Arrange
+        var assignment = AssignmentBuilder.Default().Build();
+        
+        // Act
+        assignment.DetachFromList();
+        
+        // Assert
+        assignment.AssignmentsListId
+            .Should()
+            .BeNull();
+        
         await Task.CompletedTask;
     }
 }

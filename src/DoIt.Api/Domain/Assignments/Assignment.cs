@@ -11,7 +11,7 @@ public class Assignment
     public DateTime CreatedAt { get; }
     public bool IsDone { get; private set; }
     public bool IsImportant { get; private set; }
-    public AssignmentsListId? AssignmentsListId { get; }
+    public AssignmentsListId? AssignmentsListId { get; private set; }
 
     private Assignment(
         AssignmentId id,
@@ -49,11 +49,14 @@ public class Assignment
         );
     }
 
-    public Result UpdateTitle(Title title)
-    {
-        Title = title;
-        return Result.Success();
-    }
+    public void AttachToList(AssignmentsListId assignmentsListId)
+        => AssignmentsListId = assignmentsListId;
+    
+    public void DetachFromList()
+        => AssignmentsListId = null;
+    
+    public void UpdateTitle(Title title)
+        => Title = title;
 
     public void ChangeState()
         => IsDone = !IsDone;

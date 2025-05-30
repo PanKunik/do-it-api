@@ -41,4 +41,38 @@ public class AssignmentsListsController(IAssignmentsListsService assignmentsList
             onFailure: Problem
         );
     }
+
+    [HttpPut("{id:guid}/attach/{assignmentId:guid}")]
+    public async Task<IActionResult> AttachAssignment(
+        Guid id,
+        Guid assignmentId
+    )
+    {
+        var result = await assignmentsListsService.AttachAssignment(
+            id,
+            assignmentId
+        );
+
+        return result.Map(
+            onSuccess: NoContent,
+            onFailure: Problem
+        );
+    }
+
+    [HttpPut("{id:guid}/detach/{assignmentId:guid}")]
+    public async Task<IActionResult> DetachAssignment(
+        Guid id,
+        Guid assignmentId
+    )
+    {
+        var result = await assignmentsListsService.DetachAssignment(
+            id,
+            assignmentId
+        );
+
+        return result.Map(
+            onSuccess: NoContent,
+            onFailure: Problem
+        );
+    }
 }

@@ -131,7 +131,8 @@ public class AssignmentsRepository(IDbConnectionFactory dbConnectionFactory)
             SET
                 title = @Title,
                 is_done = @IsDone,
-                is_important = @IsImportant
+                is_important = @IsImportant,
+                assignments_list_id = @AssignmentsListId
             WHERE assignment_id = @Id";
 
         var result = await connection.ExecuteAsync(
@@ -141,7 +142,8 @@ public class AssignmentsRepository(IDbConnectionFactory dbConnectionFactory)
                 Id = assignment.Id.Value,
                 Title = assignment.Title.Value,
                 assignment.IsDone,
-                assignment.IsImportant
+                assignment.IsImportant,
+                AssignmentsListId = assignment.AssignmentsListId?.Value
             }
         );
 
