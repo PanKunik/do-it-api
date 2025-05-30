@@ -34,6 +34,12 @@ public class AssignmentsListBuilder
         );
     }
 
+    public AssignmentsListBuilder WithName(Name name)
+    {
+        Name = name;
+        return this;
+    }
+
     public AssignmentsListBuilder WithAssignment(Assignment assignment)
     {
         Assignments.Add(assignment);

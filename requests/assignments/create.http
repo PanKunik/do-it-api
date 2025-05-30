@@ -4,6 +4,7 @@ POST {{host}}/api/assignments
 Content-Type: application/json
 
 {
-  "title": "Task #3",
-  "isImportant": false
+  "title": "Task #2",
+  "isImportant": false,
+  "assignmentsListId": "145b7791-c668-4ac1-9bb3-1e19b4d13b5b"
 }

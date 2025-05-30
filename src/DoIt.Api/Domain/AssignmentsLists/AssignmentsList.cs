@@ -38,4 +38,23 @@ public class AssignmentsList
             assignments ?? []
         );
     }
+
+    public void AttachAssignment(Assignment assignment)
+    {
+        Assignments.Add(assignment);
+        assignment.AttachToList(Id);
+    }
+
+    public Result DetachAssignment(Assignment assignment)
+    {
+        var existingAssignment = Assignments.FirstOrDefault(a => a.Id == assignment.Id);
+        
+        if (existingAssignment is null)
+            return Result.Failure(Errors.Assignment.NotFound);
+            
+        Assignments.Remove(existingAssignment);
+        assignment.DetachFromList();
+        
+        return Result.Success();
+    }
 }

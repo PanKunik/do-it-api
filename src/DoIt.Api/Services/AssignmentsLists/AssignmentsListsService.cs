@@ -1,11 +1,16 @@
 using DoIt.Api.Controllers.AssignmentsLists;
+using DoIt.Api.Domain.Assignments;
 using DoIt.Api.Domain.AssignmentsLists;
+using DoIt.Api.Persistence.Repositories.Assignments;
 using DoIt.Api.Persistence.Repositories.AssignmentsLists;
 using DoIt.Api.Shared;
 
 namespace DoIt.Api.Services.AssignmentsLists;
 
-public class AssignmentsListsService(IAssignmentsListsRepository repository)
+public class AssignmentsListsService(
+    IAssignmentsListsRepository repository,
+    IAssignmentsRepository assignmentsRepository
+)
     : IAssignmentsListsService
 {
     public async Task<Result<AssignmentsListDto>> Create(CreateAssignmentsListRequest request)
@@ -25,11 +30,10 @@ public class AssignmentsListsService(IAssignmentsListsRepository repository)
             return assignmentsListResult.Error!;
 
         var createAssignmentsListResult = await repository.Create(assignmentsListResult.Value!);
-
-        if (createAssignmentsListResult.IsFailure)
-            return createAssignmentsListResult.Error!;
-
-        return createAssignmentsListResult.Value!.ToDto();
+        return createAssignmentsListResult.Map<Result<AssignmentsListDto>>(
+            onSuccess: r => r.ToDto(),
+            onFailure: r => r
+        );
     }
 
     public async Task<List<AssignmentsListDto>> GetAll()
@@ -51,6 +55,62 @@ public class AssignmentsListsService(IAssignmentsListsRepository repository)
 
         return result.Map<Result<AssignmentsListDto>>(
             onSuccess: value => value.ToDto(),
+            onFailure: error => error
+        );
+    }
+
+    public async Task<Result> AttachAssignment(Guid id, Guid assignmentId)
+    {
+        var assignmentIdResult = AssignmentId.CreateFrom(assignmentId);
+        if (assignmentIdResult.IsFailure)
+            return assignmentIdResult.Error!;
+
+        var assignmentsListIdResult = AssignmentsListId.CreateFrom(id);
+        if (assignmentsListIdResult.IsFailure)
+            return assignmentsListIdResult.Error!;
+        
+        var assignmentResult = await assignmentsRepository.GetById(assignmentIdResult.Value!);
+        if (assignmentResult.IsFailure)
+            return assignmentResult.Error!;
+
+        var assignmentsListResult = await repository.GetById(assignmentsListIdResult.Value!);
+        if (assignmentsListResult.IsFailure)
+            return assignmentsListResult.Error!;
+        
+        assignmentsListResult.Value!.AttachAssignment(assignmentResult.Value!);
+        
+        var updateResult = await assignmentsRepository.Update(assignmentResult.Value!);
+        return updateResult.Map(
+            onSuccess: Result.Success,
+            onFailure: error => error
+        );
+    }
+    
+    public async Task<Result> DetachAssignment(Guid id, Guid assignmentId)
+    {
+        var assignmentIdResult = AssignmentId.CreateFrom(assignmentId);
+        if (assignmentIdResult.IsFailure)
+            return assignmentIdResult.Error!;
+
+        var assignmentsListIdResult = AssignmentsListId.CreateFrom(id);
+        if (assignmentsListIdResult.IsFailure)
+            return assignmentsListIdResult.Error!;
+        
+        var assignmentResult = await assignmentsRepository.GetById(assignmentIdResult.Value!);
+        if (assignmentResult.IsFailure)
+            return assignmentResult.Error!;
+
+        var assignmentsListResult = await repository.GetById(assignmentsListIdResult.Value!);
+        if (assignmentsListResult.IsFailure)
+            return assignmentsListResult.Error!;
+        
+        var detachResult = assignmentsListResult.Value!.DetachAssignment(assignmentResult.Value!);
+        if (detachResult.IsFailure)
+            return detachResult.Error!;
+        
+        var updateResult = await assignmentsRepository.Update(assignmentResult.Value!);
+        return updateResult.Map(
+            onSuccess: Result.Success,
             onFailure: error => error
         );
     }

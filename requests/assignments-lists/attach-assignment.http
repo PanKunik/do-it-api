@@ -1,0 +1,6 @@
+@host=http://localhost:5000
+
+@id=145b7791-c668-4ac1-9bb3-1e19b4d13b5b
+@assignmentId=45dba63d-b219-46da-aae7-f616909bd91f
+
+PUT {{host}}/api/assignments-lists/{{id}}/attach/{{assignmentId}}
