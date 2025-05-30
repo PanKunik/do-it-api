@@ -1,0 +1,10 @@
+@host=http://localhost:5000
+
+@id=720f4dcf-db3b-4b13-a328-770fd2bf0257
+
+PUT {{host}}/api/assignments/{{id}}
+Content-Type: application/json
+
+{
+  "title": "Zrób to !"
+}

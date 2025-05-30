@@ -1,0 +1,9 @@
+@host=http://localhost:5000
+
+POST {{host}}/api/assignments
+Content-Type: application/json
+
+{
+  "title": "Task #3",
+  "isImportant": false
+}

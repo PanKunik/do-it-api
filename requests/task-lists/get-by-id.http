@@ -1,5 +1,0 @@
-@host=http://localhost:5000
-
-@id=2c0613ee-136f-474d-a0ee-9a375e269265
-
-GET {{host}}/api/task-lists/{{id}}

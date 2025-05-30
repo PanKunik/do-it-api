@@ -1,0 +1,5 @@
+@host=http://localhost:5000
+
+@id=0ee601c8-2796-44bd-b62d-fa3796f85a44
+
+PUT {{host}}/api/assignments/{{id}}/change-importance

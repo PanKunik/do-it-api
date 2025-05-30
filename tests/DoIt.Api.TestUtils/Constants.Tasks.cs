@@ -1,12 +1,13 @@
-﻿using DoIt.Api.Domain.Tasks;
+﻿using DoIt.Api.Domain.Assignments;
 
 namespace DoIt.Api.TestUtils;
 
+[Obsolete("Move to builders")]
 public partial class Constants
 {
     public class Tasks
     {
-        public static readonly TaskId TaskId = TaskId.CreateFrom(Guid.Parse("00000000-0000-0000-0000-000000000001")).Value!;
+        public static readonly AssignmentId AssignmentId = AssignmentId.CreateFrom(Guid.Parse("00000000-0000-0000-0000-000000000001")).Value!;
         public static readonly Title Title = Title.CreateFrom("Task title").Value!;
         public static readonly DateTime CreatedAt = new DateTime(2012, 12, 21);
 
@@ -16,8 +17,8 @@ public partial class Constants
         public const bool NotImportant = false;
         public const bool Important = true;
 
-        public static TaskId TaskIdFromIndex(int index)
-            => TaskId.CreateFrom(new Guid($"00000000-0000-0000-0000-{(index + 1).ToString().PadLeft(12, '0')}")).Value!;
+        public static AssignmentId TaskIdFromIndex(int index)
+            => AssignmentId.CreateFrom(new Guid($"00000000-0000-0000-0000-{(index + 1).ToString().PadLeft(12, '0')}")).Value!;
 
         public static Title TitleFromIndex(int index)
             => Title.CreateFrom($"Task title {index + 1}").Value!;

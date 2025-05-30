@@ -1,0 +1,8 @@
+@host=http://localhost:5000
+
+POST {{host}}/api/assignments-lists
+Content-Type: application/json
+
+{
+  "name": "Daily"
+}

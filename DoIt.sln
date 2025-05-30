@@ -29,22 +29,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{13F0D23E-747
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoIt.Api.TestUtils", "tests\DoIt.Api.TestUtils\DoIt.Api.TestUtils.csproj", "{6FCD7EF2-6AC4-4DD7-83B0-FA4BC6CCAA44}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tasks", "tasks", "{D7AB204F-1A95-4E96-8003-256C9AFD9D8D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assignments", "assignments", "{D7AB204F-1A95-4E96-8003-256C9AFD9D8D}"
 	ProjectSection(SolutionItems) = preProject
-		requests\tasks\create.http = requests\tasks\create.http
-		requests\tasks\delete.http = requests\tasks\delete.http
-		requests\tasks\get-by-id.http = requests\tasks\get-by-id.http
-		requests\tasks\get.http = requests\tasks\get.http
-		requests\tasks\update.http = requests\tasks\update.http
-		requests\tasks\change-state.http = requests\tasks\change-state.http
-		requests\tasks\change-importance.http = requests\tasks\change-importance.http
+		requests\assignments\create.http = requests\assignments\create.http
+		requests\assignments\delete.http = requests\assignments\delete.http
+		requests\assignments\get-by-id.http = requests\assignments\get-by-id.http
+		requests\assignments\get.http = requests\assignments\get.http
+		requests\assignments\update.http = requests\assignments\update.http
+		requests\assignments\change-state.http = requests\assignments\change-state.http
+		requests\assignments\change-importance.http = requests\assignments\change-importance.http
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "task-lists", "task-lists", "{B376EA47-CA1E-4300-86F6-ADCF2D61A43B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assignments-lists", "assignments-lists", "{B376EA47-CA1E-4300-86F6-ADCF2D61A43B}"
 	ProjectSection(SolutionItems) = preProject
-		requests\task-lists\get-by-id.http = requests\task-lists\get-by-id.http
-		requests\task-lists\create.http = requests\task-lists\create.http
-		requests\task-lists\get.http = requests\task-lists\get.http
+		requests\assignments-lists\get-by-id.http = requests\assignments-lists\get-by-id.http
+		requests\assignments-lists\create.http = requests\assignments-lists\create.http
+		requests\assignments-lists\get.http = requests\assignments-lists\get.http
 	EndProjectSection
 EndProject
 Global
