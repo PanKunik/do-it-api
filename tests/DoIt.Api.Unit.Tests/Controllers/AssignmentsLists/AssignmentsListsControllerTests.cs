@@ -300,6 +300,148 @@ public class AssignmentsListsControllerTests
     }
 
     #endregion
+    
+    #region Delete
+
+    [Fact]
+    public async Task Delete_OnSuccess_ShouldReturnNoContentResult()
+    {
+        // Arrange
+        _assignmentsListsService
+            .Delete(Constants.AssignmentsLists.AssignmentsListId.Value)
+            .Returns(Result.Success());
+
+        // Act
+        var result = await _cut.Delete(Constants.AssignmentsLists.AssignmentsListId.Value);
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<NoContentResult>();
+    }
+
+    [Fact]
+    public async Task Delete_OnSuccess_ShouldReturn204NoContentStatusCode()
+    {
+        // Arrange
+        _assignmentsListsService
+            .Delete(Constants.AssignmentsLists.AssignmentsListId.Value)
+            .Returns(Result.Success());
+
+        // Act
+        var result = (NoContentResult) await _cut.Delete(Constants.AssignmentsLists.AssignmentsListId.Value);
+
+        // Assert
+        result.StatusCode
+            .Should()
+            .Be((int) HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task Delete_ShouldContainHttpDeleteAttributeWithExpectedTemplate()
+    {
+        // Act
+        var methodData = typeof(AssignmentsListsController).GetMethod("Delete");
+
+        // Assert
+        var attribute = methodData!.GetCustomAttribute<HttpDeleteAttribute>();
+
+        attribute
+            .Should()
+            .NotBeNull();
+
+        attribute!.Template
+            .Should()
+            .BeEquivalentTo("{id:guid}");
+
+        await Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task Delete_WhenInvoked_ShouldCallAssignmentsListsServiceDeleteOnceWithExpectedValue()
+    {
+        // Arrange
+        _assignmentsListsService
+            .Delete(Constants.AssignmentsLists.AssignmentsListId.Value)
+            .Returns(Result.Success());
+
+        // Act
+        var result = await _cut.Delete(Constants.AssignmentsLists.AssignmentsListId.Value);
+
+        // Assert
+        await _assignmentsListsService
+            .Received(1)
+            .Delete(Arg.Is<Guid>(r => r == Constants.AssignmentsLists.AssignmentsListId.Value));
+    }
+
+    [Fact]
+    public async Task Delete_WhenAssignmentsListNotFound_ShouldReturnObjectResult()
+    {
+        // Arrange
+        _assignmentsListsService
+            .Delete(Constants.AssignmentsLists.AssignmentsListId.Value)
+            .Returns(Errors.AssignmentsList.NotFound);
+
+        // Act
+        var result = await _cut.Delete(Constants.AssignmentsLists.AssignmentsListId.Value);
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<ObjectResult>();
+    }
+
+    [Fact]
+    public async Task Delete_WhenAssignmentsListNotFound_ShouldReturnProblemDetailsAsValue()
+    {
+        // Arrange
+        _assignmentsListsService
+            .Delete(Constants.AssignmentsLists.AssignmentsListId.Value)
+            .Returns(Errors.AssignmentsList.NotFound);
+
+        // Act
+        var result = ((ObjectResult) await _cut.Delete(Constants.AssignmentsLists.AssignmentsListId.Value)).Value;
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result
+            .Should()
+            .BeOfType<ProblemDetails>();
+    }
+
+    [Fact]
+    public async Task Delete_WhenAssignmentsListNotFound_ShouldReturn404NotFoundStatusCode()
+    {
+        // Arrange
+        _assignmentsListsService
+            .Delete(Constants.AssignmentsLists.AssignmentsListId.Value)
+            .Returns(Errors.AssignmentsList.NotFound);
+
+        // Act
+        var result = ((ObjectResult) await _cut.Delete(Constants.AssignmentsLists.AssignmentsListId.Value)).Value as ProblemDetails;
+
+        // Assert
+        result
+            .Should()
+            .NotBeNull();
+
+        result!.Status
+            .Should()
+            .Be((int) HttpStatusCode.NotFound);
+    }
+
+    #endregion
 
     #region GetById
 

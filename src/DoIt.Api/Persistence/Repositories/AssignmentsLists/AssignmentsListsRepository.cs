@@ -70,6 +70,22 @@ public class AssignmentsListsRepository(IDbConnectionFactory dbConnectionFactory
         return assignmentsList;
     }
 
+    public async Task<Result> Delete(AssignmentsListId assignmentsListId)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+
+        var command = @"
+            DELETE FROM public.assignments_lists
+            WHERE assignments_list_id = @Id";
+
+        var result = await connection.ExecuteAsync(
+            command,
+            new { Id = assignmentsListId.Value }
+        );
+
+        return result > 0 ? Result.Success() : Errors.AssignmentsList.NotFound;
+    }
+
     public async Task<Result<AssignmentsList>> GetById(AssignmentsListId assignmentsListId)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync();

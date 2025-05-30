@@ -30,6 +30,17 @@ public class AssignmentsListsController(IAssignmentsListsService assignmentsList
                 onFailure: Problem
         );
     }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var result = await assignmentsListsService.Delete(id);
+
+        return result.Map(
+            onSuccess: NoContent,
+            onFailure: Problem
+        );
+    }
     
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)

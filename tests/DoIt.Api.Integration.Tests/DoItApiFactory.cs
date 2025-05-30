@@ -23,10 +23,10 @@ public class DoItApiFactory
         .WithPassword("123456")
         .Build();
 
-    public HttpClient HttpClient { get; private set; } = default!;
+    public HttpClient HttpClient { get; private set; } = null!;
 
-    private DbConnection _dbConnection = default!;
-    private Respawner _respawner = default!;
+    private DbConnection _dbConnection = null!;
+    private Respawner _respawner = null!;
 
     public async Task ResetDatabaseAsync()
     {
